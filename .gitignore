@@ -35,3 +35,4 @@ po/*~
 rsconnect/
 data/
 sandbox.R
+lss_cache/
