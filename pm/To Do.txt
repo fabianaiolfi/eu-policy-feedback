@@ -1,0 +1,14 @@
+# To Do
+
+## Data Collection: 1989 – Today
+- [x] CEPS EurLex (1952 – 2019)
+- [ ] Moodley (1971 – 2022)
+
+## Perform Ideological Measurements
+- [ ] LSS
+- [ ] Recreate existing measurement techniques
+- [ ] Embeddings: Compare policies with “typical” left-right legislation
+
+## Evaluation
+- [ ] Compare with existing measurments
+- [ ] Compare results with each other
