@@ -30,7 +30,7 @@ sample_ceps_eurlex <- ceps_eurlex %>%
   sample_n(10000) %>% 
   # Remove rows where act_raw_text is the string "nan"
   dplyr::filter(act_raw_text != "nan") %>%
-  sample_n(100) %>% 
+  sample_n(1000) %>% 
   mutate(test_id = row_number())
 
 # Convert to corpus
