@@ -8,6 +8,7 @@
 - [ ] LSS
 - [ ] Recreate existing measurement techniques
 - [ ] Embeddings: Compare policies with “typical” left-right legislation
+	- [ ] Measure semantic distance between policies and legislation put forward by parties or MPs?
 
 ## Evaluation
 - [ ] Compare with existing measurments
