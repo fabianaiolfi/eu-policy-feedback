@@ -33,6 +33,7 @@ docs/
 po/*~
 # RStudio Connect folder
 rsconnect/
-data/
 sandbox.R
 lss_cache/
+*.rds
+*.rda
