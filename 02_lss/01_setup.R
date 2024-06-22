@@ -26,11 +26,13 @@ dfmt <- dfm(toks) %>%
 sample_ceps_eurlex <- ceps_eurlex %>% 
   mutate(Date_publication = as.Date(Date_publication, format = "%Y-%m-%d")) %>%
   dplyr::filter(Date_publication >= "1989-01-01") %>%
+  # dplyr::filter(Act_type %in% c("Directive", "Directive_IMPL", "Directive_DEL", "Regulation", "Implementing Regulation", "Delegated Regulation", "Regulation_FINANC"))# %>% # Only regulations and directives
+  dplyr::filter(str_detect(Act_type, "Directive|Regulation")) %>% 
   select(CELEX, act_raw_text) %>%
-  sample_n(10000) %>% 
+  # sample_n(10000) %>% 
   # Remove rows where act_raw_text is the string "nan"
   dplyr::filter(act_raw_text != "nan") %>%
-  sample_n(1000) %>% 
+  # sample_n(1000) %>% 
   mutate(test_id = row_number())
 
 # Convert to corpus
