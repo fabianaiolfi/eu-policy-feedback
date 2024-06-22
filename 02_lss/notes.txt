@@ -1,0 +1,88 @@
+# Examples of typical "left" and "right" policies
+
+## Right
+- Pro free market
+- Financial support for EU’s external borders and the common visa policy: Internal Security Fund (https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=LEGISSUM%3A23010701_1&qid=1718998597491)
+- Protection, tradition
+  - https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=LEGISSUM%3A4386346&qid=1718999821867
+
+## Left
+- Minimum wage
+
+
+
+###########
+
+Comparing different similarity distances
+
+simil_method = "cosine"
+> head(coef(tmod_lss), 20) # ideologically left words
+       reproduce        evaluates           hunger            ordre       inventions       patentable    patentability           thanks    trade-related         patented    uncoordinated        invention         entitles 
+      0.09344077       0.08980344       0.08887150       0.08866303       0.08750370       0.08744992       0.08744494       0.08741224       0.08739542       0.08738489       0.08732000       0.08695874       0.08681290 
+          genome biotechnological        certainly           priori        sequences          overlap           patent 
+      0.08676856       0.08646790       0.08624063       0.08623824       0.08587457       0.08541098       0.08492656 
+      
+> tail(coef(tmod_lss), 20) # ideologically right words
+          quotas          liberty         receives        expedited     infringement         hearings            fines         immunity      deprivation       distorting         leniency anti-competitive       cooperates 
+     -0.09205925      -0.09217954      -0.09337609      -0.09341789      -0.09347995      -0.09350690      -0.09455515      -0.09529652      -0.09666623      -0.09694697      -0.09713408      -0.09715936      -0.09738204 
+ discontinuation           cartel    participant's          damages        infringer         appealed      competition 
+     -0.09783858      -0.09801742      -0.09814414      -0.09862720      -0.09983354      -0.10482704      -0.10592900
+
+
+simil_method = "correlation"
+> head(coef(tmod_lss), 20) # ideologically left words
+       reproduce        evaluates           hunger            ordre       inventions       patentable    patentability           thanks    trade-related         patented    uncoordinated        invention         entitles 
+      0.09336658       0.08968104       0.08874702       0.08854064       0.08738222       0.08732552       0.08732353       0.08728680       0.08726924       0.08726313       0.08719740       0.08683457       0.08667688 
+          genome biotechnological           priori        certainly        sequences          overlap           patent 
+      0.08665041       0.08634393       0.08611477       0.08611277       0.08574848       0.08528361       0.08478984 
+
+> tail(coef(tmod_lss), 20) # ideologically right words
+         liberty           quotas         receives        expedited     infringement         hearings            fines         immunity      deprivation       distorting anti-competitive         leniency       cooperates 
+     -0.09215708      -0.09220470      -0.09353157      -0.09356261      -0.09356970      -0.09360398      -0.09468576      -0.09544964      -0.09663551      -0.09710077      -0.09726065      -0.09732163      -0.09751519 
+ discontinuation           cartel    participant's          damages        infringer         appealed      competition 
+     -0.09797622      -0.09823433      -0.09836840      -0.09885249      -0.09995670      -0.10513866      -0.10627030 
+     
+
+simil_method = "simple matching",
+> head(coef(tmod_lss), 20) # ideologically left words
+    official      journal        union   parliament      council    work-life      balance      parents       carers    repealing       treaty  functioning   particular        point  conjunction      thereof     proposal 
+1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 
+transmission        draft  legislative 
+1.387779e-17 1.387779e-17 1.387779e-17 
+> tail(coef(tmod_lss), 20) # ideologically right words
+             footplate            platformthe precautionsprecautions           articulating      attachmentstrucks                  abrev                  indic                hfigure               stackers                 aisles 
+          1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17 
+                  aenl                 slopev                 aefn12               trucksas                   7uen                  hoehe                 zeilen                zeichen                  gnpmp                  gdpmp 
+          1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17 
+ 
+
+simil_method = "hamann"
+> head(coef(tmod_lss), 20) # ideologically left words
+    official      journal        union   parliament      council    work-life      balance      parents       carers    repealing       treaty  functioning   particular        point  conjunction      thereof     proposal 
+1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 1.387779e-17 
+transmission        draft  legislative 
+1.387779e-17 1.387779e-17 1.387779e-17 
+> tail(coef(tmod_lss), 20) # ideologically right words
+             footplate            platformthe precautionsprecautions           articulating      attachmentstrucks                  abrev                  indic                hfigure               stackers                 aisles 
+          1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17 
+                  aenl                 slopev                 aefn12               trucksas                   7uen                  hoehe                 zeilen                zeichen                  gnpmp                  gdpmp 
+          1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17           1.387779e-17 
+
+
+simil_method = "ejaccard"
+> head(coef(tmod_lss), 20) # ideologically left words
+      equality      diversity     healthcare      education       progress     solidarity redistribution      inclusive        welfare     regulation      community    environment          union         public       patented 
+    0.05828813     0.05592785     0.05480970     0.05157451     0.05156993     0.05144750     0.05011753     0.05000196     0.04957476     0.04957035     0.04929873     0.04926516     0.04807511     0.04806239     0.04749814 
+       ethical     affordable          ordre         rights      sequences 
+    0.04707250     0.04649248     0.04630760     0.04627941     0.04575070 
+> tail(coef(tmod_lss), 20) # ideologically right words
+  residence proceedings   specially       merit     liberty    security    military      fiscal     deficit      family  efficiency      market   tradition  innovation   authority    property      growth     freedom competition 
+-0.03195890 -0.03440381 -0.04028528 -0.04512634 -0.04669558 -0.04678169 -0.04731650 -0.04968879 -0.04976590 -0.04980580 -0.05014014 -0.05124010 -0.05171674 -0.05388180 -0.05409613 -0.05651984 -0.05655794 -0.05913501 -0.05937385 
+    private 
+-0.06016615 
+
+
+
+
+
+
