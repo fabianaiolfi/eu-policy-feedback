@@ -45,7 +45,7 @@ print(nrow(dat2))
 
 # Using custom dictionary
 dict <- dictionary(file = here::here("data", "02_lss", "l_r_dict.yml"))
-seed <- as.seedwords(dict$ideology)
+seed <- as.seedwords(dict$ideology, concatenator = " ")
 lss <- textmodel_lss(dfmt,
                      seeds = seed,
                      k = 300,
@@ -67,17 +67,27 @@ sample_ceps_eurlex$CELEX[886]
 # https://tutorials.quanteda.io/machine-learning/lss/
 
 # tokenize text corpus and remove various features
-corp_sent <- corpus_reshape(sample_ceps_eurlex_corpus, to =  "sentences")
+corp_sent <- corpus_reshape(sample_ceps_eurlex_corpus, to = "sentences") # to = "paragraphs"
 toks_sent <- corp_sent %>% 
-  tokens(remove_punct = TRUE, remove_symbols = TRUE, 
-         remove_numbers = TRUE, remove_url = TRUE) %>% 
+  tokens(remove_punct = TRUE,
+         remove_symbols = TRUE, 
+         remove_numbers = TRUE,
+         remove_url = TRUE) %>% 
   tokens_remove(stopwords("en", source = "marimo")) %>% 
   # remove tokens that are shorter than 3 characters
   tokens_remove(min_nchar = 3) %>%
   tokens_remove(c("article", "shall", "annex", "commission", "decision", "member", "european", "state*", "measure*", "regard", "directive"))
 
+# Create bigrams
+# toks_sent_bigrams <- toks_sent %>% tokens_ngrams(n = 2, concatenator = " ")
+
 # create a document feature matrix from the tokens object
-dfmat_sent <- toks_sent %>% 
+dfmat_sent <- toks_sent %>%
+  dfm() %>% 
+  dfm_remove(pattern = "") %>% 
+  dfm_trim(min_termfreq = 5)
+
+dfmat_sent_bigrams <- toks_sent_bigrams %>%
   dfm() %>% 
   dfm_remove(pattern = "") %>% 
   dfm_trim(min_termfreq = 5)
@@ -92,7 +102,9 @@ context_words
 tmod_lss <- textmodel_lss(dfmat_sent,
                           seeds = seed,
                           k = 300,
-                          simil_method = "ejaccard",
+                          # simil_method = "ejaccard",
+                          # engine = c("RSpectra", "irlba", "rsvd", "rsparse"),
+                          engine = "irlba",
                           cache = F
                           )
 
@@ -119,6 +131,7 @@ head(bs_coef, 10)
 
 # filter by row name
 bs_coef[rownames(bs_coef) %in% c("solidarity"),]
+seed
 
 
 

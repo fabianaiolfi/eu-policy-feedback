@@ -82,6 +82,34 @@ simil_method = "ejaccard"
 -0.06016615 
 
 
+## updated seed list to be more eu policy specific
+
+# different engines
+
+engine = "RSpectra"
+> head(coef(tmod_lss), 20) # ideologically left words
+       welfare redistribution     regulation      subsidies    journalists      enactment         cattle    ethological     statistics       gambling    accountants         v1.1.2        2015-04     corrigenda       learning 
+    0.06023657     0.04731002     0.04542494     0.04475753     0.04160525     0.03933481     0.03772845     0.03638291     0.03590867     0.03583952     0.03583921     0.03582341     0.03582341     0.03571593     0.03561146 
+      standard   obsolescence        uppsala     reclosable       veterinã 
+    0.03545529     0.03545185     0.03504849     0.03501291     0.03500706 
+> tail(coef(tmod_lss), 20) # ideologically right words
+          overcharge              alleged           innovation              cartels         infringement          competitors        presentations          voluntarily                 tfeu infrastructure-based           cooperates 
+         -0.04625252          -0.04662938          -0.04672014          -0.04695641          -0.04722232          -0.04753683          -0.04767947          -0.04794677          -0.04796174          -0.04809801          -0.04937486 
+     discontinuation     entrepreneurship            expedited        participant's             appealed                fines               cartel             leniency          competition 
+         -0.04951811          -0.04955726          -0.04964070          -0.05006720          -0.05040087          -0.05078955          -0.05130873          -0.05155513          -0.05735949
+
+engine = "irlba",
+> head(coef(tmod_lss), 20) # ideologically left words
+    welfare  regulation   subsidies   enactment    watering       unece  corrigenda    veterinã accountants rmedicinska     science     anstalt     uppsala    learning     museums       malmã        hias     library      museet 
+ 0.06319975  0.04894786  0.04501751  0.03975048  0.03895794  0.03851634  0.03836261  0.03832581  0.03777448  0.03572744  0.03494949  0.03485445  0.03485321  0.03397322  0.03331389  0.03314285  0.03303194  0.03290435  0.03266112 
+     museum 
+ 0.03261523 
+> tail(coef(tmod_lss), 20) # ideologically right words
+      innovation       consensual     infringement          damages          cartels        infringer anti-competitive             tfeu      competitors           secret    presentations       cooperates            fines 
+     -0.04496121      -0.04505672      -0.04528690      -0.04547620      -0.04566293      -0.04605518      -0.04659738      -0.04698698      -0.04703528      -0.04703997      -0.04741863      -0.04815516      -0.04841548 
+     voluntarily        expedited    participant's         appealed         leniency           cartel      competition 
+     -0.04850036      -0.04991535      -0.05032350      -0.05052935      -0.05068217      -0.05092935      -0.05627709 
+
 
 
 
