@@ -6,7 +6,7 @@
 # Estimate the polarity of words
 # Taking the DFM and the seed words as the only inputs, textmodel_lss() computes the polarity scores of all the words in the corpus based on their semantic similarity to the seed words. You usually do not need to change the value of k (300 by default).
 seed <- as.seedwords(data_dictionary_sentiment)
-lss <- textmodel_lss(dfmt,
+lss <- textmodel_lss(dfmt_example,
                      seeds = seed,
                      k = 2,
                      cache = F,
@@ -104,7 +104,9 @@ tmod_lss <- textmodel_lss(dfmat_sent,
                           k = 300,
                           # simil_method = "ejaccard",
                           # engine = c("RSpectra", "irlba", "rsvd", "rsparse"),
-                          engine = "irlba",
+                          # engine = "rsvd",
+                          include_data = T,
+                          group_data = T,
                           cache = F
                           )
 
@@ -130,8 +132,22 @@ bs_coef <- bootstrap_lss(tmod_lss, mode = "coef")
 head(bs_coef, 10)
 
 # filter by row name
-bs_coef[rownames(bs_coef) %in% c("solidarity"),]
-seed
+bs_coef[rownames(bs_coef) %in% c("migrant"),]
+
+
+# predict polarity
+dat <- docvars(tmod_lss$data)
+dat$lss <- predict(tmod_lss)
+
+# Look at policies
+# sample_ceps_eurlex$act_raw_text[37]
+sample_ceps_eurlex$CELEX[2285]
+
+
+
+
+
+
 
 
 

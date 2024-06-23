@@ -111,6 +111,20 @@ engine = "irlba",
      -0.04850036      -0.04991535      -0.05032350      -0.05052935      -0.05068217      -0.05092935      -0.05627709 
 
 
-
+engine = "rsvd"
+> head(coef(tmod_lss), 20) # ideologically left words
+       subsidies          welfare   redistribution       regulation      accountants communityarticle          museums     obsolescence 
+      0.05246355       0.05205824       0.05102883       0.04471558       0.04162538       0.03857361       0.03673343       0.03651762 
+         uppsala         lifelong      rmedicinska             echa         learning            malmã              sjã         tekniska 
+      0.03624309       0.03586168       0.03563815       0.03537362       0.03534072       0.03529244       0.03526988       0.03494849 
+          gskola          science         veterinã           museet 
+      0.03483658       0.03481657       0.03478869       0.03475884 
+> tail(coef(tmod_lss), 20) # ideologically right words
+        immunity      competitors       innovation          someone     infringement             tfeu          alleged       cooperates 
+     -0.05207391      -0.05340558      -0.05375674      -0.05393514      -0.05456783      -0.05458131      -0.05461418      -0.05517241 
+     voluntarily        expedited    participant's         appealed entrepreneurship    presentations  discontinuation          cartels 
+     -0.05799732      -0.05802384      -0.05821315      -0.05823907      -0.05892247      -0.05921200      -0.05950194      -0.05951279 
+          cartel         leniency            fines      competition 
+     -0.06044213      -0.06081060      -0.06135228      -0.06357053 
 
 

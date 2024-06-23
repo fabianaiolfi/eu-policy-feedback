@@ -2,6 +2,10 @@
 #     left: ["equality", "social justice", "welfare", "public", "regulation", "union", "rights", "solidarity", "progress", "redistribution", "environment", "inclusive", "diversity", "labor", "community", "education", "healthcare", "public services", "affordable", "support"]
 #     right: ["freedom", "individualism", "private", "market", "competition", "security", "tradition", "authority", "liberty", "fiscal", "deficit", "military", "family", "merit", "efficiency", "deregulation", "self-reliance", "property", "innovation", "growth"]
 
+# ideology:
+#     left: ["social protection", "redistribution", "welfare", "public investment", "state aid", "labor rights", "social inclusion", "minimum wage", "progressive taxation", "public services", "affordable housing", "universal healthcare", "collective bargaining", "social security", "workers' rights", "poverty reduction", "social benefits", "subsidies", "public sector", "regulation"]
+#     right: ["market liberalization", "deregulation", "privatization", "tax cuts", "free market", "competition", "economic growth", "trade liberalization", "fiscal discipline", "budget balance", "austerity", "entrepreneurship", "private sector", "investment incentives", "property rights", "corporate tax", "labor market flexibility", "business environment", "economic freedom", "innovation"]
+
 ideology:
-    left: ["social protection", "redistribution", "welfare", "public investment", "state aid", "labor rights", "social inclusion", "minimum wage", "progressive taxation", "public services", "affordable housing", "universal healthcare", "collective bargaining", "social security", "workers' rights", "poverty reduction", "social benefits", "subsidies", "public sector", "regulation"]
-    right: ["market liberalization", "deregulation", "privatization", "tax cuts", "free market", "competition", "economic growth", "trade liberalization", "fiscal discipline", "budget balance", "austerity", "entrepreneurship", "private sector", "investment incentives", "property rights", "corporate tax", "labor market flexibility", "business environment", "economic freedom", "innovation"]
+    left: ["equality", "socialism", "welfare", "solidarity", "redistribution", "environment", "inclusive", "diversity", "labor", "community", "education", "healthcare", "affordable", "support"]
+    right: ["individualism", "liberalism", "private", "competition", "security", "tradition", "authority", "liberty", "fiscal", "deficit", "military", "family", "efficiency", "self-reliance", "property", "innovation"]
