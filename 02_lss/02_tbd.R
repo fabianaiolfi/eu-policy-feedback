@@ -141,7 +141,7 @@ dat$lss <- predict(tmod_lss)
 
 # Look at policies
 # sample_ceps_eurlex$act_raw_text[37]
-sample_ceps_eurlex$CELEX[2285]
+sample_ceps_eurlex$CELEX[837]
 
 
 

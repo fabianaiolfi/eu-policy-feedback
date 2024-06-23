@@ -16,7 +16,7 @@ corp <- readRDS(here("data", "02_lss", "data_corpus_sputnik2022.rds")) %>%
 
 toks <- tokens(corp, remove_punct = TRUE, remove_symbols = TRUE, remove_numbers = TRUE, remove_url = TRUE)
 
-dfmt <- dfm(toks) %>% 
+dfmt_example <- dfm(toks) %>% 
   dfm_remove(stopwords("en"))
 
 
