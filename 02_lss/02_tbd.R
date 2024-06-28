@@ -104,7 +104,7 @@ tmod_lss <- textmodel_lss(dfmat_sent,
                           k = 300,
                           # simil_method = "ejaccard",
                           # engine = c("RSpectra", "irlba", "rsvd", "rsparse"),
-                          # engine = "rsvd",
+                          engine = "rsparse",
                           include_data = T,
                           group_data = T,
                           cache = F
@@ -145,11 +145,49 @@ sample_ceps_eurlex$CELEX[837]
 
 
 
+############### Using GloVe #########
 
+# Instructions: https://blog.koheiw.net/?p=2031
 
+# Import GloVe Data
+# Source: https://nlp.stanford.edu/projects/glove/
 
+mt <- read.table(here("02_lss", "glove.6B", "glove.6B.200d.txt"), quote = "", sep = " ", fill = FALSE,
+                 comment.char = "", row.names = 1, fileEncoding = "UTF-8")
 
+colnames(mt) <- NULL
+mt <- mt[stringi::stri_detect_regex(rownames(mt), "[a-zA-Z]"),] # exclude numbers and punctuations
+mt <- t(mt) # transpose
 
+# seed <- as.seedwords(data_dictionary_sentiment)
+lss <- as.textmodel_lss(mt, seed) # create LSS object
+
+# check polarity of words using coef()
+head(coef(lss), 20)
+tail(coef(lss), 20)
+
+# This is a bit pointless here
+# bs_term <- bootstrap_lss(lss, mode = "terms")
+# head(bs_term, 10)
+
+# bs_coef <- bootstrap_lss(lss, mode = "coef")
+# head(bs_coef, 10)
+
+glove_polarity_scores <- predict(lss, newdata = dfmat_sent)
+df <- as.data.frame(glove_polarity_scores)
+# convert row names to column
+df$CELEX <- rownames(df)
+# merge sentences back to documents
+# in the CELEX column, remove all characters after the .
+df$CELEX <- gsub("\\..*", "", df$CELEX)
+# length(unique(df$CELEX)) # number of documents
+# calculate average polarity for each document
+# use sentence length as weight (shorter sentences should have less weight)
+## CONTINUE HERE ##
+
+df <- df %>%
+  group_by(CELEX) %>%
+  summarise(avg_glove_polarity_scores = mean(glove_polarity_scores, na.rm = TRUE))
 
 
 
