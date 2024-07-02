@@ -14,3 +14,6 @@
 - Based on this, create a ranking of all policies
 - BradleyTerry algorithm
 - https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12703
+
+## Evaluation
+- Create tags / topics of each document to see if there's a correlation between topics and left/right ideology
