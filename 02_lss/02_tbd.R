@@ -78,6 +78,27 @@ toks_sent <- corp_sent %>%
   tokens_remove(min_nchar = 3) %>%
   tokens_remove(c("article", "shall", "annex", "commission", "decision", "member", "european", "state*", "measure*", "regard", "directive"))
 
+# Get sentence length and with it sentence weight in its own document
+# Extract the tokens and their document names
+tokens_list <- as.list(toks_sent)
+doc_names <- docnames(toks_sent)
+
+# Create a data frame
+df_tokens <- data.frame(
+  sent_id = rep(doc_names, lengths(tokens_list)),
+  token = unlist(tokens_list)
+)
+
+df_tokens_sent_len <- df_tokens %>% 
+  count(sent_id, name = "sent_len") %>% 
+  mutate(doc_id = gsub("\\..*", "", sent_id)) %>% 
+  group_by(doc_id) %>% 
+  mutate(doc_len = sum(sent_len)) %>% 
+  mutate(sent_weight = sent_len / doc_len) %>% 
+  ungroup() %>% 
+  select(sent_id, sent_weight)
+  
+
 # Create bigrams
 # toks_sent_bigrams <- toks_sent %>% tokens_ngrams(n = 2, concatenator = " ")
 
@@ -87,10 +108,17 @@ dfmat_sent <- toks_sent %>%
   dfm_remove(pattern = "") %>% 
   dfm_trim(min_termfreq = 5)
 
-dfmat_sent_bigrams <- toks_sent_bigrams %>%
-  dfm() %>% 
-  dfm_remove(pattern = "") %>% 
-  dfm_trim(min_termfreq = 5)
+
+
+# Save dfmat_sent to file
+# save(dfmat_sent, ascii = F, file = here("data", "02_lss", "dfmat_sent"))
+# rm(dfmat_sent)
+load(here("data", "02_lss", "dfmat_sent"))
+
+# dfmat_sent_bigrams <- toks_sent_bigrams %>%
+#   dfm() %>% 
+#   dfm_remove(pattern = "") %>% 
+#   dfm_trim(min_termfreq = 5)
 
 topfeatures(dfmat_sent, 20)
 
@@ -177,18 +205,21 @@ glove_polarity_scores <- predict(lss, newdata = dfmat_sent)
 df <- as.data.frame(glove_polarity_scores)
 # convert row names to column
 df$CELEX <- rownames(df)
+
+# add sentence weight
+df <- df %>% left_join(df_tokens_sent_len, by = c("CELEX" = "sent_id"))
+
 # merge sentences back to documents
 # in the CELEX column, remove all characters after the .
 df$CELEX <- gsub("\\..*", "", df$CELEX)
 # length(unique(df$CELEX)) # number of documents
+
 # calculate average polarity for each document
 # use sentence length as weight (shorter sentences should have less weight)
 ## CONTINUE HERE ##
 
 df <- df %>%
   group_by(CELEX) %>%
-  summarise(avg_glove_polarity_scores = mean(glove_polarity_scores, na.rm = TRUE))
-
-
+  summarise(avg_glove_polarity_scores = weighted.mean(glove_polarity_scores, sent_weight, na.rm = TRUE))
 
 
