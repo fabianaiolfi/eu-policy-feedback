@@ -1,3 +1,10 @@
+
+# Sources
+
+https://koheiw.github.io/LSX/articles/pkgdown/basic.html#preperation
+https://koheiw.github.io/LSX/articles/pkgdown/basic.html#example-1-generic-sentiment
+
+
 # Examples of typical "left" and "right" policies
 
 ## Right
