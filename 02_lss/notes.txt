@@ -140,3 +140,85 @@ engine = "rsvd"
      -0.06044213      -0.06081060      -0.06135228      -0.06357053 
 
 
+################
+
+
+evaluation based on subject matter
+
+groups using `ntile`
+
+Group 1 (negative values)
+
+  Subject_matter                           n
+  <chr>                                <int>
+1 technology and technical regulations   397
+2 organisation of transport              307
+3 European Union law                     259
+4 marketing                              246
+5 transport policy                       189
+6 deterioration of the environment       185
+
+
+Group 2
+
+  Subject_matter                           n
+  <chr>                                <int>
+1 marketing                              330
+2 health                                 313
+3 European Union law                     246
+4 technology and technical regulations   191
+5 deterioration of the environment       190
+6 agricultural activity                  175
+
+
+Group 3 (positive values)
+
+  Subject_matter                       n
+  <chr>                            <int>
+1 marketing                          409
+2 health                             377
+3 means of agricultural production   263
+4 agricultural policy                217
+5 European Union law                 195
+6 deterioration of the environment   167
+
+
+groups using `cut`
+
+
+Group 1 (negative values)
+
+  Subject_matter                           n
+  <chr>                                <int>
+1 technology and technical regulations   278
+2 organisation of transport              237
+3 European Union law                     166
+4 transport policy                       138
+5 marketing                              135
+6 land transport                         125
+
+
+Group 2
+
+  Subject_matter                           n
+  <chr>                                <int>
+1 marketing                              828
+2 health                                 731
+3 European Union law                     512
+4 technology and technical regulations   432
+5 deterioration of the environment       428
+6 means of agricultural production       406
+
+
+Group 3 (positive values)
+
+  Subject_matter                      n
+  <chr>                           <int>
+1 employment                         24
+2 European Union law                 22
+3 marketing                          22
+4 rights and freedoms                21
+5 labour law and labour relations    18
+6 health                             16
+
+

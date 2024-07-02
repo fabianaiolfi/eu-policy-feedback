@@ -27,7 +27,7 @@ toks_sent <- corp_sent %>%
          remove_symbols = TRUE, 
          remove_numbers = TRUE,
          remove_url = TRUE) %>% 
-  tokens_remove(stopwords("en", source = "marimo")) %>% 
+  tokens_remove(quanteda::stopwords("en", source = "marimo")) %>% 
   tokens_remove(min_nchar = 3) %>% # Remove tokens that are shorter than 3 characters
   tokens_remove(c("article", "shall", "annex", "commission", "decision", "member", "european", "state*", "measure*", "regard", "directive")) # Remove corpus specific irrelevant words
 
@@ -71,7 +71,7 @@ toks_sent_df <- toks_sent_df %>%
 # Import GloVe embeddings
 # Source: https://nlp.stanford.edu/projects/glove/
 
-mt <- read.table(here("02_lss", "glove.6B", "glove.6B.200d.txt"),
+mt <- read.table(here("02_lss", "glove.6B", "glove.6B.300d.txt"),
                  quote = "",
                  sep = " ",
                  fill = F,
@@ -98,3 +98,5 @@ glove_polarity_scores$CELEX <- gsub("\\..*", "", glove_polarity_scores$CELEX) # 
 glove_polarity_scores <- glove_polarity_scores %>%
   group_by(CELEX) %>%
   summarise(avg_glove_polarity_scores = weighted.mean(glove_polarity_scores, sent_weight, na.rm = T))
+
+saveRDS(glove_polarity_scores, file = here("02_lss", "glove_polarity_scores.rds"))
