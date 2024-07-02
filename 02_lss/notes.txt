@@ -17,6 +17,11 @@ https://koheiw.github.io/LSX/articles/pkgdown/basic.html#example-1-generic-senti
 - Minimum wage
 
 
+# EU specific terms
+- etsi
+- circ
+
+
 
 ###########
 
