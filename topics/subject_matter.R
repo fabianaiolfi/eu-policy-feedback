@@ -123,13 +123,15 @@ embeddings_df <- embeddings_df %>%
   arrange(cluster)
 
 # Save the embeddings and clusters to name clusters
-write.csv(embeddings_df, here("topics", "subject_matter_embedding_clusters.csv"), row.names = F)
+# write.csv(embeddings_df, here("topics", "subject_matter_embedding_clusters.csv"), row.names = F)
 
 
 # Cluster Naming --------------------------------
 
-# ChatGPT prompt: I've attached a CSV containing terms that have been clustered. Can you please name each cluster based on the terms in a cluster?
+# Load CSV
+embeddings_df <- read.csv(here("topics", "subject_matter_embedding_clusters.csv"))
 
+# ChatGPT prompt: I've attached a CSV containing terms that have been clustered. Can you please name each cluster based on the terms in a cluster?
 embeddings_df <- embeddings_df %>% 
   mutate(cluster_name = case_when(cluster == 1 ~ "Agricultural Production",
                                   cluster == 2 ~ "Humanities",
@@ -175,12 +177,17 @@ embeddings_df <- embeddings_df %>%
 # Add cluster name to CEPS Eurlex documents
 ceps_eurlex_cluster_names <- ceps_eurlex_dir_reg %>% 
   separate_rows(Subject_matter, sep = ";") %>%
+  mutate(Subject_matter = gsub("NA; ", "", Subject_matter)) %>% 
   mutate(Subject_matter = trimws(Subject_matter)) %>% 
   mutate(Subject_matter = tolower(Subject_matter)) %>% 
+  mutate(Subject_matter = gsub("[[:punct:]]", " ", Subject_matter)) %>% # Replace punctuation with space
+  mutate(Subject_matter = gsub("  ", " ", Subject_matter)) %>% # Replace double white space with single white space
+  dplyr::filter(!str_detect(Subject_matter, "NA")) %>% # Remove NA rows
   left_join(embeddings_df, by = c("Subject_matter" = "term")) %>% 
   group_by(CELEX) %>% 
   distinct(cluster, .keep_all = T) %>% 
-  select(CELEX, cluster_name)
+  select(CELEX, cluster_name) %>% 
+  drop_na()
 
 # Save to file for use in other scripts
 saveRDS(ceps_eurlex_cluster_names, file = here("topics", "ceps_eurlex_cluster_names.rds"))
