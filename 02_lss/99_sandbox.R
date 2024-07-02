@@ -1,4 +1,53 @@
 
+
+require(quanteda)
+devtools::install_github("quanteda/quanteda.corpora")
+corp_news <- quanteda.corpora::download("data_corpus_guardian")
+
+# tokenize text corpus and remove various features
+corp_sent <- corpus_reshape(corp_news, to =  "sentences")
+toks_sent <- corp_sent %>% 
+  tokens(remove_punct = TRUE, remove_symbols = TRUE, 
+         remove_numbers = TRUE, remove_url = TRUE) %>% 
+  tokens_remove(stopwords("en", source = "marimo")) %>%
+  tokens_remove(c("*-time", "*-timeUpdated", "GMT", "BST", "*.com"))  
+
+# create a document feature matrix from the tokens object
+dfmat_sent <- toks_sent %>% 
+  dfm() %>% 
+  dfm_remove(pattern = "") %>% 
+  dfm_trim(min_termfreq = 5)
+
+topfeatures(dfmat_sent, 20)
+
+seed <- as.seedwords(data_dictionary_sentiment)
+print(seed)
+
+# identify context words 
+eco <- char_context(toks_sent, pattern = "econom*", p = 0.05)
+
+# run LSS model
+tmod_lss <- textmodel_lss(dfmat_sent, seeds = seed, terms = eco, k = 300, cache = F)
+
+head(coef(tmod_lss), 20) # most positive words
+tail(coef(tmod_lss), 20) # most negative words
+
+
+# search for string in dataframe column
+
+sample_ceps_eurlex[grep("baa", sample_ceps_eurlex$act_raw_text),]
+
+sample_ceps_eurlex$act_raw_text[95]
+
+
+unique(ceps_eurlex$Act_type)
+unique(sample_ceps_eurlex$Act_type)
+table(ceps_eurlex$Act_type)
+
+################
+
+
+
 # Based on Example 1: generic sentiment (https://koheiw.github.io/LSX/articles/pkgdown/basic.html#example-1-generic-sentiment)
 
 # Example 1

@@ -5,8 +5,19 @@ dict <- dictionary(file = here("data", "02_lss", "l_r_dict.yml"))
 seed <- as.seedwords(dict$ideology, concatenator = " ")
 
 
+# Import CEPS data -----------------------
+
+ceps_eurlex_dir_reg <- readRDS(here("data", "ceps_eurlex_dir_reg.rds"))
+
+
 # Clean corpus --------------------------
 # https://tutorials.quanteda.io/machine-learning/lss/
+
+# Convert to corpus object
+ceps_eurlex_dir_reg <- corpus(ceps_eurlex_dir_reg,
+                              docid_field = "CELEX",
+                              text_field = "act_raw_text",
+                              meta = "test_id")
 
 # Tokenize text corpus and remove various features
 corp_sent <- corpus_reshape(ceps_eurlex_dir_reg, to = "sentences") # to = "paragraphs"
@@ -82,7 +93,7 @@ glove_polarity_scores <- predict(lss, newdata = dfmat_sent)
 glove_polarity_scores <- as.data.frame(glove_polarity_scores)
 glove_polarity_scores$CELEX <- rownames(glove_polarity_scores) # Convert row names to column
 glove_polarity_scores <- glove_polarity_scores %>% left_join(toks_sent_df, by = c("CELEX" = "sent_id")) # Add sentence weight
-glove_polarity_scores$CELEX <- gsub("\\..*", "", glove_polarity_scores$CELEX) # Remove all characters after the .
+glove_polarity_scores$CELEX <- gsub("\\..*", "", glove_polarity_scores$CELEX) # Remove all characters after the "."
 
 glove_polarity_scores <- glove_polarity_scores %>%
   group_by(CELEX) %>%

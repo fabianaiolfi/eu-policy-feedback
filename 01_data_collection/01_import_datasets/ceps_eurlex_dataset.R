@@ -14,3 +14,14 @@
 
 # Load RDS
 ceps_eurlex <- readRDS(here("data", "ceps_eurlex.rds"))
+
+# Create subset of directives and regulations --------------------------
+ceps_eurlex_dir_reg <- ceps_eurlex %>% 
+  mutate(Date_publication = as.Date(Date_publication, format = "%Y-%m-%d")) %>%
+  dplyr::filter(Date_publication >= "1989-01-01") %>%
+  dplyr::filter(str_detect(Act_type, "Directive|Regulation")) %>% 
+  select(CELEX, act_raw_text) %>%
+  # Remove rows where act_raw_text is the string "nan"
+  dplyr::filter(act_raw_text != "nan")
+
+saveRDS(ceps_eurlex_dir_reg, file = here("data", "ceps_eurlex_dir_reg.rds"))
