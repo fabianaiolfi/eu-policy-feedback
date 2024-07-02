@@ -35,7 +35,7 @@ head(count_tags)
 # 3 technology and technical regulations   719
 # 4 European Union law                     700
 # 5 deterioration of the environment       542
-# 6 means of agricultural production       452
+# 6 means of agricultural       452
 
 
 # Count only first tag -----------------------------------
@@ -126,8 +126,67 @@ embeddings_df <- embeddings_df %>%
 write.csv(embeddings_df, here("topics", "subject_matter_embedding_clusters.csv"), row.names = F)
 
 
+# Cluster Naming --------------------------------
 
-# Elbow plot --------------------------------
+# ChatGPT prompt: I've attached a CSV containing terms that have been clustered. Can you please name each cluster based on the terms in a cluster?
+
+embeddings_df <- embeddings_df %>% 
+  mutate(cluster_name = case_when(cluster == 1 ~ "Agricultural Production",
+                                  cluster == 2 ~ "Humanities",
+                                  cluster == 3 ~ "International Relations",
+                                  cluster == 4 ~ "Policy and Regulation",
+                                  cluster == 5 ~ "Natural Resource Industries",
+                                  cluster == 6 ~ "Consumption",
+                                  cluster == 7 ~ "Competition",
+                                  cluster == 8 ~ "Employment and Labour",
+                                  cluster == 9 ~ "Communications",
+                                  cluster == 10 ~ "Justice",
+                                  cluster == 11 ~ "Heavy Industries",
+                                  cluster == 12 ~ "Economic Studies",
+                                  cluster == 13 ~ "Transport and Logistics",
+                                  cluster == 14 ~ "Agriculture and Food Technology",
+                                  cluster == 15 ~ "Family and Society",
+                                  cluster == 16 ~ "Health and Insurance",
+                                  cluster == 17 ~ "Legislative Bodies",
+                                  cluster == 18 ~ "Budget and Finance",
+                                  cluster == 19 ~ "Africa",
+                                  cluster == 20 ~ "Accounting",
+                                  cluster == 21 ~ "Trade",
+                                  cluster == 22 ~ "Engineering",
+                                  cluster == 23 ~ "Technology and Standards",
+                                  cluster == 24 ~ "Retail and Distribution",
+                                  cluster == 25 ~ "Education",
+                                  cluster == 26 ~ "Law",
+                                  cluster == 27 ~ "Business and European Organisations",
+                                  cluster == 28 ~ "Taxation",
+                                  cluster == 29 ~ "Chemistry",
+                                  cluster == 30 ~ "Social and Political Affairs",
+                                  cluster == 31 ~ "Pricing",
+                                  cluster == 32 ~ "European Union Affairs",
+                                  cluster == 33 ~ "Defence",
+                                  cluster == 34 ~ "Migration",
+                                  cluster == 35 ~ "Monetary Economics",
+                                  cluster == 36 ~ "Sciences and Environment",
+                                  cluster == 37 ~ "Marketing and Management",
+                                  cluster == 38 ~ "Production",
+                                  cluster == 39 ~ "Foodstuff",
+                                  cluster == 40 ~ "Information Technology"))
+
+# Add cluster name to CEPS Eurlex documents
+ceps_eurlex_cluster_names <- ceps_eurlex_dir_reg %>% 
+  separate_rows(Subject_matter, sep = ";") %>%
+  mutate(Subject_matter = trimws(Subject_matter)) %>% 
+  mutate(Subject_matter = tolower(Subject_matter)) %>% 
+  left_join(embeddings_df, by = c("Subject_matter" = "term")) %>% 
+  group_by(CELEX) %>% 
+  distinct(cluster, .keep_all = T) %>% 
+  select(CELEX, cluster_name)
+
+# Save to file for use in other scripts
+saveRDS(ceps_eurlex_cluster_names, file = here("topics", "ceps_eurlex_cluster_names.rds"))
+
+
+# K-means clustering elbow plot --------------------------------
 
 # Define the range of cluster counts to evaluate
 # max_k <- 50
