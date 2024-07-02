@@ -1,0 +1,27 @@
+tmod_lda <- textmodel_lda(dfmat_ceps,
+                          max_iter = 2000,
+                          k = 10,
+                          verbose = T) 
+
+> terms(tmod_lda, 20)
+      topic1       topic2               topic3        topic4        topic5         topic6           topic7      topic8          topic9              topic10       
+ [1,] "ships"      "network"            "specially"   "imo"         "marginal"     "meat"           "engine"    "medicinal"     "solution"          "credit"      
+ [2,] "ship"       "infrastructure"     "military"    "res"         "carriage"     "republic"       "exhaust"   "emissions"     "cat"               "insurance"   
+ [3,] "val"        "communications"     "wood"        "msc"         "class"        "disease"        "appendix"  "veterinary"    "limites"           "investment"  
+ [4,] "class"      "networks"           "propagating" "reg"         "machinery"    "aaã"            "lamps"     "emission"      "graphic"           "institution" 
+ [5,] "fire"       "criminal"           "virus"       "seed"        "packagings"   "poultry"        "lamp"      "studies"       "petroleum"         "company"     
+ [6,] "spaces"     "providers"          "seeds"       "hsc"         "gases"        "veterinary"     "flow"      "authorization" "koncentrationsgrã" "contracting" 
+ [7,] "passenger"  "railway"            "fruit"       "iec"         "tanks"        "preparations"   "rear"      "study"         "hydrocarbons"      "entities"    
+ [8,] "prod"       "telecommunications" "ml8"         "ii-2"        "package"      "toxic"          "front"     "taxable"       "sodium"            "contracts"   
+ [9,] "craft"      "digital"            "planting"    "fruit"       "explosive"    "pigs"           "engines"   "renewable"     "iso"               "companies"   
+[10,] "port"       "radio"              "objects"     "circ"        "surveillance" "por"            "plane"     "electricity"   "carbon"            "entity"      
+[11,] "machinery"  "provider"           "potato"      "pesticide"   "conforming"   "diseases"       "load"      "fuels"         "predominantly"     "securities"  
+[12,] "vessels"    "works"              "spp"         "biocidal"    "tank"         "milk"           "figure"    "vat"           "klassificering"    "home"        
+[13,] "deck"       "proceedings"        "organism"    "corrigendum" "flammable"    "zone"           "emission"  "blood"         "mites"             "supervisory" 
+[14,] "space"      "employment"         "weapons"     "residue"     "packages"     "veterinarian"   "emissions" "excise"        "classificazione"   "assets"      
+[15,] "flag"       "electricity"        "therefor"    "varieties"   "receptacles"  "qualifications" "dilution"  "installations" "indeling"          "reinsurance" 
+[16,] "vessel"     "residence"          "potatoes"    "vegetables"  "toxic"        "con"            "braking"   "biological"    "classificaã"       "funds"       
+[17,] "doors"      "collective"         "aircraft"    "finalised"   "classified"   "par"            "side"      "pollution"     "einstufung"        "ucits"       
+[18,] "passengers" "licence"            "county"      "iso"         "mixtures"     "bovine"         "tractor"   "tax"           "etikettering"      "transactions"
+[19,] "navigation" "rail"               "originating" "dossier"     "shells"       "holdings"       "graphic"   "tobacco"       "kennzeichnung"     "firm"        
+[20,] "cargo"      "nationals"          "zone"        "mrls"        "measuring"    "ved"            "seat"      "clinical"      "tiquetage"         "shares"      
