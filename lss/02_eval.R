@@ -51,7 +51,7 @@ top_tags <- evaluation %>%
 
 head(top_tags, n = 5)
 
-# "left"
+# "left" (using sentences)
 # Subject_matter                      n
 # <chr>                           <int>
 # 1 European Union law                 29
@@ -60,13 +60,31 @@ head(top_tags, n = 5)
 # 4 health                             23
 # 5 labour law and labour relations    23
 
-# "right"
+# "left" (using paragraphs)
+# Subject_matter                      n
+# <chr>                           <int>
+# 1 employment                         29
+# 2 European Union law                 28
+# 3 health                             25
+# 4 rights and freedoms                24
+# 5 labour law and labour relations    23
+
+# "right" (using sentences)
 # Subject_matter                           n
 # <chr>                                <int>
 # 1 technology and technical regulations   280
 # 2 organisation of transport              234
 # 3 European Union law                     174
 # 4 marketing                              138
+# 5 transport policy                       130
+
+# "right" (using paragraphs)
+# Subject_matter                           n
+# <chr>                                <int>
+# 1 technology and technical regulations   279
+# 2 organisation of transport              235
+# 3 European Union law                     170
+# 4 marketing                              132
 # 5 transport policy                       130
 
 
@@ -102,6 +120,7 @@ correlation_with_scores <- correlation_with_scores %>%
   arrange(-correlation_with_scores)
 
 head(correlation_with_scores, 5)
+# Using sentences
 # correlation_with_scores                     Subject_matter
 # 1               0.2194048                           health
 # 2               0.1862763              rights and freedoms
@@ -109,10 +128,27 @@ head(correlation_with_scores, 5)
 # 4               0.1659472  labour law and labour relations
 # 5               0.1354413                       employment
 
+# Using paragraphs
+# correlation_with_scores                   Subject_matter
+# 1               0.2221000                           health
+# 2               0.1863899              rights and freedoms
+# 3               0.1768236 means of agricultural production
+# 4               0.1643161  labour law and labour relations
+# 5               0.1368674                       employment
+
 tail(correlation_with_scores, 5)
+# Using sentences
 # correlation_with_scores                           Subject_matter
 # 119              -0.1481816               mechanical engineering
 # 120              -0.2557085                     transport policy
 # 121              -0.2708997                       land transport
 # 122              -0.3085961 technology and technical regulations
 # 123              -0.3866056            organisation of transport
+
+# Using paragraphs
+# correlation_with_scores                       Subject_matter
+# 119              -0.1490653               mechanical engineering
+# 120              -0.2576249                     transport policy
+# 121              -0.2751934                       land transport
+# 122              -0.3119345 technology and technical regulations
+# 123              -0.3918363            organisation of transport
