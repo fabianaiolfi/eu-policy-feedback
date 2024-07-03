@@ -41,7 +41,7 @@ evaluation <- evaluation %>%
 # Create 3 broad groups (left, center, right) and examine top *EUROVOC* keywords in each group
 
 top_keywords <- evaluation %>% 
-  dplyr::filter(polarity_score_group_cut == "centre") %>% # "right" "centre"
+  dplyr::filter(polarity_score_group_cut == "right") %>% # "right" "centre"
   select(EUROVOC) %>% 
   separate_rows(EUROVOC, sep = ";") %>% 
   mutate(EUROVOC = trimws(EUROVOC)) %>% 
@@ -81,7 +81,7 @@ head(top_keywords, n = 5)
 # Create 3 broad groups (left, center, right) and examine top *Subject_matter* keywords in each group
 
 top_keywords <- evaluation %>% 
-  dplyr::filter(polarity_score_group_cut == "right") %>% # "right" "centre"
+  dplyr::filter(polarity_score_group_cut == "centre") %>% # "right" "centre"
   select(Subject_matter) %>% 
   separate_rows(Subject_matter, sep = ";") %>% 
   mutate(Subject_matter = trimws(Subject_matter)) %>% 
