@@ -26,10 +26,10 @@ toks_sent <- corp_sent %>%
   tokens(remove_punct = TRUE,
          remove_symbols = TRUE, 
          remove_numbers = TRUE,
-         remove_url = TRUE) %>% 
-  tokens_remove(quanteda::stopwords("en", source = "marimo")) %>% 
-  tokens_remove(min_nchar = 3) %>% # Remove tokens that are shorter than 3 characters
-  tokens_remove(c("article", "shall", "annex", "commission", "decision", "member", "european", "state*", "measure*", "regard", "directive")) # Remove corpus specific irrelevant words
+         remove_url = TRUE)# %>% 
+  # tokens_remove(quanteda::stopwords("en", source = "marimo")) %>% 
+  # tokens_remove(min_nchar = 3) %>% # Remove tokens that are shorter than 3 characters
+  # tokens_remove(c("article", "shall", "annex", "commission", "decision", "member", "european", "state*", "measure*", "regard", "directive")) # Remove corpus specific irrelevant words
 
 
 # Set up document feature matrix --------------------------
@@ -87,7 +87,8 @@ mt <- t(mt) # Transpose
 lss <- as.textmodel_lss(mt, seed)
 
 # Predict document polarity
-glove_polarity_scores <- predict(lss, newdata = dfmat_sent)
+# glove_polarity_scores <- predict(lss, newdata = dfmat_sent)
+glove_polarity_scores <- predict(lss, newdata = dfmat_sent, type = "embedding")
 
 # Calculate average document polarity based on sentence weight
 glove_polarity_scores <- as.data.frame(glove_polarity_scores)
@@ -99,4 +100,27 @@ glove_polarity_scores <- glove_polarity_scores %>%
   group_by(CELEX) %>%
   summarise(avg_glove_polarity_scores = weighted.mean(glove_polarity_scores, sent_weight, na.rm = T))
 
-saveRDS(glove_polarity_scores, file = here("data", "lss", "glove_polarity_scores.rds"))
+# saveRDS(glove_polarity_scores, file = here("data", "lss", "glove_polarity_scores.rds"))
+
+
+# Selection and evaluation of seed words ---------------
+# https://koheiw.github.io/LSX/articles/pkgdown/seedwords.html
+
+# Evaluation with synonyms
+# bs_term <- bootstrap_lss(lss, mode = "terms")
+# saveRDS(bs_term, file = here("data", "lss", "bs_term.rds"))
+bs_term <- readRDS(here("data", "lss", "bs_term.rds"))
+head(bs_term, 5)
+
+# Evaluation with words with known polarity
+bs_coef <- bootstrap_lss(lss, mode = "coef")
+saveRDS(bs_coef, file = here("data", "lss", "bs_coef.rds"))
+
+dat_seed <- data.frame(seed = lss$seeds, diff = bs_coef["solidarity",] - bs_coef["migration",])
+print(dat_seed)
+
+
+
+
+
+
