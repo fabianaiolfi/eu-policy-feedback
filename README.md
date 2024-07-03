@@ -1,16 +1,22 @@
 # EU Policy Feedback
 
-## Data Collection
-- Work with summaries? Example: https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32019L0904&qid=1719922563047
+## Data Collection 1989 – Today
+- [x] CEPS EurLex (1952 – 2019)
+- [ ] Moodley (1971 – 2022)
+- [ ] Collect summaries? Example: https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32019L0904&qid=1719922563047
 
 ## Latent Semantic Scaling (LSS)
 - LSS is a method to measure the semantic similarity of terms to a set of seed words
 - Manual: https://koheiw.github.io/LSX/articles/pkgdown/basic.html
-- To do: Compare output of sentences with paragraphs?
+
+### To do
+- [ ] Compare outcome between use of sentences and use of paragraphs
 
 ## Embeddings
-- Compare policies with EP speeches and party manifestos
-- Create an embedding for each EP faction and topic (e.g., left-wing and climate issues). Then label each policy. Then calculate embeddings for each policy and assign the policy to a faction and issue.
+- Compare policies with existing data
+	- EP speeches and party manifestos
+	- Policies or laws from another jurisdiction (e.g., UK), where policy author/creater and their political affiliation are known
+- Create an embedding for each EP faction and topic (e.g., left-wing and climate issues). Then label each policy with a topic. Then calculate embeddings for each policy and assign the policy to the closest faction based on the issue.
 
 ## Ranking
 - Get an LLM to compare two policies with each other: Which policy is more left or more right?
@@ -19,5 +25,10 @@
 - BradleyTerry algorithm
 - https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12703
 
+## Recreate existing measurement techniques
+…
+
 ## Evaluation
-- Create tags / topics of each document to see if there's a correlation between topics and left/right ideology
+- [ ] Create tags / topics of each document to see if there's a correlation between topics and calculated ideology
+- [ ] Compare with existing measurments
+- [ ] Compare results with each other
