@@ -12,23 +12,19 @@ glove_polarity_scores <- readRDS(here("data", "lss", "glove_polarity_scores.rds"
 # CEPS with keywords
 ceps_eurlex_dir_reg_keywords <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg_keywords.rds"))
 
-# Clustered tags: Clustered subject matters based on embeddings (topics/subject_matter.R)
-ceps_eurlex_cluster_names <- readRDS(here("data", "topics", "ceps_eurlex_Subject_matter_cluster_names.rds"))
+# Clustered keywords: Clustered subject matters based on embeddings (topics/subject_matter.R)
+ceps_eurlex_Subject_matter_cluster_names <- readRDS(here("data", "topics", "ceps_eurlex_Subject_matter_cluster_names.rds"))
 
 
 # Prepare data -------------------
 
-ceps_eurlex_cluster_names <- ceps_eurlex_cluster_names %>% 
+ceps_eurlex_Subject_matter_cluster_names <- ceps_eurlex_Subject_matter_cluster_names %>% 
   group_by(CELEX) %>%
-  summarize(cluster_name = str_c(cluster_name, collapse = "; "))
+  summarize(subject_matter_cluster_name = str_c(subject_matter_cluster_name, collapse = "; "))
 
 evaluation <- glove_polarity_scores %>% 
   left_join(ceps_eurlex_dir_reg_keywords, by = "CELEX") %>% 
-  left_join(ceps_eurlex_cluster_names, by = "CELEX")
-
-
-# Evaluation 1: Three groups --------------------
-# Create 3 broad groups (left, center, right) and examine top subject matters in each group
+  left_join(ceps_eurlex_Subject_matter_cluster_names, by = "CELEX")
 
 evaluation <- evaluation %>%
   mutate(polarity_score_group_cut = cut(avg_glove_polarity_scores, breaks = 3, labels = F)) %>% # Bins of equal width, unequal number of observations
@@ -39,8 +35,43 @@ evaluation <- evaluation %>%
   mutate(polarity_score_group_ntile = case_when(polarity_score_group_ntile == 1 ~ "right",
                                                 polarity_score_group_ntile == 2 ~ "centre",
                                                 polarity_score_group_ntile == 3 ~ "left"))
-  
-top_tags <- evaluation %>% 
+
+
+# Evaluation 1: Three groups --------------------
+# Create 3 broad groups (left, center, right) and examine top *EUROVOC* keywords in each group
+
+top_keywords <- evaluation %>% 
+  dplyr::filter(polarity_score_group_cut == "right") %>% # "right" "centre"
+  select(EUROVOC) %>% 
+  separate_rows(EUROVOC, sep = ";") %>% 
+  mutate(EUROVOC = trimws(EUROVOC)) %>% 
+  dplyr::filter(EUROVOC != "") %>% # Remove empty rows
+  count(EUROVOC) %>% 
+  arrange(-n)
+
+head(top_keywords, n = 5)
+
+# "left" (using sentences)
+# EUROVOC                   n
+# <chr>                 <int>
+# 1 approximation of laws    18
+# 2 equal opportunity        14
+# 3 alien                    12
+# 4 employment law           10
+# 5 worker information       10
+
+# "right" (using sentences)
+# EUROVOC                              n
+# <chr>                            <int>
+# 1 motor vehicle                      140
+# 2 approximation of laws              129
+# 3 technical standard                  96
+# 4 adaptation to technical progress    81
+# 5 grading                             68
+
+# Create 3 broad groups (left, center, right) and examine top *Subject_matter* keywords in each group
+
+top_keywords <- evaluation %>% 
   dplyr::filter(polarity_score_group_cut == "right") %>% # "right" "centre"
   select(Subject_matter) %>% 
   separate_rows(Subject_matter, sep = ";") %>% 
@@ -49,7 +80,7 @@ top_tags <- evaluation %>%
   count(Subject_matter) %>% 
   arrange(-n)
 
-head(top_tags, n = 5)
+head(top_keywords, n = 5)
 
 # "left" (using sentences)
 # Subject_matter                      n
@@ -89,23 +120,23 @@ head(top_tags, n = 5)
 
 
 # Evaluation 2: Correlation --------------------
-# Transform categorical tags into a numerical representation that can be used for correlation analysis
-# Create a binary matrix where each column represents a unique tag
+# Transform categorical keywords into a numerical representation that can be used for correlation analysis
+# Create a binary matrix where each column represents a unique keyword
 
-tags_separated <- evaluation %>%
+keywords_separated <- evaluation %>%
   select(CELEX, Subject_matter) %>% 
   dplyr::filter(Subject_matter != "") %>% # Remove empty rows
   separate_rows(Subject_matter, sep = ";") %>%
   mutate(Subject_matter = trimws(Subject_matter))
 
-# Create a binary matrix where each column represents a unique tag
-tags_binary <- tags_separated %>%
+# Create a binary matrix where each column represents a unique keyword
+keywords_binary <- keywords_separated %>%
   mutate(presence = 1) %>%
   pivot_wider(names_from = Subject_matter, values_from = presence, values_fill = list(presence = 0)) %>% 
   left_join(select(evaluation, CELEX, avg_glove_polarity_scores), by = "CELEX")
 
 # Prepare correlation data
-correlation_data <- tags_binary %>% select(-CELEX)
+correlation_data <- keywords_binary %>% select(-CELEX)
 
 # Calculate the correlation matrix
 correlation_matrix <- cor(correlation_data, use = "pairwise.complete.obs")
