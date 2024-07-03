@@ -69,3 +69,50 @@ head(top_tags, n = 5)
 # 4 marketing                              138
 # 5 transport policy                       130
 
+
+# Evaluation 2: Correlation --------------------
+# Transform categorical tags into a numerical representation that can be used for correlation analysis
+# Create a binary matrix where each column represents a unique tag
+
+tags_separated <- evaluation %>%
+  select(CELEX, Subject_matter) %>% 
+  dplyr::filter(Subject_matter != "") %>% # Remove empty rows
+  separate_rows(Subject_matter, sep = ";") %>%
+  mutate(Subject_matter = trimws(Subject_matter))
+
+# Create a binary matrix where each column represents a unique tag
+tags_binary <- tags_separated %>%
+  mutate(presence = 1) %>%
+  pivot_wider(names_from = Subject_matter, values_from = presence, values_fill = list(presence = 0)) %>% 
+  left_join(select(evaluation, CELEX, avg_glove_polarity_scores), by = "CELEX")
+
+# Prepare correlation data
+correlation_data <- tags_binary %>% select(-CELEX)
+
+# Calculate the correlation matrix
+correlation_matrix <- cor(correlation_data, use = "pairwise.complete.obs")
+
+# Extract the correlations with 'avg_glove_polarity_scores'
+correlation_with_scores <- correlation_matrix["avg_glove_polarity_scores", ]
+correlation_with_scores <- as.data.frame(correlation_with_scores)
+correlation_with_scores$Subject_matter <- rownames(correlation_with_scores)
+rownames(correlation_with_scores) <- NULL
+correlation_with_scores <- correlation_with_scores %>% 
+  dplyr::filter(correlation_with_scores != 1) %>% 
+  arrange(-correlation_with_scores)
+
+head(correlation_with_scores, 5)
+# correlation_with_scores                     Subject_matter
+# 1               0.2194048                           health
+# 2               0.1862763              rights and freedoms
+# 3               0.1760807 means of agricultural production
+# 4               0.1659472  labour law and labour relations
+# 5               0.1354413                       employment
+
+tail(correlation_with_scores, 5)
+# correlation_with_scores                           Subject_matter
+# 119              -0.1481816               mechanical engineering
+# 120              -0.2557085                     transport policy
+# 121              -0.2708997                       land transport
+# 122              -0.3085961 technology and technical regulations
+# 123              -0.3866056            organisation of transport
