@@ -11,6 +11,9 @@
 
 ### To do 
 - [x] Compare outcome between use of sentences and use of paragraphs ([link to script](https://github.com/fabianaiolfi/eu-policy-feedback/blob/25eb77853a3c13fc64313bf19f83ab684a378693/lss/01_run_lss.R#L23)) → No discernible difference in outcome
+- [x] What is the subject matter "marketing"?
+- [ ] Perform LSS "background" checks, i.e., synonyms for seed words
+  - Based on the synonyms, seed words for right-wing policies should be clarified
 
 ## Embeddings
 - Compare policies with existing data
