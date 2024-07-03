@@ -1,7 +1,7 @@
 
 # Import custom dictionary for seed words -----------------------
 
-dict <- dictionary(file = here("data", "lss", "l_r_dict.yml"))
+dict <- dictionary(file = here("lss", "left_right_v2.yml"))
 seed <- as.seedwords(dict$ideology, concatenator = " ")
 
 
@@ -71,7 +71,7 @@ toks_sent_df <- toks_sent_df %>%
 # Import GloVe embeddings
 # Source: https://nlp.stanford.edu/projects/glove/
 
-mt <- read.table(here("data", "glove.6B", "glove.6B.300d.txt"),
+mt <- read.table(here("data", "glove.6B", "glove.6B.50d.txt"),
                  quote = "",
                  sep = " ",
                  fill = F,
@@ -81,14 +81,58 @@ mt <- read.table(here("data", "glove.6B", "glove.6B.300d.txt"),
 
 colnames(mt) <- NULL
 mt <- mt[stringi::stri_detect_regex(rownames(mt), "[a-zA-Z]"),] # Exclude numbers and punctuations
+
+
+# Calculate embeddings for multi-word seed words ----------------
+
+# Function to calculate the embedding of a multi-word term
+calculate_embedding <- function(term, embedding_matrix) {
+  # Split the term into individual words
+  words <- unlist(strsplit(term, " "))
+  
+  # Check if all words exist in the embedding matrix
+  missing_words <- words[!words %in% rownames(embedding_matrix)]
+  if (length(missing_words) > 0) {
+    stop(paste("The following words are missing in the embedding matrix:", paste(missing_words, collapse = ", ")))
+  }
+  
+  # Extract embeddings for each word
+  word_embeddings <- embedding_matrix[words, ]
+  
+  # Calculate the average embedding for the multi-word term
+  term_embedding <- colMeans(word_embeddings)
+  
+  return(term_embedding)
+}
+
+# Function to add multiple multi-word term embeddings to the matrix
+add_multi_word_embeddings <- function(multi_word_terms, embedding_matrix) {
+  for (term in multi_word_terms) {
+    # Calculate the embedding for each multi-word term
+    multi_word_embedding <- calculate_embedding(term, embedding_matrix)
+    
+    # Add the multi-word term embedding to the existing matrix
+    embedding_matrix <- rbind(embedding_matrix, multi_word_embedding)
+    rownames(embedding_matrix)[nrow(embedding_matrix)] <- term
+  }
+  
+  return(embedding_matrix)
+}
+
+multi_word_terms <- names(seed) # Convert named num list to normal character list
+multi_word_terms <- multi_word_terms[sapply(multi_word_terms, function(x) length(unlist(strsplit(x, " "))) > 1)] # remove single word terms from list
+mt <- add_multi_word_embeddings(multi_word_terms, mt)
+
+## CONTINUE HERE: Does evaluation with multi-word embeddings make sense? ##
+
 mt <- t(mt) # Transpose
 
 # Create LSS object
 lss <- as.textmodel_lss(mt, seed)
 
 # Predict document polarity
-# glove_polarity_scores <- predict(lss, newdata = dfmat_sent)
-glove_polarity_scores <- predict(lss, newdata = dfmat_sent, type = "embedding")
+glove_polarity_scores <- predict(lss, newdata = dfmat_sent)
+# glove_polarity_scores <- predict(lss, newdata = dfmat_sent, type = "embedding")
 
 # Calculate average document polarity based on sentence weight
 glove_polarity_scores <- as.data.frame(glove_polarity_scores)
@@ -113,14 +157,8 @@ bs_term <- readRDS(here("data", "lss", "bs_term.rds"))
 head(bs_term, 5)
 
 # Evaluation with words with known polarity
-bs_coef <- bootstrap_lss(lss, mode = "coef")
-saveRDS(bs_coef, file = here("data", "lss", "bs_coef.rds"))
-
-dat_seed <- data.frame(seed = lss$seeds, diff = bs_coef["solidarity",] - bs_coef["migration",])
+# bs_coef <- bootstrap_lss(lss, mode = "coef")
+# saveRDS(bs_coef, file = here("data", "lss", "bs_coef.rds"))
+bs_coef <- readRDS(here("data", "lss", "bs_coef.rds"))
+dat_seed <- data.frame(seed = lss$seeds, diff = bs_coef["equal",] - bs_coef["individual",])
 print(dat_seed)
-
-
-
-
-
-
