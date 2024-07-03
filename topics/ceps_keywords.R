@@ -1,33 +1,72 @@
 
-# Examine "Subject_matter" column in CEPS data
+# Examine keywords (EUROVOC, Subject_matter) columns in CEPS data
 
 
 # Import CEPS data -----------------------
 
-ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
-
-# Create subset of directives and regulations
-ceps_eurlex_dir_reg <- ceps_eurlex %>% 
-  mutate(Date_publication = as.Date(Date_publication, format = "%Y-%m-%d")) %>%
-  dplyr::filter(Date_publication >= "1989-01-01") %>%
-  dplyr::filter(str_detect(Act_type, "Directive|Regulation")) %>% 
-  select(CELEX, Subject_matter)
+# CEPS with keywords
+ceps_eurlex_dir_reg_keywords <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg_keywords.rds"))
 
 
-# Count all available tags ----------------------------
+# Count Keyword: EUROVOC -------------------------
 
-tags <- ceps_eurlex_dir_reg %>% 
+EUROVOC <- ceps_eurlex_dir_reg_keywords %>% 
+  select(EUROVOC) %>% 
+  separate_rows(EUROVOC, sep = ";") %>% 
+  mutate(EUROVOC = trimws(EUROVOC)) %>% 
+  dplyr::filter(EUROVOC != "") # Remove empty rows
+
+# Count tags
+count_EUROVOC <- EUROVOC %>%
+  count(EUROVOC) %>% 
+  arrange(-n)
+
+head(count_EUROVOC)
+# EUROVOC                   n
+# 1 approximation of laws   517
+# 2 grading                 389
+# 3 marketing               269
+# 4 phytosanitary control   238
+# 5 ban on sales            227
+# 6 plant health product    222
+
+# Count only first tag -----------------------------------
+
+EUROVOC <- ceps_eurlex_dir_reg_keywords %>% 
+  select(EUROVOC) %>% 
+  mutate(EUROVOC = gsub(";.*", "", EUROVOC)) %>% # Remove all characters after the ";"
+  mutate(EUROVOC = trimws(EUROVOC)) %>% 
+  dplyr::filter(EUROVOC != "") # Remove empty rows
+
+# Count tags
+count_EUROVOC <- EUROVOC %>%
+  count(EUROVOC) %>% 
+  arrange(-n)
+
+head(count_EUROVOC)
+# EUROVOC                      n
+# 1     approximation of laws 89
+# 2                 marketing 60
+# 3                   grading 52
+# 4              ban on sales 36
+# 5             motor vehicle 36
+# 6 phytosanitary legislation 35
+
+
+# Count Keyword: Subject_matter -------------------------
+
+Subject_matter <- ceps_eurlex_dir_reg_keywords %>% 
   select(Subject_matter) %>% 
   separate_rows(Subject_matter, sep = ";") %>% 
   mutate(Subject_matter = trimws(Subject_matter)) %>% 
   dplyr::filter(Subject_matter != "") # Remove empty rows
 
 # Count tags
-count_tags <- tags %>%
+count_Subject_matter <- Subject_matter %>%
   count(Subject_matter) %>% 
   arrange(-n)
 
-head(count_tags)
+head(count_Subject_matter)
 # Subject_matter                           n
 # <chr>                                <int>
 # 1 marketing                              985
@@ -35,24 +74,24 @@ head(count_tags)
 # 3 technology and technical regulations   719
 # 4 European Union law                     700
 # 5 deterioration of the environment       542
-# 6 means of agricultural       452
+# 6 means of agricultural                  452
 
 
 # Count only first tag -----------------------------------
 
-tags <- ceps_eurlex_dir_reg %>% 
+Subject_matter <- ceps_eurlex_dir_reg_keywords %>% 
   select(Subject_matter) %>% 
   mutate(Subject_matter = gsub(";.*", "", Subject_matter)) %>% # Remove all characters after the ";"
   mutate(Subject_matter = trimws(Subject_matter)) %>% 
   dplyr::filter(Subject_matter != "") # Remove empty rows
 
 # Count tags
-count_tags <- tags %>%
+count_Subject_matter <- Subject_matter %>%
   count(Subject_matter) %>% 
   arrange(-n)
 
-head(count_tags)
-# Subject_matter   n
+head(count_Subject_matter)
+# Subject_matter                           n
 # 1                            marketing 218
 # 2 technology and technical regulations 204
 # 3                               health 201
@@ -61,7 +100,8 @@ head(count_tags)
 # 6            organisation of transport 116
 
 
-# Cluster tags using embeddings ---------------------------------------------
+
+# Cluster keywords using embeddings ---------------------------------------------
 
 # Download and load the GloVe embeddings
 glove <- read.table(here("data", "glove.6B", "glove.6B.300d.txt"), header = FALSE, quote = "", comment.char = "")
@@ -84,6 +124,68 @@ get_embedding_for_term <- function(term) {
   average_embedding <- colMeans(do.call(rbind, valid_embeddings))
   return(average_embedding)
 }
+
+# Cluster EUROVOC ---------------------------------------------
+
+# Get CEPS Eurlex terms and clean them in order to get their embeddings
+terms <- count_EUROVOC$EUROVOC
+terms <- terms[!terms %in% c("NA")]
+terms <- tolower(terms)
+terms <- gsub("[[:punct:]]", " ", terms) # Replace punctuation with space
+terms <- gsub("  ", " ", terms) # Replace double white space with single white space
+
+# Calculate embeddings for terms
+term_embeddings <- lapply(terms, get_embedding_for_term)
+
+# Convert the list of embeddings into a data frame
+valid_embeddings <- !sapply(term_embeddings, is.null)
+embeddings_matrix <- do.call(rbind, term_embeddings[valid_embeddings])
+terms_valid <- terms[valid_embeddings]
+embeddings_df <- as.data.frame(embeddings_matrix)
+colnames(embeddings_df) <- paste0("dim", 1:ncol(embeddings_df))
+embeddings_df <- cbind(term = terms_valid, embeddings_df)
+
+# Select the embedding columns
+embedding_columns <- embeddings_df %>%
+  select(starts_with("dim"))
+
+# Convert the selected columns to a matrix for clustering
+embedding_matrix <- as.matrix(embedding_columns)
+
+# Remove rows that contain NAs
+# Get row numbers that contain NAs
+na_rows <- apply(embedding_matrix, 1, function(x) any(is.na(x)))
+na_rows <- as.data.frame(na_rows)
+na_rows$index <- 1:nrow(na_rows)
+na_rows <- na_rows %>% 
+  dplyr::filter(na_rows == TRUE) %>% 
+  select(index)
+na_rows <- na_rows$index
+
+# Remove terms from list at index in na_rows
+terms_valid <- terms[-na_rows]
+
+# Remove terms from dataframe at index in na_rows
+embeddings_df <- embeddings_df[-na_rows,]
+
+# Perform k-means clustering
+clusters <- kmeans(na.omit(embedding_matrix),
+                   centers = 10, # Number of clusters
+                   nstart = 150,
+                   iter.max = 150
+                   )
+
+# Add cluster information to the dataframe
+embeddings_df$cluster <- clusters$cluster
+embeddings_df <- embeddings_df %>%
+  select(term, cluster) %>% 
+  arrange(cluster)
+
+# Save the embeddings and clusters to name clusters
+# write.csv(embeddings_df, here("topics", "EUROVOC_embedding_clusters.csv"), row.names = F) # NOT RUN!
+
+
+# Cluster Subject_matter ---------------------------------------------
 
 # Get CEPS Eurlex terms and clean them in order to get their embeddings
 terms <- count_tags$Subject_matter
@@ -190,7 +292,7 @@ ceps_eurlex_cluster_names <- ceps_eurlex_dir_reg %>%
   drop_na()
 
 # Save to file for use in other scripts
-saveRDS(ceps_eurlex_cluster_names, file = here("data", "topics", "ceps_eurlex_cluster_names.rds"))
+saveRDS(ceps_eurlex_cluster_names, file = here("data", "topics", "ceps_eurlex_Subject_matter_cluster_names.rds"))
 
 
 # K-means clustering elbow plot --------------------------------

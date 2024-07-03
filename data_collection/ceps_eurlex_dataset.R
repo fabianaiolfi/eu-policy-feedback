@@ -26,11 +26,11 @@ ceps_eurlex_dir_reg <- ceps_eurlex %>%
 
 saveRDS(ceps_eurlex_dir_reg, file = here("data", "data_collection", "ceps_eurlex_dir_reg.rds"))
 
-# Create subset of directives and regulations with subject matter --------------------------
-ceps_eurlex_dir_reg_subject_matter <- ceps_eurlex %>% 
+# Create subset of directives and regulations with keywords (EUROVOC and subject matter) --------------------------
+ceps_eurlex_dir_reg_keywords <- ceps_eurlex %>% 
   mutate(Date_publication = as.Date(Date_publication, format = "%Y-%m-%d")) %>%
   dplyr::filter(Date_publication >= "1989-01-01") %>%
   dplyr::filter(str_detect(Act_type, "Directive|Regulation")) %>% 
-  select(CELEX, Subject_matter)
+  select(CELEX, EUROVOC, Subject_matter)
 
-saveRDS(ceps_eurlex_dir_reg_subject_matter, file = here("data", "data_collection", "ceps_eurlex_dir_reg_subject_matter.rds"))
+saveRDS(ceps_eurlex_dir_reg_keywords, file = here("data", "data_collection", "ceps_eurlex_dir_reg_keywords.rds"))

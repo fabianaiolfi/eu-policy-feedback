@@ -9,11 +9,11 @@
 # Output of 01_run_lss.R
 glove_polarity_scores <- readRDS(here("data", "lss", "glove_polarity_scores.rds"))
 
-# Subject matter (in original CEPS dataset)
-ceps_eurlex_dir_reg_subject_matter <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg_subject_matter.rds"))
+# CEPS with keywords
+ceps_eurlex_dir_reg_keywords <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg_keywords.rds"))
 
 # Clustered tags: Clustered subject matters based on embeddings (topics/subject_matter.R)
-ceps_eurlex_cluster_names <- readRDS(here("data", "topics", "ceps_eurlex_cluster_names.rds"))
+ceps_eurlex_cluster_names <- readRDS(here("data", "topics", "ceps_eurlex_Subject_matter_cluster_names.rds"))
 
 
 # Prepare data -------------------
@@ -23,7 +23,7 @@ ceps_eurlex_cluster_names <- ceps_eurlex_cluster_names %>%
   summarize(cluster_name = str_c(cluster_name, collapse = "; "))
 
 evaluation <- glove_polarity_scores %>% 
-  left_join(ceps_eurlex_dir_reg_subject_matter, by = "CELEX") %>% 
+  left_join(ceps_eurlex_dir_reg_keywords, by = "CELEX") %>% 
   left_join(ceps_eurlex_cluster_names, by = "CELEX")
 
 
