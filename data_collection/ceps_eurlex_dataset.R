@@ -13,7 +13,7 @@
 # saveRDS(ceps_eurlex, file = "/Volumes/iPhone_Backup_1/eu-policy-feedback-data/ceps_eurlex.rds")
 
 # Load RDS
-ceps_eurlex <- readRDS(here("data", "ceps_eurlex.rds"))
+ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
 
 # Create subset of directives and regulations --------------------------
 ceps_eurlex_dir_reg <- ceps_eurlex %>% 
@@ -24,7 +24,7 @@ ceps_eurlex_dir_reg <- ceps_eurlex %>%
   # Remove rows where act_raw_text is the string "nan"
   dplyr::filter(act_raw_text != "nan")
 
-saveRDS(ceps_eurlex_dir_reg, file = here("data", "ceps_eurlex_dir_reg.rds"))
+saveRDS(ceps_eurlex_dir_reg, file = here("data", "data_collection", "ceps_eurlex_dir_reg.rds"))
 
 # Create subset of directives and regulations with subject matter --------------------------
 ceps_eurlex_dir_reg_subject_matter <- ceps_eurlex %>% 
@@ -33,4 +33,4 @@ ceps_eurlex_dir_reg_subject_matter <- ceps_eurlex %>%
   dplyr::filter(str_detect(Act_type, "Directive|Regulation")) %>% 
   select(CELEX, Subject_matter)
 
-saveRDS(ceps_eurlex_dir_reg_subject_matter, file = here("data", "ceps_eurlex_dir_reg_subject_matter.rds"))
+saveRDS(ceps_eurlex_dir_reg_subject_matter, file = here("data", "data_collection", "ceps_eurlex_dir_reg_subject_matter.rds"))

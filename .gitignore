@@ -38,5 +38,4 @@ lss_cache/
 *.rds
 *.rda
 # Custom Ignores
-glove.6B
-dfmat_sent
+data/

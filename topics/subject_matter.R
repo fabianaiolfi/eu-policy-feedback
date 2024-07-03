@@ -4,7 +4,7 @@
 
 # Import CEPS data -----------------------
 
-ceps_eurlex <- readRDS(here("data", "ceps_eurlex.rds"))
+ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
 
 # Create subset of directives and regulations
 ceps_eurlex_dir_reg <- ceps_eurlex %>% 
@@ -64,7 +64,7 @@ head(count_tags)
 # Cluster tags using embeddings ---------------------------------------------
 
 # Download and load the GloVe embeddings
-glove <- read.table(here("02_lss", "glove.6B", "glove.6B.300d.txt"), header = FALSE, quote = "", comment.char = "")
+glove <- read.table(here("data", "glove.6B", "glove.6B.300d.txt"), header = FALSE, quote = "", comment.char = "")
 colnames(glove) <- c("word", paste0("dim", 1:300))
 glove <- as.data.frame(glove)
 
@@ -129,7 +129,7 @@ embeddings_df <- embeddings_df %>%
 # Cluster Naming --------------------------------
 
 # Load CSV
-embeddings_df <- read.csv(here("topics", "subject_matter_embedding_clusters.csv"))
+embeddings_df <- read.csv(here("data", "topics", "subject_matter_embedding_clusters.csv"))
 
 # ChatGPT prompt: I've attached a CSV containing terms that have been clustered. Can you please name each cluster based on the terms in a cluster?
 embeddings_df <- embeddings_df %>% 
@@ -190,7 +190,7 @@ ceps_eurlex_cluster_names <- ceps_eurlex_dir_reg %>%
   drop_na()
 
 # Save to file for use in other scripts
-saveRDS(ceps_eurlex_cluster_names, file = here("topics", "ceps_eurlex_cluster_names.rds"))
+saveRDS(ceps_eurlex_cluster_names, file = here("data", "topics", "ceps_eurlex_cluster_names.rds"))
 
 
 # K-means clustering elbow plot --------------------------------
@@ -220,4 +220,3 @@ saveRDS(ceps_eurlex_cluster_names, file = here("topics", "ceps_eurlex_cluster_na
 #        x = "Number of Clusters (k)",
 #        y = "Total Within-Cluster Sum of Squares (WSS)") +
 #   theme_minimal()
-

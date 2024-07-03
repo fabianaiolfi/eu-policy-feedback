@@ -7,13 +7,13 @@
 # Load data --------------------------
 
 # Output of 01_run_lss.R
-glove_polarity_scores <- readRDS(here("02_lss", "glove_polarity_scores.rds"))
+glove_polarity_scores <- readRDS(here("data", "lss", "glove_polarity_scores.rds"))
 
 # Subject matter (in original CEPS dataset)
-ceps_eurlex_dir_reg_subject_matter <- readRDS(here("data", "ceps_eurlex_dir_reg_subject_matter.rds"))
+ceps_eurlex_dir_reg_subject_matter <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg_subject_matter.rds"))
 
 # Clustered tags: Clustered subject matters based on embeddings (topics/subject_matter.R)
-ceps_eurlex_cluster_names <- readRDS(here("topics", "ceps_eurlex_cluster_names.rds"))
+ceps_eurlex_cluster_names <- readRDS(here("data", "topics", "ceps_eurlex_cluster_names.rds"))
 
 
 # Prepare data -------------------

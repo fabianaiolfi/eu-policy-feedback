@@ -1,13 +1,13 @@
 
 # Import custom dictionary for seed words -----------------------
 
-dict <- dictionary(file = here("data", "02_lss", "l_r_dict.yml"))
+dict <- dictionary(file = here("data", "lss", "l_r_dict.yml"))
 seed <- as.seedwords(dict$ideology, concatenator = " ")
 
 
 # Import CEPS data -----------------------
 
-ceps_eurlex_dir_reg <- readRDS(here("data", "ceps_eurlex_dir_reg.rds"))
+ceps_eurlex_dir_reg <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg.rds"))
 
 
 # Clean corpus --------------------------
@@ -71,7 +71,7 @@ toks_sent_df <- toks_sent_df %>%
 # Import GloVe embeddings
 # Source: https://nlp.stanford.edu/projects/glove/
 
-mt <- read.table(here("02_lss", "glove.6B", "glove.6B.300d.txt"),
+mt <- read.table(here("data", "glove.6B", "glove.6B.300d.txt"),
                  quote = "",
                  sep = " ",
                  fill = F,
@@ -99,4 +99,4 @@ glove_polarity_scores <- glove_polarity_scores %>%
   group_by(CELEX) %>%
   summarise(avg_glove_polarity_scores = weighted.mean(glove_polarity_scores, sent_weight, na.rm = T))
 
-saveRDS(glove_polarity_scores, file = here("02_lss", "glove_polarity_scores.rds"))
+saveRDS(glove_polarity_scores, file = here("data", "lss", "glove_polarity_scores.rds"))
