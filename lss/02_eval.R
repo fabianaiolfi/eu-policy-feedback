@@ -41,7 +41,7 @@ evaluation <- evaluation %>%
 # Create 3 broad groups (left, center, right) and examine top *EUROVOC* keywords in each group
 
 top_keywords <- evaluation %>% 
-  dplyr::filter(polarity_score_group_cut == "right") %>% # "right" "centre"
+  dplyr::filter(polarity_score_group_cut == "centre") %>% # "right" "centre"
   select(EUROVOC) %>% 
   separate_rows(EUROVOC, sep = ";") %>% 
   mutate(EUROVOC = trimws(EUROVOC)) %>% 
@@ -59,6 +59,15 @@ head(top_keywords, n = 5)
 # 3 alien                    12
 # 4 employment law           10
 # 5 worker information       10
+
+# "centre" (using sentences)
+# EUROVOC                   n
+# <chr>                 <int>
+# 1 approximation of laws   370
+# 2 grading                 313
+# 3 marketing               246
+# 4 plant health product    213
+# 5 labelling               197
 
 # "right" (using sentences)
 # EUROVOC                              n
@@ -122,6 +131,58 @@ head(top_keywords, n = 5)
 # Evaluation 2: Correlation --------------------
 # Transform categorical keywords into a numerical representation that can be used for correlation analysis
 # Create a binary matrix where each column represents a unique keyword
+
+# Keyword: EUROVOC --------------------
+
+keywords_separated <- evaluation %>%
+  select(CELEX, EUROVOC) %>% 
+  dplyr::filter(EUROVOC != "") %>% # Remove empty rows
+  separate_rows(EUROVOC, sep = ";") %>%
+  mutate(EUROVOC = trimws(EUROVOC)) %>% 
+  distinct(CELEX, EUROVOC) # Remove duplicate row that was causing an error in pivot_wider below
+
+# Create a binary matrix where each column represents a unique keyword
+keywords_binary <- keywords_separated %>%
+  mutate(presence = 1) %>% 
+  pivot_wider(names_from = EUROVOC, values_from = presence, values_fill = list(presence = 0)) %>% 
+  left_join(select(evaluation, CELEX, avg_glove_polarity_scores), by = "CELEX")
+
+# Prepare correlation data
+correlation_data <- keywords_binary %>% select(-CELEX)
+
+# Calculate the correlation matrix
+correlation_matrix <- cor(correlation_data, use = "pairwise.complete.obs")
+
+# Extract the correlations with 'avg_glove_polarity_scores'
+correlation_with_scores <- correlation_matrix["avg_glove_polarity_scores", ]
+correlation_with_scores <- as.data.frame(correlation_with_scores)
+correlation_with_scores$EUROVOC <- rownames(correlation_with_scores)
+rownames(correlation_with_scores) <- NULL
+correlation_with_scores <- correlation_with_scores %>% 
+  dplyr::filter(correlation_with_scores != 1) %>% 
+  arrange(-correlation_with_scores)
+
+head(correlation_with_scores, 5)
+# Using sentences
+# correlation_with_scores              EUROVOC
+# 1               0.2196984 plant health product
+# 2               0.1798582    equal opportunity
+# 3               0.1520850         disinfectant
+# 4               0.1297387       employment law
+# 5               0.1279970                  GII
+
+
+tail(correlation_with_scores, 5)
+# Using sentences
+# correlation_with_scores                 EUROVOC
+# 1789              -0.1811606                     COC
+# 1790              -0.1855913 Community certification
+# 1791              -0.2419075      commercial vehicle
+# 1792              -0.2463396      technical standard
+# 1793              -0.3617184           motor vehicle
+
+
+# Keyword: Subject_matter --------------------
 
 keywords_separated <- evaluation %>%
   select(CELEX, Subject_matter) %>% 
