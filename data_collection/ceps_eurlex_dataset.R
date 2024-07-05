@@ -17,10 +17,10 @@ ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
 
 # Create subset of directives and regulations --------------------------
 ceps_eurlex_dir_reg <- ceps_eurlex %>% 
-  mutate(Date_publication = as.Date(Date_publication, format = "%Y-%m-%d")) %>%
-  dplyr::filter(Date_publication >= "1989-01-01") %>%
-  dplyr::filter(str_detect(Act_type, "Directive|Regulation")) %>% 
-  select(CELEX, act_raw_text) %>%
+  mutate(Date_document = as.Date(Date_document, format = "%Y-%m-%d")) %>%
+  dplyr::filter(Date_document >= "1989-01-01") %>%
+  dplyr::filter(str_detect(Act_type, "Regulation|Directive")) %>%
+  select(CELEX, act_raw_text, Act_type) %>%
   # Remove rows where act_raw_text is the string "nan"
   dplyr::filter(act_raw_text != "nan")
 
@@ -28,8 +28,8 @@ saveRDS(ceps_eurlex_dir_reg, file = here("data", "data_collection", "ceps_eurlex
 
 # Create subset of directives and regulations with keywords (EUROVOC and subject matter) --------------------------
 ceps_eurlex_dir_reg_keywords <- ceps_eurlex %>% 
-  mutate(Date_publication = as.Date(Date_publication, format = "%Y-%m-%d")) %>%
-  dplyr::filter(Date_publication >= "1989-01-01") %>%
+  mutate(Date_document = as.Date(Date_document, format = "%Y-%m-%d")) %>%
+  dplyr::filter(Date_document >= "1989-01-01") %>%
   dplyr::filter(str_detect(Act_type, "Directive|Regulation")) %>% 
   select(CELEX, EUROVOC, Subject_matter)
 
