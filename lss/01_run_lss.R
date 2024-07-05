@@ -1,7 +1,7 @@
 
 # Import custom dictionary for seed words -----------------------
 
-dict <- dictionary(file = here("lss", "left_right_v2.yml"))
+dict <- dictionary(file = here("lss", "left_right_v3.yml"))
 seed <- as.seedwords(dict$ideology, concatenator = " ")
 
 
@@ -149,7 +149,7 @@ glove_polarity_scores <- glove_polarity_scores %>%
 
 # Evaluation with synonyms
 bs_term <- bootstrap_lss(lss, mode = "terms")
-# saveRDS(bs_term, file = here("data", "lss", "bs_term_v2.rds"))
+saveRDS(bs_term, file = here("data", "lss", "bs_term_v3.rds"))
 # bs_term <- readRDS(here("data", "lss", "bs_term_vx.rds"))
 head(bs_term, 10)
 

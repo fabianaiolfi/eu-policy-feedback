@@ -49,7 +49,7 @@ top_keywords <- evaluation %>%
   count(EUROVOC) %>% 
   arrange(-n)
 
-head(top_keywords, n = 5)
+head(top_keywords, n = 10)
 
 # "left" (using sentences)
 # EUROVOC                   n
@@ -89,7 +89,7 @@ top_keywords <- evaluation %>%
   count(Subject_matter) %>% 
   arrange(-n)
 
-head(top_keywords, n = 5)
+head(top_keywords, n = 10)
 
 # "left" (using sentences)
 # Subject_matter                      n
@@ -163,7 +163,7 @@ correlation_with_scores <- correlation_with_scores %>%
   dplyr::filter(correlation_with_scores != 1) %>% 
   arrange(-correlation_with_scores)
 
-head(correlation_with_scores, 5)
+head(correlation_with_scores, 10)
 # Using sentences
 # correlation_with_scores              EUROVOC
 # 1               0.2196984 plant health product
@@ -173,7 +173,7 @@ head(correlation_with_scores, 5)
 # 5               0.1279970                  GII
 
 
-tail(correlation_with_scores, 5)
+tail(correlation_with_scores, 10)
 # Using sentences
 # correlation_with_scores                 EUROVOC
 # 1789              -0.1811606                     COC
@@ -213,7 +213,7 @@ correlation_with_scores <- correlation_with_scores %>%
   dplyr::filter(correlation_with_scores != 1) %>% 
   arrange(-correlation_with_scores)
 
-head(correlation_with_scores, 5)
+head(correlation_with_scores, 10)
 # Using sentences
 # correlation_with_scores                     Subject_matter
 # 1               0.2194048                           health
@@ -230,7 +230,7 @@ head(correlation_with_scores, 5)
 # 4               0.1643161  labour law and labour relations
 # 5               0.1368674                       employment
 
-tail(correlation_with_scores, 5)
+tail(correlation_with_scores, 10)
 # Using sentences
 # correlation_with_scores                           Subject_matter
 # 119              -0.1481816               mechanical engineering

@@ -1,0 +1,37 @@
+ideology:
+    left: [
+      "wealth redistribution",
+      "state ownership",
+      "public sector jobs",
+      "universal basic income",
+      "progressive income tax",
+      "welfare programs",
+      "labor unions",
+      "government subsidies",
+      "public healthcare",
+      "social housing",
+      "minimum wage increase",
+      "unemployment benefits",
+      "state intervention",
+      "public education funding",
+      "affordable housing initiatives"
+    ]
+    right: [
+      "free market capitalism",
+      "privatization",
+      "corporate tax cuts",
+      "deregulation",
+      "fiscal austerity",
+      "trade liberalization",
+      "supply side economics",
+      "property rights",
+      "entrepreneurial incentives",
+      "limited government",
+      "investment freedom",
+      "business deregulation",
+      "lower tax rates",
+      "market driven wages",
+      "reduction in public spending"
+    ]
+
+
