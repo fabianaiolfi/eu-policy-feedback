@@ -41,7 +41,7 @@ evaluation <- evaluation %>%
 # Create 3 broad groups (left, center, right) and examine top *EUROVOC* keywords in each group
 
 top_keywords <- evaluation %>% 
-  dplyr::filter(polarity_score_group_cut == "centre") %>% # "right" "centre"
+  dplyr::filter(polarity_score_group_cut == "right") %>% # "right" "centre"
   select(EUROVOC) %>% 
   separate_rows(EUROVOC, sep = ";") %>% 
   mutate(EUROVOC = trimws(EUROVOC)) %>% 
@@ -81,7 +81,7 @@ head(top_keywords, n = 5)
 # Create 3 broad groups (left, center, right) and examine top *Subject_matter* keywords in each group
 
 top_keywords <- evaluation %>% 
-  dplyr::filter(polarity_score_group_cut == "centre") %>% # "right" "centre"
+  dplyr::filter(polarity_score_group_cut == "right") %>% # "right" "centre"
   select(Subject_matter) %>% 
   separate_rows(Subject_matter, sep = ";") %>% 
   mutate(Subject_matter = trimws(Subject_matter)) %>% 
@@ -154,6 +154,7 @@ correlation_data <- keywords_binary %>% select(-CELEX)
 correlation_matrix <- cor(correlation_data, use = "pairwise.complete.obs")
 
 # Extract the correlations with 'avg_glove_polarity_scores'
+# How much do the keywords correlate with the avg_glove_polarity_score?
 correlation_with_scores <- correlation_matrix["avg_glove_polarity_scores", ]
 correlation_with_scores <- as.data.frame(correlation_with_scores)
 correlation_with_scores$EUROVOC <- rownames(correlation_with_scores)
@@ -203,6 +204,7 @@ correlation_data <- keywords_binary %>% select(-CELEX)
 correlation_matrix <- cor(correlation_data, use = "pairwise.complete.obs")
 
 # Extract the correlations with 'avg_glove_polarity_scores'
+# How much do the keywords correlate with the avg_glove_polarity_score?
 correlation_with_scores <- correlation_matrix["avg_glove_polarity_scores", ]
 correlation_with_scores <- as.data.frame(correlation_with_scores)
 correlation_with_scores$Subject_matter <- rownames(correlation_with_scores)

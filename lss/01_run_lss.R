@@ -71,7 +71,7 @@ toks_sent_df <- toks_sent_df %>%
 # Import GloVe embeddings
 # Source: https://nlp.stanford.edu/projects/glove/
 
-mt <- read.table(here("data", "glove.6B", "glove.6B.50d.txt"),
+mt <- read.table(here("data", "glove.6B", "glove.6B.300d.txt"),
                  quote = "",
                  sep = " ",
                  fill = F,
@@ -123,8 +123,6 @@ multi_word_terms <- names(seed) # Convert named num list to normal character lis
 multi_word_terms <- multi_word_terms[sapply(multi_word_terms, function(x) length(unlist(strsplit(x, " "))) > 1)] # remove single word terms from list
 mt <- add_multi_word_embeddings(multi_word_terms, mt)
 
-## CONTINUE HERE: Does evaluation with multi-word embeddings make sense? ##
-
 mt <- t(mt) # Transpose
 
 # Create LSS object
@@ -132,7 +130,6 @@ lss <- as.textmodel_lss(mt, seed)
 
 # Predict document polarity
 glove_polarity_scores <- predict(lss, newdata = dfmat_sent)
-# glove_polarity_scores <- predict(lss, newdata = dfmat_sent, type = "embedding")
 
 # Calculate average document polarity based on sentence weight
 glove_polarity_scores <- as.data.frame(glove_polarity_scores)
@@ -151,10 +148,10 @@ glove_polarity_scores <- glove_polarity_scores %>%
 # https://koheiw.github.io/LSX/articles/pkgdown/seedwords.html
 
 # Evaluation with synonyms
-# bs_term <- bootstrap_lss(lss, mode = "terms")
-# saveRDS(bs_term, file = here("data", "lss", "bs_term.rds"))
-bs_term <- readRDS(here("data", "lss", "bs_term.rds"))
-head(bs_term, 5)
+bs_term <- bootstrap_lss(lss, mode = "terms")
+# saveRDS(bs_term, file = here("data", "lss", "bs_term_v2.rds"))
+# bs_term <- readRDS(here("data", "lss", "bs_term_vx.rds"))
+head(bs_term, 10)
 
 # Evaluation with words with known polarity
 # bs_coef <- bootstrap_lss(lss, mode = "coef")

@@ -222,3 +222,155 @@ Group 3 (positive values)
 6 health                             16
 
 
+#########################
+
+glove 50 
+
+Left
+  EUROVOC                   n
+  <chr>                 <int>
+1 approximation of laws   481
+2 grading                 365
+3 marketing               259
+4 phytosanitary control   221
+5 ban on sales            217
+
+Right
+  EUROVOC                   n
+  <chr>                 <int>
+1 approximation of laws     7
+2 labelling                 6
+3 packaging                 6
+4 EU accession              5
+5 dangerous product         5
+
+Left
+  Subject_matter                           n
+  <chr>                                <int>
+1 marketing                              923
+2 health                                 759
+3 technology and technical regulations   670
+4 European Union law                     655
+5 deterioration of the environment       489
+
+Right
+  Subject_matter                       n
+  <chr>                            <int>
+1 European Union law                   7
+2 marketing                            7
+3 deterioration of the environment     6
+4 European construction                5
+5 environmental policy                 5
+
+> head(correlation_with_scores, 5)
+  correlation_with_scores                 EUROVOC
+1               0.1681048                   alien
+2               0.1419752     residence of aliens
+3               0.1228334 exchange of information
+4               0.1077343       equal opportunity
+5               0.1065860      Community national
+
+> tail(correlation_with_scores, 5)
+     correlation_with_scores      EUROVOC
+1789              -0.1669369 EU accession
+1790              -0.1891968    packaging
+1791              -0.1898182    vegetable
+1792              -0.2250589    catalogue
+1793              -0.2413332         CPVO
+
+> head(correlation_with_scores, 5)
+  correlation_with_scores                         Subject_matter
+1               0.2037203                    rights and freedoms
+2               0.1929032                      international law
+3               0.1653096                          labour market
+4               0.1494209 information and information processing
+5               0.1488440                             employment
+
+
+> tail(correlation_with_scores, 5)
+    correlation_with_scores                       Subject_matter
+119              -0.1234835                               Europe
+120              -0.1293540 technology and technical regulations
+121              -0.1439970                        documentation
+122              -0.1759817                        plant product
+123              -0.1996937     deterioration of the environment
+
+
+
+glove 300
+
+Left
+> head(top_keywords, n = 5)
+# A tibble: 5 × 2
+  EUROVOC                   n
+  <chr>                 <int>
+1 approximation of laws   423
+2 grading                 337
+3 marketing               248
+4 ban on sales            213
+5 plant health product    212
+
+Right
+> head(top_keywords, n = 5)
+# A tibble: 5 × 2
+  EUROVOC                   n
+  <chr>                 <int>
+1 approximation of laws     8
+2 labelling                 6
+3 EU accession              5
+4 dangerous product         5
+5 packaging                 5
+
+Left
+> head(top_keywords, n = 5)
+# A tibble: 5 × 2
+  Subject_matter                           n
+  <chr>                                <int>
+1 marketing                              861
+2 health                                 710
+3 technology and technical regulations   608
+4 European Union law                     589
+5 deterioration of the environment       431
+
+Right
+> head(top_keywords, n = 5)
+# A tibble: 5 × 2
+  Subject_matter                       n
+  <chr>                            <int>
+1 European Union law                   8
+2 marketing                            8
+3 deterioration of the environment     7
+4 European construction                5
+5 environmental policy                 5
+
+> head(correlation_with_scores, 5)
+  correlation_with_scores                 EUROVOC
+1               0.1750598                   alien
+2               0.1487376     residence of aliens
+3               0.1263289 exchange of information
+4               0.1262076       equal opportunity
+5               0.1166796     occupational health
+
+> tail(correlation_with_scores, 5)
+     correlation_with_scores           EUROVOC
+1789              -0.1796103 pesticide residue
+1790              -0.1992349             fruit
+1791              -0.2299385         vegetable
+1792              -0.2334235         catalogue
+1793              -0.2494669              CPVO
+
+> head(correlation_with_scores, 5)
+  correlation_with_scores                  Subject_matter
+1               0.2205280             rights and freedoms
+2               0.2020018               international law
+3               0.1696934                   labour market
+4               0.1643564                      employment
+5               0.1609248 labour law and labour relations
+
+> tail(correlation_with_scores, 5)
+    correlation_with_scores                   Subject_matter
+119              -0.1180657                        foodstuff
+120              -0.1183223     natural and applied sciences
+121              -0.1329007                    documentation
+122              -0.1902305 deterioration of the environment
+123              -0.2274077                    plant product
