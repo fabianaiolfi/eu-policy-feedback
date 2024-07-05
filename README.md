@@ -3,7 +3,8 @@
 ## Data Collection 1989 – Today
 - [x] CEPS EurLex (1952 – 2019)
 - [ ] Moodley (1971 – 2022)
-- [ ] Collect summaries? Example: https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32019L0904&qid=1719922563047
+- [ ] Scrape summaries? Example: https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32019L0904&qid=1719922563047
+- [ ] Scrape EUROVOC descriptors, example: https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32009L0034&qid=1720174976038
 
 ## Latent Semantic Scaling (LSS)
 - LSS is a method to measure the semantic similarity of terms to a set of seed words
@@ -14,8 +15,6 @@
 - [x] What is the subject matter "marketing"?
 - [x] Perform LSS "background" checks, i.e., synonyms for seed words
 - [ ] Create different set of seed words, find a way to document differences
-- [ ] Continue in 01_run_lss, line 126
-- [ ] Adjust GloVe embedding size from 50 to 300
 
 ## Embeddings
 - Compare policies with existing data
