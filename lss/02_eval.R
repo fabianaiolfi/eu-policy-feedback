@@ -7,7 +7,7 @@
 # Load data --------------------------
 
 # Output of 01_run_lss.R
-glove_polarity_scores <- readRDS(here("data", "lss", "glove_polarity_scores.rds"))
+glove_polarity_scores <- readRDS(here("data", "lss", "glove_polarity_scores_240705.rds"))
 
 # CEPS with keywords
 ceps_eurlex_dir_reg_keywords <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg_keywords.rds"))
@@ -36,12 +36,18 @@ evaluation <- evaluation %>%
                                                 polarity_score_group_ntile == 2 ~ "centre",
                                                 polarity_score_group_ntile == 3 ~ "left"))
 
+# Clean up missing values: Currently around 23% of EUROVOC/Subject_matter are NAs
+evaluation <- evaluation %>% 
+  # in EUROVOC and Subject_matter cols, replace empty strings and "character(0)" with NA
+  mutate(EUROVOC = ifelse(EUROVOC == "" | EUROVOC == "character(0)", NA, EUROVOC),
+         Subject_matter = ifelse(Subject_matter == "" | Subject_matter == "character(0)", NA, Subject_matter))
+
 
 # Evaluation 1: Three groups --------------------
 # Create 3 broad groups (left, center, right) and examine top *EUROVOC* keywords in each group
 
 top_keywords <- evaluation %>% 
-  dplyr::filter(polarity_score_group_cut == "right") %>% # "right" "centre"
+  dplyr::filter(polarity_score_group_cut == "centre") %>% # "right" "centre"
   select(EUROVOC) %>% 
   separate_rows(EUROVOC, sep = ";") %>% 
   mutate(EUROVOC = trimws(EUROVOC)) %>% 
@@ -81,7 +87,7 @@ head(top_keywords, n = 10)
 # Create 3 broad groups (left, center, right) and examine top *Subject_matter* keywords in each group
 
 top_keywords <- evaluation %>% 
-  dplyr::filter(polarity_score_group_cut == "right") %>% # "right" "centre"
+  dplyr::filter(polarity_score_group_cut == "centre") %>% # "right" "centre"
   select(Subject_matter) %>% 
   separate_rows(Subject_matter, sep = ";") %>% 
   mutate(Subject_matter = trimws(Subject_matter)) %>% 
