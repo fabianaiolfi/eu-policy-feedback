@@ -21,6 +21,19 @@ https://koheiw.github.io/LSX/articles/pkgdown/basic.html#example-1-generic-senti
 - etsi
 - circ
 
+# Datasets
+
+glove_polarity_scores.rds
+- Only Directives from 1989-2019 (ca. 2800)
+- seed words: unknown, either left_right_v1.yml or left_right_v2.yml
+
+glove_polarity_scores_paragraphs.rds
+- Same as glove_polarity_scores.rds, only using paragraphs instead of sentences here:
+`corp_sent <- corpus_reshape(ceps_eurlex_dir_reg, to = "paragraphs")
+
+glove_polarity_scores_240705.rds
+- Includes *all* Regulations and Directives from 1989-2019
+- seed words: left_right_v3.yml
 
 
 ###########
