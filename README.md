@@ -14,7 +14,10 @@
 - [x] Compare outcome between use of sentences and use of paragraphs ([link to script](https://github.com/fabianaiolfi/eu-policy-feedback/blob/25eb77853a3c13fc64313bf19f83ab684a378693/lss/01_run_lss.R#L23)) → No discernible difference in outcome
 - [x] What is the subject matter "marketing"?
 - [x] Perform LSS "background" checks, i.e., synonyms for seed words
-- [ ] Create different set of seed words, find a way to document differences
+- [ ] Create different set of seed words, find a way to document differences in outcome
+- [ ] Continue here: Complete evaluation with new, bigger dataset that includes Regulations: Examine correlations
+- [ ] Perform evaluation with scraped EUROVOC descriptors
+- [ ] Replace NA tags/descriptors with generated descriptors
 
 ## Embeddings
 - Compare policies with existing data
