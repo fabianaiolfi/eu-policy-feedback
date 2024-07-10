@@ -143,8 +143,6 @@ As a comparison, here are the most frequent keywords overall:
 10 cooperation policy            883
 ```
 
-*NB: Using the full dataset (70k observations) showed almost identical results.*
-
 In a next step, I measure the correlation between the polarity scores and keywords. In other words: How much do the keywords correlate with the polarity scores? A positive correlation should be associated with economic left terms, while a negative correlation should be associated with economic right terms.
 
 **Top positive correlations**
@@ -201,3 +199,4 @@ In a next step, I measure the correlation between the polarity scores and keywor
 126             -0.33752753                                 prices
 ```
 
+*NB: Using the full dataset (ca. 70k observations) showed almost identical results.*
