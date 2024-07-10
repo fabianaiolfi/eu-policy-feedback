@@ -10,7 +10,7 @@
 glove_polarity_scores <- readRDS(here("data", "lss", "glove_polarity_scores_240705.rds"))
 
 # CEPS with keywords
-ceps_eurlex_dir_reg_keywords <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg_keywords.rds"))
+ceps_eurlex_dir_reg_keywords <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg_keywords_sample.rds"))
 
 # Clustered keywords: Clustered subject matters based on embeddings (topics/subject_matter.R)
 ceps_eurlex_Subject_matter_cluster_names <- readRDS(here("data", "topics", "ceps_eurlex_Subject_matter_cluster_names.rds"))
@@ -38,100 +38,43 @@ evaluation <- evaluation %>%
 
 # Clean up missing values: Currently around 23% of EUROVOC/Subject_matter are NAs
 evaluation <- evaluation %>% 
-  # in EUROVOC and Subject_matter cols, replace empty strings and "character(0)" with NA
+  # In EUROVOC and Subject_matter cols, replace empty strings and "character(0)" with NA
   mutate(EUROVOC = ifelse(EUROVOC == "" | EUROVOC == "character(0)", NA, EUROVOC),
          Subject_matter = ifelse(Subject_matter == "" | Subject_matter == "character(0)", NA, Subject_matter))
-
 
 # Evaluation 1: Three groups --------------------
 # Create 3 broad groups (left, center, right) and examine top *EUROVOC* keywords in each group
 
+table(evaluation$polarity_score_group_cut)
+
 top_keywords <- evaluation %>% 
-  dplyr::filter(polarity_score_group_cut == "centre") %>% # "right" "centre"
+  dplyr::filter(polarity_score_group_cut == "right") %>% # "right" "centre"
   select(EUROVOC) %>% 
   separate_rows(EUROVOC, sep = ";") %>% 
   mutate(EUROVOC = trimws(EUROVOC)) %>% 
   dplyr::filter(EUROVOC != "") %>% # Remove empty rows
   count(EUROVOC) %>% 
-  arrange(-n)
+  arrange(-n) %>% 
+  rename(EUROVOC_Keyword = EUROVOC) %>% 
+  rename(Occurences = n)
 
-head(top_keywords, n = 10)
+print(top_keywords, n = 10)
 
-# "left" (using sentences)
-# EUROVOC                   n
-# <chr>                 <int>
-# 1 approximation of laws    18
-# 2 equal opportunity        14
-# 3 alien                    12
-# 4 employment law           10
-# 5 worker information       10
-
-# "centre" (using sentences)
-# EUROVOC                   n
-# <chr>                 <int>
-# 1 approximation of laws   370
-# 2 grading                 313
-# 3 marketing               246
-# 4 plant health product    213
-# 5 labelling               197
-
-# "right" (using sentences)
-# EUROVOC                              n
-# <chr>                            <int>
-# 1 motor vehicle                      140
-# 2 approximation of laws              129
-# 3 technical standard                  96
-# 4 adaptation to technical progress    81
-# 5 grading                             68
 
 # Create 3 broad groups (left, center, right) and examine top *Subject_matter* keywords in each group
 
 top_keywords <- evaluation %>% 
-  dplyr::filter(polarity_score_group_cut == "centre") %>% # "right" "centre"
+  # dplyr::filter(polarity_score_group_cut == "right") %>% # "right" "centre"
   select(Subject_matter) %>% 
   separate_rows(Subject_matter, sep = ";") %>% 
   mutate(Subject_matter = trimws(Subject_matter)) %>% 
   dplyr::filter(Subject_matter != "") %>% # Remove empty rows
   count(Subject_matter) %>% 
-  arrange(-n)
+  arrange(-n) %>% 
+  rename(Subject_matter_Keyword = Subject_matter) %>% 
+  rename(Occurences = n)
 
-head(top_keywords, n = 10)
-
-# "left" (using sentences)
-# Subject_matter                      n
-# <chr>                           <int>
-# 1 European Union law                 29
-# 2 employment                         29
-# 3 rights and freedoms                24
-# 4 health                             23
-# 5 labour law and labour relations    23
-
-# "left" (using paragraphs)
-# Subject_matter                      n
-# <chr>                           <int>
-# 1 employment                         29
-# 2 European Union law                 28
-# 3 health                             25
-# 4 rights and freedoms                24
-# 5 labour law and labour relations    23
-
-# "right" (using sentences)
-# Subject_matter                           n
-# <chr>                                <int>
-# 1 technology and technical regulations   280
-# 2 organisation of transport              234
-# 3 European Union law                     174
-# 4 marketing                              138
-# 5 transport policy                       130
-
-# "right" (using paragraphs)
-# Subject_matter                           n
-# <chr>                                <int>
-# 1 technology and technical regulations   279
-# 2 organisation of transport              235
-# 3 European Union law                     170
-# 4 marketing                              132
-# 5 transport policy                       130
+print(top_keywords, n = 10)
 
 
 # Evaluation 2: Correlation --------------------
@@ -170,23 +113,7 @@ correlation_with_scores <- correlation_with_scores %>%
   arrange(-correlation_with_scores)
 
 head(correlation_with_scores, 10)
-# Using sentences
-# correlation_with_scores              EUROVOC
-# 1               0.2196984 plant health product
-# 2               0.1798582    equal opportunity
-# 3               0.1520850         disinfectant
-# 4               0.1297387       employment law
-# 5               0.1279970                  GII
-
-
 tail(correlation_with_scores, 10)
-# Using sentences
-# correlation_with_scores                 EUROVOC
-# 1789              -0.1811606                     COC
-# 1790              -0.1855913 Community certification
-# 1791              -0.2419075      commercial vehicle
-# 1792              -0.2463396      technical standard
-# 1793              -0.3617184           motor vehicle
 
 
 # Keyword: Subject_matter --------------------
@@ -220,35 +147,4 @@ correlation_with_scores <- correlation_with_scores %>%
   arrange(-correlation_with_scores)
 
 head(correlation_with_scores, 10)
-# Using sentences
-# correlation_with_scores                     Subject_matter
-# 1               0.2194048                           health
-# 2               0.1862763              rights and freedoms
-# 3               0.1760807 means of agricultural production
-# 4               0.1659472  labour law and labour relations
-# 5               0.1354413                       employment
-
-# Using paragraphs
-# correlation_with_scores                   Subject_matter
-# 1               0.2221000                           health
-# 2               0.1863899              rights and freedoms
-# 3               0.1768236 means of agricultural production
-# 4               0.1643161  labour law and labour relations
-# 5               0.1368674                       employment
-
 tail(correlation_with_scores, 10)
-# Using sentences
-# correlation_with_scores                           Subject_matter
-# 119              -0.1481816               mechanical engineering
-# 120              -0.2557085                     transport policy
-# 121              -0.2708997                       land transport
-# 122              -0.3085961 technology and technical regulations
-# 123              -0.3866056            organisation of transport
-
-# Using paragraphs
-# correlation_with_scores                       Subject_matter
-# 119              -0.1490653               mechanical engineering
-# 120              -0.2576249                     transport policy
-# 121              -0.2751934                       land transport
-# 122              -0.3119345 technology and technical regulations
-# 123              -0.3918363            organisation of transport

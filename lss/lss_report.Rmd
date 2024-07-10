@@ -7,15 +7,195 @@ dict <- dictionary(file = here("lss", "left_right_v3.yml"))
 seed <- as.seedwords(dict$ideology, concatenator = " ")
 ```
 
-**Economically left terms**
+**Economic left seed words**
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 left_terms <- seed[seed == 1]
 left_terms <- names(left_terms)
 left_terms
 ```
-**Economically right terms**
+**Economic right seed words**
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 right_terms <- seed[seed == -1]
 right_terms <- names(right_terms)
 right_terms
 ```
+
+#### Evaluation
+
+How well can LSS measure the left-right polarity of EU policies? To answer this question, I analyse the keywords that are attached to each document. The EU gives each policy a set of keywords that describe the policy's content. If LSS works correctly, then the keywords should be associate with economic left/right terms. There are two sets of keywords, as described in the [CEPS EurLex codebook](https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/0EGYWY/RVEJU9&version=2.0):
+
+1. EUROVOC: A group of EuroVoc keywords associated with the act. See [here](https://op.europa.eu/en/web/eu-vocabularies) for details
+2. Subject matter: Group of keywords representing the subject matter of the act. Similar to EUROVOC, only less detailed, more abstract.
+
+LSS calculates a polarity score for each document. Values range between -1.5 and +2. A negative score is associated with economic right terms, a positive score with economic left terms. I create three bins of equal width, containing an unequal number of observations and label them "left", "centre" and "right".
+
+```
+centre   left  right 
+  9760     98    142 
+```
+
+**Most frequent keywords in "left" bin**
+```
+   EUROVOC_Keyword            Occurences
+ 1 Community statistics               13
+ 2 exchange of information             9
+ 3 compiling data                      7
+ 4 equal opportunity                   7
+ 5 national insurance                  7
+ 6 statistical harmonisation           7
+ 7 disclosure of information           6
+ 8 EC auxiliary staff                  5
+ 9 State pension                       5
+10 administrative cooperation          5
+
+   Subject_matter_Keyword                     Occurences
+ 1 employment                                         20
+ 2 information technology and data processing         17
+ 3 labour market                                      16
+ 4 economic analysis                                  14
+ 5 executive power and public service                 14
+ 6 information and information processing             14
+ 7 EU institutions and European civil service         12
+ 8 rights and freedoms                                12
+ 9 international law                                  11
+10 social protection                                  11
+```
+
+**Most frequent keywords in "centre" bin**
+```
+  EUROVOC_Keyword            Occurences
+ 1 Community aid to exports         1106
+ 2 aubergine                         786
+ 3 entry price                       783
+ 4 citron                            767
+ 5 automatic public tendering        749
+ 6 import                            718
+ 7 apple                             696
+ 8 Community import                  506
+ 9 import authorisation              491
+10 CCT duties                        473
+
+   Subject_matter_Keyword Occurences
+ 1 plant product                2482
+ 2 trade policy                 2149
+ 3 trade                        1608
+ 4 tariff policy                1497
+ 5 prices                       1325
+ 6 agricultural policy          1208
+ 7 Europe                       1203
+ 8 foodstuff                    1074
+ 9 marketing                     874
+10 cooperation policy            870
+```
+
+**Most frequent keywords in "right" bin**
+```
+   EUROVOC_Keyword            Occurences
+ 1 beef                               34
+ 2 automatic public tendering         23
+ 3 EC country                         16
+ 4 intervention agency                14
+ 5 offering for sale                  14
+ 6 floor price                        10
+ 7 import                             10
+ 8 selling price                      10
+ 9 CCT duties                          9
+10 Community import                    8
+
+   Subject_matter_Keyword Occurences
+ 1 trade policy                   41
+ 2 animal product                 36
+ 3 trade                          32
+ 4 Europe                         25
+ 5 marketing                      23
+ 6 prices                         20
+ 7 tariff policy                  17
+ 8 economic geography             16
+ 9 European construction          14
+10 international trade            13
+```
+
+As a comparison, here are the most frequent keywords overall:
+```
+   EUROVOC_Keyword            Occurences
+ 1 Community aid to exports         1106
+ 2 aubergine                         786
+ 3 entry price                       785
+ 4 automatic public tendering        772
+ 5 citron                            767
+ 6 import                            729
+ 7 apple                             696
+ 8 Community import                  514
+ 9 import authorisation              499
+10 CCT duties                        482
+
+   Subject_matter_Keyword Occurences
+   <chr>                       <int>
+ 1 plant product                2494
+ 2 trade policy                 2192
+ 3 trade                        1641
+ 4 tariff policy                1515
+ 5 prices                       1346
+ 6 Europe                       1233
+ 7 agricultural policy          1221
+ 8 foodstuff                    1082
+ 9 marketing                     904
+10 cooperation policy            883
+```
+
+In a next step, I measure the correlation between the polarity scores and keywords. In other words: How much do the keywords correlate with the polarity scores? A positive correlation should be associated with economic left terms, while a negative correlation should be associated with economic right terms.
+
+**Top positive correlations**
+```
+   correlation_with_scores                  EUROVOC
+1                0.1593743                 blockade
+2                0.1477281       economic sanctions
+3                0.1344094             ban on sales
+4                0.1328099  exchange of information
+5                0.1272232                       NA
+6                0.1266202                      PDO
+7                0.1219182      product description
+8                0.1148520 elimination of terrorism
+9                0.1090292     Community statistics
+10               0.1031237  agri-foodstuffs product
+
+   correlation_with_scores                             Subject_matter
+1                0.1982763                                     health
+2                0.1746146                                 employment
+3                0.1695153                                  marketing
+4                0.1656535 EU institutions and European civil service
+5                0.1523293     information and information processing
+6                0.1510933                      international affairs
+7                0.1510488 information technology and data processing
+8                0.1507761                              labour market
+9                0.1447519                 politics and public safety
+10               0.1445159           means of agricultural production
+```
+
+**Top negative correlations**
+```
+     correlation_with_scores                    EUROVOC
+2499              -0.1387161                      grape
+2500              -0.1485295                        CMO
+2501              -0.1519911                    apricot
+2502              -0.1526409           Community import
+2503              -0.1745075 automatic public tendering
+2504              -0.1756601       agri-monetary policy
+2505              -0.2747642                      apple
+2506              -0.2758296                  aubergine
+2507              -0.2770651                     citron
+2508              -0.2925299                entry price
+
+    correlation_with_scores                         Subject_matter
+117             -0.05063899 iron, steel and other metal industries
+118             -0.05172661                            soft energy
+119             -0.05609725                    beverages and sugar
+120             -0.05759779                                America
+121             -0.05950036                            competition
+122             -0.09135739                    agricultural policy
+123             -0.18789545                           trade policy
+124             -0.20253832                                  trade
+125             -0.31335321                          plant product
+126             -0.33752753                                 prices
+```
+
