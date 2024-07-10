@@ -1,0 +1,21 @@
+### Latent Semantic Scaling (LSS)
+
+LSS is a method for measuring the semantic similarity between documents and a set of seed words. In our case, each directive or regulation is a document and the seed words convey "typical" left-right terms. I apply these seed words:
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+dict <- dictionary(file = here("lss", "left_right_v3.yml"))
+seed <- as.seedwords(dict$ideology, concatenator = " ")
+```
+
+**Economically left terms**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+left_terms <- seed[seed == 1]
+left_terms <- names(left_terms)
+left_terms
+```
+**Economically right terms**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+right_terms <- seed[seed == -1]
+right_terms <- names(right_terms)
+right_terms
+```

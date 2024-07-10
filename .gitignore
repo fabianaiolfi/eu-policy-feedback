@@ -39,3 +39,4 @@ lss_cache/
 *.rda
 # Custom Ignores
 data/
+report.html
