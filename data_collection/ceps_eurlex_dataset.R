@@ -15,7 +15,9 @@
 # Load RDS
 ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
 
+
 # Create subset of directives and regulations --------------------------
+
 ceps_eurlex_dir_reg <- ceps_eurlex %>% 
   mutate(Date_document = as.Date(Date_document, format = "%Y-%m-%d")) %>%
   dplyr::filter(Date_document >= "1989-01-01") %>%
@@ -26,7 +28,22 @@ ceps_eurlex_dir_reg <- ceps_eurlex %>%
 
 saveRDS(ceps_eurlex_dir_reg, file = here("data", "data_collection", "ceps_eurlex_dir_reg.rds"))
 
+# Create smaller sample of ceps_eurlex_dir_reg
+ceps_eurlex_dir_reg_sample <- ceps_eurlex_dir_reg %>%
+  slice_sample(n = 10000, replace = F)
+
+saveRDS(ceps_eurlex_dir_reg_sample, file = here("data", "data_collection", "ceps_eurlex_dir_reg_sample.rds"))
+
+# Create object with keywords (EUROVOC and subject matter) from sampled ceps_eurlex_dir_reg
+ceps_eurlex_dir_reg_keywords_sample <- ceps_eurlex_dir_reg_sample %>% 
+  select(CELEX) %>% 
+  left_join(select(ceps_eurlex, CELEX, EUROVOC, Subject_matter), by = "CELEX")
+
+saveRDS(ceps_eurlex_dir_reg_keywords_sample, file = here("data", "data_collection", "ceps_eurlex_dir_reg_keywords_sample.rds"))
+
+
 # Create subset of directives and regulations with keywords (EUROVOC and subject matter) --------------------------
+
 ceps_eurlex_dir_reg_keywords <- ceps_eurlex %>% 
   mutate(Date_document = as.Date(Date_document, format = "%Y-%m-%d")) %>%
   dplyr::filter(Date_document >= "1989-01-01") %>%

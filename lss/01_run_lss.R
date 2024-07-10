@@ -7,7 +7,7 @@ seed <- as.seedwords(dict$ideology, concatenator = " ")
 
 # Import CEPS data -----------------------
 
-ceps_eurlex_dir_reg <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg.rds"))
+ceps_eurlex_dir_reg <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg_sample.rds"))
 
 
 # Clean corpus --------------------------
@@ -65,7 +65,8 @@ toks_sent_df <- toks_sent_df %>%
   select(sent_id, sent_weight)
 
 
-# Save objects ----------------------------------
+# Save and load objects ----------------------------------
+# Used when applying large datasets
 
 # saveRDS(corp_sent, file = "/Volumes/iPhone_Backup_1/eu-policy-feedback-data/corp_sent.rds")
 # saveRDS(toks_sent, file = "/Volumes/iPhone_Backup_1/eu-policy-feedback-data/toks_sent.rds")
@@ -73,11 +74,11 @@ toks_sent_df <- toks_sent_df %>%
 # saveRDS(tokens_list, file = "/Volumes/iPhone_Backup_1/eu-policy-feedback-data/tokens_list.rds")
 # saveRDS(toks_sent_df, file = "/Volumes/iPhone_Backup_1/eu-policy-feedback-data/toks_sent_df.rds")
 
-corp_sent <- readRDS(file = "/Volumes/iPhone_Backup_1/eu-policy-feedback-data/corp_sent.rds")
-toks_sent <- readRDS(file = "/Volumes/iPhone_Backup_1/eu-policy-feedback-data/toks_sent.rds")
-dfmat_sent <- readRDS(file = "/Volumes/iPhone_Backup_1/eu-policy-feedback-data/dfmat_sent.rds")
-tokens_list <- readRDS(file = "/Volumes/iPhone_Backup_1/eu-policy-feedback-data/tokens_list.rds")
-toks_sent_df <- readRDS(file = "/Volumes/iPhone_Backup_1/eu-policy-feedback-data/toks_sent_df.rds")
+# corp_sent <- readRDS(file = "/Volumes/iPhone_Backup_1/eu-policy-feedback-data/corp_sent.rds")
+# toks_sent <- readRDS(file = "/Volumes/iPhone_Backup_1/eu-policy-feedback-data/toks_sent.rds")
+# dfmat_sent <- readRDS(file = "/Volumes/iPhone_Backup_1/eu-policy-feedback-data/dfmat_sent.rds")
+# tokens_list <- readRDS(file = "/Volumes/iPhone_Backup_1/eu-policy-feedback-data/tokens_list.rds")
+# toks_sent_df <- readRDS(file = "/Volumes/iPhone_Backup_1/eu-policy-feedback-data/toks_sent_df.rds")
 
 
 # LSS with GloVe ----------------------------------
@@ -156,7 +157,7 @@ glove_polarity_scores <- glove_polarity_scores %>%
   group_by(CELEX) %>%
   summarise(avg_glove_polarity_scores = weighted.mean(glove_polarity_scores, sent_weight, na.rm = T))
 
-saveRDS(glove_polarity_scores, file = here("data", "lss", "glove_polarity_scores_240705.rds"))
+# saveRDS(glove_polarity_scores, file = here("data", "lss", "glove_polarity_scores_240705.rds"))
 
 
 # Selection and evaluation of seed words ---------------
