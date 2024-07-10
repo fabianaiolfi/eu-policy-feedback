@@ -157,7 +157,7 @@ glove_polarity_scores <- glove_polarity_scores %>%
   group_by(CELEX) %>%
   summarise(avg_glove_polarity_scores = weighted.mean(glove_polarity_scores, sent_weight, na.rm = T))
 
-# saveRDS(glove_polarity_scores, file = here("data", "lss", "glove_polarity_scores_240705.rds"))
+saveRDS(glove_polarity_scores, file = here("data", "lss", "glove_polarity_scores_240710.rds"))
 
 
 # Selection and evaluation of seed words ---------------

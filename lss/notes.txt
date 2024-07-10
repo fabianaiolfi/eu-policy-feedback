@@ -35,6 +35,9 @@ glove_polarity_scores_240705.rds
 - Includes *all* Regulations and Directives from 1989-2019
 - seed words: left_right_v3.yml
 
+glove_polarity_scores_240710.rds
+- Contains 10k sample of glove_polarity_scores
+- seed words: left_right_v3.yml
 
 ###########
 
