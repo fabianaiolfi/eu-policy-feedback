@@ -16,14 +16,14 @@ ceps_eurlex_dir_reg <- ceps_eurlex_dir_reg %>%
   left_join(select(ceps_eurlex, CELEX, Date_document, Act_type, Eurlex_link), by = "CELEX")
 
 # Create summaries link 
-ceps_eurlex_dir_reg <- ceps_eurlex_dir_reg %>% 
+ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg %>% 
   # Replace `/ALL/` in string with `/LSU/`
   mutate(eurlex_link_summary = str_replace(Eurlex_link, "/ALL/", "/LSU/")) %>% 
+  # Adjust link to explicitly detect redirects if summary is not available
   mutate(eurlex_link_summary = str_replace(eurlex_link_summary, "CELEX:", "CELEX%3A"))
 
 # For testing purposes: Create sample of ceps_eurlex_dir_reg
-set.seed(4)
-ceps_eurlex_dir_reg_sample <- ceps_eurlex_dir_reg %>%
+ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg_summaries %>%
   dplyr::filter(Date_document >= "2019-01-01") %>% 
   dplyr::filter(Act_type == "Directive") %>% 
   slice_sample(n = 10, replace = F)
@@ -31,7 +31,7 @@ ceps_eurlex_dir_reg_sample <- ceps_eurlex_dir_reg %>%
 
 # Scrape Summaries ----------------------------------------------------------------
 
-all_links <- ceps_eurlex_dir_reg_sample$eurlex_link_summary
+all_links <- ceps_eurlex_dir_reg_summaries$eurlex_link_summary
 
 # User-Agent string with your name and email
 user_agent_string <- "Fabian Aiolfi [fabian.aiolfi@gess.ethz.ch]"
@@ -62,10 +62,25 @@ scrape_text <- function(url, user_agent_string) {
 counter <- 1
 
 # Create a new column in the dataframe to store the scraped text
-ceps_eurlex_dir_reg_sample$eurlex_summary <- sapply(all_links, function(link) {
+ceps_eurlex_dir_reg_summaries$eurlex_summary <- sapply(all_links, function(link) {
   eurlex_summary <- scrape_text(link, user_agent_string)
   message("Processed file ", counter, " of ", length(all_links), "\n")
-  Sys.sleep(2) # Be polite and do not overload the server
+  Sys.sleep(3) # Be polite and do not overload the server
   counter <<- counter + 1
   return(eurlex_summary)
 })
+
+
+# Clean Up Summaries ----------------------------------------------------------------
+
+ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg_summaries %>% 
+  mutate(eurlex_summary_clean = str_squish(eurlex_summary)) %>% # Remove excessive whitespace
+  mutate(eurlex_summary_clean = str_replace_all(eurlex_summary_clean, "\n", " ")) %>% # Replace newline characters with space
+  mutate(eurlex_summary_clean = str_replace_all(eurlex_summary_clean, "\\s{2,}", " ")) %>% # Replace multiple spaces with a single space
+  mutate(eurlex_summary_clean = str_trim(eurlex_summary_clean)) %>% # Trim leading and trailing whitespace
+  select(CELEX, eurlex_summary_clean)
+
+
+# Save to file ----------------------------------------------------------------
+
+# saveRDS(ceps_eurlex_dir_reg_summaries, file = here("data", "data_collection", "ceps_eurlex_dir_reg_summaries_240711.rds"))
