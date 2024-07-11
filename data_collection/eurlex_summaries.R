@@ -18,10 +18,11 @@ ceps_eurlex_dir_reg <- ceps_eurlex_dir_reg %>%
 # Create summaries link 
 ceps_eurlex_dir_reg <- ceps_eurlex_dir_reg %>% 
   # Replace `/ALL/` in string with `/LSU/`
-  mutate(Eurlex_link_summary = str_replace(Eurlex_link, "/ALL/", "/LSU/"))
+  mutate(eurlex_link_summary = str_replace(Eurlex_link, "/ALL/", "/LSU/")) %>% 
+  mutate(eurlex_link_summary = str_replace(eurlex_link_summary, "CELEX:", "CELEX%3A"))
 
 # For testing purposes: Create sample of ceps_eurlex_dir_reg
-set.seed(5)
+set.seed(4)
 ceps_eurlex_dir_reg_sample <- ceps_eurlex_dir_reg %>%
   dplyr::filter(Date_document >= "2019-01-01") %>% 
   dplyr::filter(Act_type == "Directive") %>% 
@@ -30,22 +31,25 @@ ceps_eurlex_dir_reg_sample <- ceps_eurlex_dir_reg %>%
 
 # Scrape Summaries ----------------------------------------------------------------
 
-library(rvest)
-library(xml2)
-library(httr)
-
-# Assume ceps_eurlex_dir_reg_sample is already loaded
-all_links <- ceps_eurlex_dir_reg_sample$Eurlex_link_summary
+all_links <- ceps_eurlex_dir_reg_sample$eurlex_link_summary
 
 # User-Agent string with your name and email
 user_agent_string <- "Fabian Aiolfi [fabian.aiolfi@gess.ethz.ch]"
 
 # Function to scrape text from a given URL
 scrape_text <- function(url, user_agent_string) {
-  response <- GET(url, user_agent(user_agent_string))
+  response <- GET(url, user_agent(user_agent_string), followlocation = TRUE)
   
   # Check if the request was successful
   if (status_code(response) == 200) {
+    final_url <- response$url
+    # Check if the final URL is the same as the original URL
+    # A different URL indicates that there is no summary available
+    if (final_url != url) {
+      message("Redirection detected. Skipping link: ", url)
+      return(NA)
+    }
+    
     page <- read_html(content(response, as = "text"))
     text <- page %>% html_nodes(xpath = '//*[(@id = "text")]') %>% html_text()
     return(text)
@@ -60,11 +64,8 @@ counter <- 1
 # Create a new column in the dataframe to store the scraped text
 ceps_eurlex_dir_reg_sample$eurlex_summary <- sapply(all_links, function(link) {
   eurlex_summary <- scrape_text(link, user_agent_string)
-  cat("Processed file", counter, "of", length(all_links), "\n")
+  message("Processed file ", counter, " of ", length(all_links), "\n")
   Sys.sleep(2) # Be polite and do not overload the server
   counter <<- counter + 1
   return(eurlex_summary)
 })
-
-
-
