@@ -201,7 +201,7 @@ In a next step, I measure the correlation between the polarity scores and keywor
 126             -0.33752753                                 prices
 ```
 
-*Note: Using the full dataset (ca. 70k observations) showed almost identical results. Also using a larger GloVe model, e.g. 300 dimensions, doesn’t alter results in a way that justify the longer computational time.*
+*Note: Using the full dataset (ca. 70k observations) showed almost identical results. Also using a larger GloVe model, e.g. 300 dimensions, doesn’t alter results in a way that justifies the longer computational time.*
 
 
 #### Preliminary Results
