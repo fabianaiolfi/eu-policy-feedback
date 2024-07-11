@@ -3,7 +3,9 @@
 ## Data Collection 1989 – Today
 - [x] CEPS EurLex (1952 – 2019)
 - [ ] Moodley (1971 – 2022)
-- [ ] Scrape summaries? Example: https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32019L0904&qid=1719922563047
+- [ ] Scrape summaries?
+	- [ ] Example: https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32019L0904&qid=1719922563047
+	- [ ] More info: https://eur-lex.europa.eu/browse/summaries.html
 - [ ] Scrape EUROVOC descriptors, example: https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32009L0034&qid=1720174976038
 
 ## Latent Semantic Scaling (LSS)
@@ -31,6 +33,9 @@
 - Based on this, create a ranking of all policies
 - BradleyTerry algorithm
 - https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12703
+
+### To Do
+- [ ] Scrape summaries: Are there enough to make this work?
 
 ## Recreate existing measurement techniques
 …
