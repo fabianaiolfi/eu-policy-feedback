@@ -6,7 +6,7 @@ ceps_eurlex_dir_reg_summaries <- readRDS(file = here("data", "data_collection", 
 
 # Query ChatGPT ---------------------------------------------------------------
 
-# To Do
+rgpt_authenticate("access_key.txt")
 
 
 # Create synthetic data for ranking algorithm testing ---------------------------------------------------------------

@@ -37,6 +37,8 @@ sandbox.R
 lss_cache/
 *.rds
 *.rda
+
 # Custom Ignores
 data/
 report.html
+access_key.txt
