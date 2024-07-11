@@ -36,6 +36,7 @@
 
 ### To Do
 - [ ] Scrape summaries: Are there enough to make this work?
+- [ ] Examine different ranking algorithms: https://stackoverflow.com/questions/3937218/comparison-based-ranking-algorithm
 - [ ] Implement Elo ranking
 	- [ ] Prevent algorithm shortcomings by:
 		- [ ] Randomize the Order: Randomly shuffle the order of comparisons multiple times and average the final ratings.
