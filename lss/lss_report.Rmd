@@ -20,21 +20,24 @@ right_terms <- names(right_terms)
 right_terms
 ```
 
-The semantic similarity between documents and seed words is calculated using word embeddings provided by [GloVe](https://nlp.stanford.edu/projects/glove/). To keep computational time low, I use the smallest pre-trained word vectors model available (6B tokens, 400K vocab, 50 dimensions).
+The semantic similarity between documents and seed words is calculated using word embeddings provided by [GloVe](https://nlp.stanford.edu/projects/glove/). To keep computation efficient, I use the smallest pre-trained word vectors model available (6B tokens, 400K vocab, 50 dimensions).
 
 #### Evaluation
 
-How well can LSS measure the left-right polarity of EU policies? To answer this question, I analyse the keywords that are attached to each document. The EU gives each policy a set of keywords that describe the policy's content. If LSS works correctly, then the keywords should be associate with economic left/right terms. There are two sets of keywords, as described in the [CEPS EurLex codebook](https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/0EGYWY/RVEJU9&version=2.0):
+How well can LSS measure the left-right polarity of EU policies? To answer this question, I analyse the keywords that are attached to each document. The EU gives each policy a set of keywords that describe the policy's content. If LSS works correctly, then the keywords should be associated with economic left/right terms. There are two sets of keywords, as described in the [dataset’s codebook](https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/0EGYWY/RVEJU9&version=2.0):
 
 1. EUROVOC: A group of EuroVoc keywords associated with the act. See [here](https://op.europa.eu/en/web/eu-vocabularies) for details
 2. Subject Matter: Group of keywords representing the subject matter of the act. Similar to EUROVOC, only less detailed, more abstract.
 
 LSS calculates a polarity score for each document. Values range between -1.5 and +2. A negative score is associated with economic right terms, a positive score with economic left terms. I create three bins of equal width, containing an unequal number of observations and label them "left", "centre" and "right".
 
+**Number of documents per bin**
 ```
 centre   left  right 
   9760     98    142 
 ```
+
+I then examine the most frequent keywords in each bin.
 
 **Most frequent keywords in "left" bin**
 ```
@@ -207,6 +210,6 @@ In a next step, I measure the correlation between the polarity scores and keywor
 #### Preliminary Results
 A first analysis of the results shows that the keywords partially align with typical economic left/right terms. Keywords like “equal opportunity”, “State pension”, “employment”, “labour market” and “social protection” fit well with an economic left ideology, while “trade policy”, “tariff policy” and “international trade” can be more strongly associated with an economic right ideology.
 
-However, there are keywords that appear to have no ideological connotation but still appear in the “most frequent”-list, e.g., “exchange of information”, “beef” or “Europe”. This indicates that the polarity score calculated by LSS has its flaws.
+However, there are keywords that appear to have no ideological connotation but still appear in the “most frequent” list, e.g., “exchange of information”, “beef” or “Europe”. This indicates that the polarity score calculated by LSS has its flaws.
 
-Eyeballing the results, I feel that the Subject Matter keywords are more suitable for the evaluation than the EUROVOC keywords. This may be due to the Subject Matter keywords being more general than EUROVOC and thus capturing broader meanings. When comparing the two keyword types, the Subject Matter keywords seem to align better with my expectations, likely because their general nature allows them to capture a wider range of topics and themes within the dataset, while the EUROVOC keywords are too specific to do this.
+Eyeballing the results, I feel that the Subject Matter keywords are more suitable for the evaluation than the EUROVOC keywords. This may be due to the Subject Matter keywords being more general than EUROVOC and thus capturing broader meanings. The results show that the Subject Matter keywords align better with my expectations, likely because their general nature allows them to capture a wider range of topics and themes within the dataset, while the EUROVOC keywords are too specific to do this.
