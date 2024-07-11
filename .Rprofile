@@ -17,7 +17,7 @@ library(xml2)
 library(httr)
 
 # Ranking
-devtools::install_github("ben-aaron188/rgpt3")
+# devtools::install_github("ben-aaron188/rgpt3")
 library(rgpt3) # https://github.com/ben-aaron188/rgpt3
 
 set.seed(123)
