@@ -27,7 +27,7 @@ colnames(ranked_df) <- c("document", "count")
 
 # Initialize ratings
 initial_rating <- 1000
-documents <- unique(c(dummy_data$doc1, dummy_data$doc2))
+documents <- unique(c(ranking_df$CELEX_1, ranking_df$CELEX_2))
 ratings <- setNames(rep(initial_rating, length(documents)), documents)
 
 # Elo update function
@@ -42,9 +42,9 @@ update_elo <- function(winner, loser, ratings, K = 32) {
 }
 
 # Iterate over comparisons and update ratings
-for (i in 1:nrow(dummy_data)) {
-  winner <- dummy_data$more_left[i]
-  loser <- ifelse(dummy_data$doc1[i] == winner, dummy_data$doc2[i], dummy_data$doc1[i])
+for (i in 1:nrow(ranking_df)) {
+  winner <- ranking_df$more_left[i]
+  loser <- ifelse(ranking_df$CELEX_1[i] == winner, ranking_df$CELEX_2[i], ranking_df$CELEX_1[i])
   ratings <- update_elo(winner, loser, ratings)
 }
 

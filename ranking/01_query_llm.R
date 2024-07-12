@@ -52,9 +52,8 @@ prompt_df <- celex_index %>%
                                      policy_summary_2, "\n\n",
                                      prompt_end)) %>% 
   # Count number of tokens in prompt (1 token ~= 4 chars in English, see https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them)
+  # Check API limits: https://platform.openai.com/settings/organization/limits
   mutate(prompt_token_len = nchar(prompt_content_var) / 4)
-
-
 
 
 # Query ChatGPT ---------------------------------------------------------------
@@ -64,22 +63,48 @@ prompt_df <- celex_index %>%
 rgpt_authenticate("access_key.txt")
 # rgpt_test_completion(verbose = T)
 
-# Create small sample of prompt_df
-prompt_df <- head(prompt_df, 3)
+# Create small sample of prompt_df for testing
+# prompt_df <- head(prompt_df, 3)
 
-rgpt(
+chatgpt_output <- rgpt(
   prompt_role_var = prompt_df$prompt_role_var,
   prompt_content_var = prompt_df$prompt_content_var,
-  …
-)
+  param_seed = project_seed, # Defined in .Rprofile
+  id_var = prompt_df$id_var,
+  param_output_type = "complete",
+  param_model = "gpt-4o",
+  param_max_tokens = 5,
+  param_temperature = 0,
+  param_n = 1)
+
+# Save output to file
+# Get and format the current timestamp to prevent overwriting files when saving RData locally
+timestamp <- Sys.time()
+formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
+file_name <- paste0("chatgpt_output_df_", formatted_timestamp, ".rds")
+saveRDS(chatgpt_output, file = here("data", "ranking", file_name))
 
 
+# Process ChatGPT output ---------------------------------------------------------------
 
+chatgpt_output <- readRDS(file = here("data", "ranking", "chatgpt_output_df_20240712_112106.rds"))
 
+# Convert output to dataframe
+temp_df <- chatgpt_output[[1]]
+temp_df <- temp_df %>% 
+  select(id, gpt_content) %>% 
+  rename(chatgpt_answer = gpt_content) %>% 
+  distinct(id, .keep_all = T) # This shouldn't be necessary if CELEX_1 and CELEX_2 are never identical
 
+# Merge ChatGPT answer with prompt_df
+# adjust this as prompt_df is useless here
+prompt_df <- prompt_df %>% left_join(temp_df, by = c("id_var" = "id"))
 
+# 31990L0269_31989L0117
 
-
-
-
-
+# Prepare dataframe for ranking
+ranking_df <- prompt_df %>% 
+  select(CELEX_1, CELEX_2, chatgpt_answer) %>% 
+  mutate(chatgpt_answer = as.numeric(chatgpt_answer)) %>% 
+  mutate(more_left = case_when(chatgpt_answer == 1 ~ CELEX_1,
+                               chatgpt_answer == 2 ~ CELEX_2))
