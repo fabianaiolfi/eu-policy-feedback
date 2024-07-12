@@ -55,6 +55,13 @@ prompt_df <- celex_index %>%
   # Check API limits: https://platform.openai.com/settings/organization/limits
   mutate(prompt_token_len = nchar(prompt_content_var) / 4)
 
+# Save prompt_df to file to assure reproducability despite randomness in celex_index
+timestamp <- Sys.time()
+formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
+file_name <- paste0("prompt_df_", formatted_timestamp, ".rds")
+saveRDS(prompt_df, file = here("data", "ranking", file_name))
+
+
 
 # Query ChatGPT ---------------------------------------------------------------
 
@@ -88,6 +95,7 @@ saveRDS(chatgpt_output, file = here("data", "ranking", file_name))
 # Process ChatGPT output ---------------------------------------------------------------
 
 chatgpt_output <- readRDS(file = here("data", "ranking", "chatgpt_output_df_20240712_112106.rds"))
+prompt_df <- readRDS(file = here("data", "ranking", "prompt_df_20240712_112106.rds"))
 
 # Convert output to dataframe
 temp_df <- chatgpt_output[[1]]
@@ -97,10 +105,7 @@ temp_df <- temp_df %>%
   distinct(id, .keep_all = T) # This shouldn't be necessary if CELEX_1 and CELEX_2 are never identical
 
 # Merge ChatGPT answer with prompt_df
-# adjust this as prompt_df is useless here
 prompt_df <- prompt_df %>% left_join(temp_df, by = c("id_var" = "id"))
-
-# 31990L0269_31989L0117
 
 # Prepare dataframe for ranking
 ranking_df <- prompt_df %>% 
