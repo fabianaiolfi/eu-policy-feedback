@@ -33,8 +33,43 @@ celex_index <- create_shuffled_column(celex_index)
 # Create Prompt Dataframe ---------------------------------------------------------------
 
 system_prompt <- "You are an expert in European Union policies. Answer questions and provide information based on that expertise.\n\n"
+
+
+## Prompt for economic *left* ---------------------------------------------------------------
+
 prompt_start <- "I have two summaries of EU policies, and I need to determine which policy is more economically left-leaning. Please analyze the summaries based on principles commonly associated with economically left policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights.\n\n"
 prompt_end <- "Which policy is more economically left? Please return only '1' or '2'."
+
+prompt_df <- celex_index %>% 
+  left_join(ceps_eurlex_dir_reg_summaries, by = c("CELEX_1" = "CELEX")) %>% 
+  rename(policy_summary_1 = eurlex_summary_clean) %>% 
+  left_join(ceps_eurlex_dir_reg_summaries, by = c("CELEX_2" = "CELEX")) %>% 
+  rename(policy_summary_2 = eurlex_summary_clean) %>% 
+  mutate(id_var = paste0(CELEX_1, "_", CELEX_2)) %>% # ID for each row
+  mutate(prompt_role_var = "user") %>% # Set role
+  # Put together prompt
+  mutate(prompt_content_var = paste0(system_prompt, 
+                                     prompt_start, 
+                                     "Policy Summary 1:\n",
+                                     policy_summary_1, "\n\n",
+                                     "Policy Summary 2:\n",
+                                     policy_summary_2, "\n\n",
+                                     prompt_end)) %>% 
+  # Count number of tokens in prompt (1 token ~= 4 chars in English, see https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them)
+  # Check API limits: https://platform.openai.com/settings/organization/limits
+  mutate(prompt_token_len = nchar(prompt_content_var) / 4)
+
+# Save prompt_df to file to assure reproducability despite randomness in celex_index
+timestamp <- Sys.time()
+formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
+file_name <- paste0("prompt_df_", formatted_timestamp, ".rds")
+saveRDS(prompt_df, file = here("data", "ranking", file_name))
+
+
+## Prompt for economic *right* ---------------------------------------------------------------
+
+prompt_start <- "I have two summaries of EU policies, and I need to determine which policy is more economically right-leaning. Please analyze the summaries based on principles commonly associated with economically right policies, such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility.\n\n"
+prompt_end <- "Which policy is more economically right? Please return only '1' or '2'."
 
 prompt_df <- celex_index %>% 
   left_join(ceps_eurlex_dir_reg_summaries, by = c("CELEX_1" = "CELEX")) %>% 
@@ -94,8 +129,8 @@ saveRDS(chatgpt_output, file = here("data", "ranking", file_name))
 
 # Process ChatGPT output ---------------------------------------------------------------
 
-chatgpt_output <- readRDS(file = here("data", "ranking", "chatgpt_output_df_20240712_112106.rds"))
-prompt_df <- readRDS(file = here("data", "ranking", "prompt_df_20240712_112106.rds"))
+chatgpt_output <- readRDS(file = here("data", "ranking", "chatgpt_output_df_20240712_143525.rds"))
+prompt_df <- readRDS(file = here("data", "ranking", "prompt_df_20240712_142655.rds"))
 
 # Convert output to dataframe
 temp_df <- chatgpt_output[[1]]
@@ -111,5 +146,8 @@ prompt_df <- prompt_df %>% left_join(temp_df, by = c("id_var" = "id"))
 ranking_df <- prompt_df %>% 
   select(CELEX_1, CELEX_2, chatgpt_answer) %>% 
   mutate(chatgpt_answer = as.numeric(chatgpt_answer)) %>% 
-  mutate(more_left = case_when(chatgpt_answer == 1 ~ CELEX_1,
+  # Adjust accordingly
+  # mutate(more_left = case_when(chatgpt_answer == 1 ~ CELEX_1,
+  #                              chatgpt_answer == 2 ~ CELEX_2))
+  mutate(more_right = case_when(chatgpt_answer == 1 ~ CELEX_1,
                                chatgpt_answer == 2 ~ CELEX_2))
