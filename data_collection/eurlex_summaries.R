@@ -20,22 +20,27 @@ ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg %>%
   # Replace `/ALL/` in string with `/LSU/`
   mutate(eurlex_link_summary = str_replace(Eurlex_link, "/ALL/", "/LSU/")) %>% 
   # Adjust link to explicitly detect redirects if summary is not available
+  # If a summary is unavailable, the link will redirect. We can detect this during scraping and then simply ignore this link
   mutate(eurlex_link_summary = str_replace(eurlex_link_summary, "CELEX:", "CELEX%3A"))
 
 # For testing purposes: Create sample of ceps_eurlex_dir_reg
+set.seed(997)
 ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg_summaries %>%
   # dplyr::filter(Date_document >= "2015-01-01") %>% 
   # Directives seem to be more likely to have summaries
   dplyr::filter(Act_type == "Directive") %>%
-  slice_sample(n = 100, replace = F)
+  slice_sample(n = 10, replace = F)
 
 
 # Scrape Summaries ----------------------------------------------------------------
 
+# Setup main variables
 all_links <- ceps_eurlex_dir_reg_summaries$eurlex_link_summary
+user_agent_string <- "Fabian Aiolfi [fabian.aiolfi@gess.ethz.ch]" # User-Agent string with your name and email
 
-# User-Agent string with your name and email
-user_agent_string <- "Fabian Aiolfi [fabian.aiolfi@gess.ethz.ch]"
+
+## Save summaries to dataframe ----------------------------------------------------------------
+# Great for scraping a few summaries
 
 # Function to scrape text from a given URL
 scrape_text <- function(url, user_agent_string) {
@@ -74,17 +79,57 @@ ceps_eurlex_dir_reg_summaries$eurlex_summary <- sapply(all_links, function(link)
 saveRDS(ceps_eurlex_dir_reg_summaries, file = here("data", "data_collection", "ceps_eurlex_dir_reg_summaries_xx.rds"))
 # ceps_eurlex_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "ceps_eurlex_dir_reg_summaries_xx.rds"))
 
-# temp_df <- ceps_eurlex_dir_reg_summaries %>% 
-#   mutate(eurlex_summary = as.character(eurlex_summary)) %>% 
-#   # replace "NA" string with NA
-#   mutate(eurlex_summary = ifelse(eurlex_summary == "NA", NA, eurlex_summary)) %>% 
-#   mutate(eurlex_summary = ifelse(eurlex_summary == "character(0)", NA, eurlex_summary)) %>%
-#   drop_na(eurlex_summary) %>% 
-#   mutate(eurlex_summary_clean = str_squish(eurlex_summary)) %>% # Remove excessive whitespace
-#   mutate(eurlex_summary_clean = str_replace_all(eurlex_summary_clean, "\n", " ")) %>% # Replace newline characters with space
-#   mutate(eurlex_summary_clean = str_replace_all(eurlex_summary_clean, "\\s{2,}", " ")) %>% # Replace multiple spaces with a single space
-#   mutate(eurlex_summary_clean = str_trim(eurlex_summary_clean)) %>% 
-#   left_join(select(ceps_eurlex, -Date_document, -Act_type, -Eurlex_link, -Status), by = "CELEX")
+
+## Save each summary directly as a text file  ----------------------------------------------------------------
+# Attempting to scrape many summaries
+
+# Function to scrape text from a given URL and save it to a file
+scrape_and_save_text <- function(url, user_agent_string) {
+  response <- GET(url, user_agent(user_agent_string), followlocation = TRUE)
+  
+  # Check if the request was successful
+  if (status_code(response) == 200) {
+    final_url <- response$url
+    # Check if the final URL is the same as the original URL
+    # A different URL indicates that there is no summary available
+    if (final_url != url) {
+      message("Redirection detected. Skipping link: ", url)
+      return(FALSE)
+    }
+    
+    page <- read_html(content(response, as = "text"))
+    text <- page %>% html_nodes(xpath = '//*[(@id = "text")]') %>% html_text()
+    
+    # Extract the file name from the URL
+    file_name <- sub(".*CELEX%3A([0-9A-Z]+).*", "\\1", url)
+    file_path <- paste0("data/data_collection/eurlex_summaries/", file_name, ".txt")
+    
+    # Save the text to a file
+    writeLines(text, file_path)
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
+
+# Initialize a counter for progress tracking
+counter <- 1
+
+# Loop over all links and save the scraped text to files
+# `invisible` prevents list of results to be printed to console
+invisible(lapply(all_links, function(link) {
+  success <- scrape_and_save_text(link, user_agent_string)
+  if (success) {
+    message("Processed file ", counter, " of ", length(all_links), "\n")
+  } else {
+    message("Failed to process file ", counter, " of ", length(all_links), "\n")
+  }
+  Sys.sleep(1) # Be polite and do not overload the server
+  counter <<- counter + 1
+}))
+
+# Load saved files as a dataframe
+
 
 
 # Clean Up Summaries ----------------------------------------------------------------
