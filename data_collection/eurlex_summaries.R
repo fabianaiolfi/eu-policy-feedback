@@ -85,7 +85,7 @@ saveRDS(ceps_eurlex_dir_reg_summaries, file = here("data", "data_collection", "c
 
 # Define the folder path where the text files will be saved
 # folder_path <- "data/data_collection/eurlex_summaries/" # Github Repo
-folder_path <- "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/" # Dropbox
+folder_path <- "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/eurlex_summaries/" # Dropbox
 
 # Function to scrape text from a given URL and save it to a file
 scrape_and_save_text <- function(url, user_agent_string) {
@@ -131,6 +131,13 @@ invisible(lapply(all_links, function(link) {
   Sys.sleep(1) # Be polite and do not overload the server
   counter <<- counter + 1
 }))
+
+# Document which CELEX IDs have already been checked
+# 240714: First 653 files of ceps_eurlex_dir_reg_summaries
+scraped <- ceps_eurlex_dir_reg_summaries %>% 
+  head(n = 653) %>% 
+  select(CELEX)
+write.csv(scraped, paste0(folder_path, "scraped_xx.csv"), row.names = FALSE)
 
 # Load saved files as a dataframe
 # Get the list of all text files in the folder
