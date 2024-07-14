@@ -24,12 +24,12 @@ ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg %>%
   mutate(eurlex_link_summary = str_replace(eurlex_link_summary, "CELEX:", "CELEX%3A"))
 
 # For testing purposes: Create sample of ceps_eurlex_dir_reg
-set.seed(997)
+set.seed(995)
 ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg_summaries %>%
   # dplyr::filter(Date_document >= "2015-01-01") %>% 
   # Directives seem to be more likely to have summaries
-  dplyr::filter(Act_type == "Directive") %>%
-  slice_sample(n = 10, replace = F)
+  # dplyr::filter(Act_type == "Directive") %>%
+  slice_sample(n = 1000, replace = F)
 
 
 # Scrape Summaries ----------------------------------------------------------------
@@ -83,6 +83,10 @@ saveRDS(ceps_eurlex_dir_reg_summaries, file = here("data", "data_collection", "c
 ## Save each summary directly as a text file  ----------------------------------------------------------------
 # Attempting to scrape many summaries
 
+# Define the folder path where the text files will be saved
+# folder_path <- "data/data_collection/eurlex_summaries/" # Github Repo
+folder_path <- "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/" # Dropbox
+
 # Function to scrape text from a given URL and save it to a file
 scrape_and_save_text <- function(url, user_agent_string) {
   response <- GET(url, user_agent(user_agent_string), followlocation = TRUE)
@@ -102,7 +106,7 @@ scrape_and_save_text <- function(url, user_agent_string) {
     
     # Extract the file name from the URL
     file_name <- sub(".*CELEX%3A([0-9A-Z]+).*", "\\1", url)
-    file_path <- paste0("data/data_collection/eurlex_summaries/", file_name, ".txt")
+    file_path <- paste0(folder_path, file_name, ".txt")
     
     # Save the text to a file
     writeLines(text, file_path)
@@ -116,7 +120,7 @@ scrape_and_save_text <- function(url, user_agent_string) {
 counter <- 1
 
 # Loop over all links and save the scraped text to files
-# `invisible` prevents list of results to be printed to console
+# `invisible` prevents list of results to be printed to console after scraping finishes
 invisible(lapply(all_links, function(link) {
   success <- scrape_and_save_text(link, user_agent_string)
   if (success) {
@@ -129,6 +133,19 @@ invisible(lapply(all_links, function(link) {
 }))
 
 # Load saved files as a dataframe
+# Get the list of all text files in the folder
+file_list <- list.files(path = folder_path, pattern = "\\.txt$", full.names = TRUE)
+
+# Function to read a file and return its content along with the file name
+read_file_content <- function(file_path) {
+  file_content <- read_file(file_path)
+  file_name <- basename(file_path)
+  file_name <- sub("\\.txt$", "", file_name) # Remove the .txt extension
+  return(data.frame(CELEX = file_name, eurlex_summary = file_content, stringsAsFactors = FALSE))
+}
+
+# Read all files and combine them into a dataframe
+ceps_eurlex_dir_reg_summaries <- bind_rows(lapply(file_list, read_file_content))
 
 
 
@@ -149,4 +166,4 @@ ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg_summaries %>%
 
 # Save to file ----------------------------------------------------------------
 
-saveRDS(ceps_eurlex_dir_reg_summaries, file = here("data", "data_collection", "ceps_eurlex_dir_reg_summaries_240711_04.rds"))
+saveRDS(ceps_eurlex_dir_reg_summaries, file = here("data", "data_collection", "ceps_eurlex_dir_reg_summaries_xx.rds"))
