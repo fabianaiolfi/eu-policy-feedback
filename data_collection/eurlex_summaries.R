@@ -1,6 +1,10 @@
 
 # Scrape EURLEX Summaries --------------------------
 
+# Define the folder path where the text files will be saved
+# folder_path <- "data/data_collection/eurlex_summaries/" # Github Repo
+folder_path <- "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/eurlex_summaries/" # Dropbox
+
 
 ## Prepare Dataset --------------------------
 
@@ -24,18 +28,20 @@ ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg %>%
   mutate(eurlex_link_summary = str_replace(eurlex_link_summary, "CELEX:", "CELEX%3A"))
 
 # For testing purposes: Create sample of ceps_eurlex_dir_reg
-# set.seed(995)
-ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg_summaries %>%
+# ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg_summaries %>%
   # dplyr::filter(Date_document >= "2015-01-01") %>% 
   # Directives seem to be more likely to have summaries
   # dplyr::filter(Act_type == "Directive") %>%
-  slice_sample(n = 1000, replace = F)
+  # slice_sample(n = 1000, replace = F)
 
 # Remove already scraped CELEX IDs
 scraped_240714 <- read_csv(file = "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/eurlex_summaries/scraped_240714.csv")
+scraped_240716 <- read_csv(file = "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/eurlex_summaries/scraped_240716.csv")
+already_scraped <- bind_rows(scraped_240714, scraped_240716)
+
 ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg_summaries %>% 
-  # remove CELEX IDs that are in scraped_240714
-  anti_join(scraped_240714, by = "CELEX")
+  # Remove CELEX IDs that are in scraped_240714
+  anti_join(already_scraped, by = "CELEX")
 
 
 # Scrape Summaries ----------------------------------------------------------------
@@ -86,12 +92,8 @@ saveRDS(ceps_eurlex_dir_reg_summaries, file = here("data", "data_collection", "c
 # ceps_eurlex_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "ceps_eurlex_dir_reg_summaries_xx.rds"))
 
 
-## Save each summary directly as a text file  ----------------------------------------------------------------
+## Save each summary directly as a text file ----------------------------------------------------------------
 # Attempting to scrape many summaries
-
-# Define the folder path where the text files will be saved
-# folder_path <- "data/data_collection/eurlex_summaries/" # Github Repo
-folder_path <- "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/eurlex_summaries/" # Dropbox
 
 # Function to scrape text from a given URL and save it to a file
 scrape_and_save_text <- function(url, user_agent_string) {
@@ -140,10 +142,12 @@ invisible(lapply(all_links, function(link) {
 
 # Document which CELEX IDs have already been checked
 # 240714: First 653 files of ceps_eurlex_dir_reg_summaries
+# 240716: First 10275 files of ceps_eurlex_dir_reg_summaries
 scraped <- ceps_eurlex_dir_reg_summaries %>% 
-  head(n = 653) %>% 
+  head(n = 10275) %>% 
   select(CELEX)
-write.csv(scraped, paste0(folder_path, "scraped_xx.csv"), row.names = FALSE)
+write.csv(scraped, paste0(folder_path, "scraped_240716xx.csv"), row.names = FALSE)
+
 
 # Load saved files as a dataframe
 # Get the list of all text files in the folder
