@@ -24,12 +24,18 @@ ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg %>%
   mutate(eurlex_link_summary = str_replace(eurlex_link_summary, "CELEX:", "CELEX%3A"))
 
 # For testing purposes: Create sample of ceps_eurlex_dir_reg
-set.seed(995)
+# set.seed(995)
 ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg_summaries %>%
   # dplyr::filter(Date_document >= "2015-01-01") %>% 
   # Directives seem to be more likely to have summaries
   # dplyr::filter(Act_type == "Directive") %>%
   slice_sample(n = 1000, replace = F)
+
+# Remove already scraped CELEX IDs
+scraped_240714 <- read_csv(file = "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/eurlex_summaries/scraped_240714.csv")
+ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg_summaries %>% 
+  # remove CELEX IDs that are in scraped_240714
+  anti_join(scraped_240714, by = "CELEX")
 
 
 # Scrape Summaries ----------------------------------------------------------------
