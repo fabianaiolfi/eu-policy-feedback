@@ -20,6 +20,9 @@
 - [ ] Continue here: Complete evaluation with new, bigger dataset that includes Regulations: Examine correlations
 - [ ] Perform evaluation with scraped EUROVOC descriptors
 - [ ] Replace NA tags/descriptors with generated descriptors
+- [ ] Alternative seed words
+  - [ ] "Yet, at different points in time, the legislative institutions have delivered more “rightwing” policies, such as market deregulation, and at other times more “leftwing” policies, such as higher environmental and labour market standards." (Hix Høyland 2024, 1)
+  - [ ] “rile”-index: https://manifesto-project.wzb.eu/down/tutorials/main-dataset
 
 ## Embeddings
 - Compare policies with existing data
@@ -44,9 +47,13 @@
 		- [ ] Lower the K-Factor: This reduces the volatility of the ratings but can slow down the adjustment process.
 
 ## Recreate existing measurement techniques
-…
+- [ ] Hix Høyland (2024)
 
 ## Evaluation
 - [ ] Create tags / topics of each document to see if there's a correlation between topics and calculated ideology
 - [ ] Compare with existing measurments
 - [ ] Compare results with each other
+- [ ] Compare results with left-right tags defined by Hix Høyland (2024), p. 33
+
+## Resources
+- https://michalovadek.github.io/eurlex/
