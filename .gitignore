@@ -42,3 +42,4 @@ lss_cache/
 data/
 report.html
 access_key.txt
+*.pdf
