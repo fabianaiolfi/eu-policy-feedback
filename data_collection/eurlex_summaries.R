@@ -143,10 +143,11 @@ invisible(lapply(all_links, function(link) {
 # Document which CELEX IDs have already been checked
 # 240714: First 653 files of ceps_eurlex_dir_reg_summaries
 # 240716: First 10275 files of ceps_eurlex_dir_reg_summaries
+# 240717: First 16463 files of ceps_eurlex_dir_reg_summaries
 scraped <- ceps_eurlex_dir_reg_summaries %>% 
-  head(n = 10275) %>% 
+  head(n = 16463) %>% 
   select(CELEX)
-write.csv(scraped, paste0(folder_path, "scraped_240716xx.csv"), row.names = FALSE)
+write.csv(scraped, paste0(folder_path, "scraped_240717.csv"), row.names = FALSE)
 
 
 # Load saved files as a dataframe
