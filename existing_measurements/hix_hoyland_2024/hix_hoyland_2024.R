@@ -11,6 +11,11 @@ ceps_eurlex_dir_reg_sample <- readRDS(file = here("data", "data_collection", "ce
 set.seed(project_seed)
 ceps_eurlex_dir_reg_sample <- ceps_eurlex_dir_reg_sample %>% slice_sample(n = 100, replace = F)
 
+# Load examples from paper
+ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
+examples_paper <- c("32003L0088", "32006L0123", "32011L0095")
+ceps_eurlex_dir_reg_sample <- ceps_eurlex %>% dplyr::filter(CELEX %in% examples_paper)
+
 # Get preamble string until “Adopted this directive/regulation”
 ceps_eurlex_dir_reg_sample <- ceps_eurlex_dir_reg_sample %>% 
   mutate(preamble = str_extract(act_raw_text, "(?i).*?(?=Adopted this directive|Adopted this regulation)"))
@@ -72,8 +77,15 @@ df <- df %>%
   mutate(
     neutral = count_labels(labels, "Neutral"),
     left = count_labels(labels, "Left"),
-    right = count_labels(labels, "Right")
+    right = count_labels(labels, "Right"),
+    scale = log(right + 0.5) - log(left + 0.5)
   )
 
-# Calculate left-right position
-df$scale <- log(df$right + .5) - log(df$left + .5)
+# Output
+df %>% select(CELEX, scale)
+# CELEX       scale
+# <chr>       <dbl>
+# 1 32011L0095  1.10 
+# 2 32006L0123 -0.715
+# 3 32003L0088 -2.40 
+
