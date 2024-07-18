@@ -45,6 +45,7 @@
 		- [ ] Randomize the Order: Randomly shuffle the order of comparisons multiple times and average the final ratings.
 		- [ ] Increase the Number of Comparisons: More comparisons will help stabilize the ratings, reducing the impact of any particular order.
 		- [ ] Lower the K-Factor: This reduces the volatility of the ratings but can slow down the adjustment process.
+- [ ] Try running an LLM locally
 
 ## Recreate existing measurement techniques
 - [ ] Hix Høyland (2024)
