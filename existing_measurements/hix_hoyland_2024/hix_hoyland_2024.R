@@ -91,7 +91,7 @@ bakker_hobolt_authoritarian <- c("political authority", "national way of life: p
 
 bakker_hobolt_libertarian <- c("environmental protection", "national way of life: negative", "traditional morality: negative", "culture", "multiculturalism: positive", "anti-growth", "underprivileged minority groups", "non-economic demographic groups: positive", "freedom-human rights", "democracy")
 
-
+# Convert ManiBERT_label to CMP and Bakker Hobolt label
 temp_df2 <- temp_df %>%
   mutate(ManiBERT_label = tolower(ManiBERT_label)) %>% 
   mutate(cmp_label = case_when(ManiBERT_label %in% cmp_right ~ "right",
@@ -104,13 +104,29 @@ temp_df2 <- temp_df %>%
                                                 ManiBERT_label %in% bakker_hobolt_libertarian ~ "left",
                                                 T ~ NA))
 
+# Bakker Hobolt Economic Scale
 temp_df2 <- temp_df2 %>% 
-  select(CELEX, cmp_label, bakker_hobolt_econ_label, bakker_hobolt_galtan_label) %>% 
-  # replace NA with ""
-  replace_na(list(cmp_label = "", bakker_hobolt_econ_label = "", bakker_hobolt_galtan_label = "")) %>%
-  mutate(label = paste(cmp_label, bakker_hobolt_econ_label, bakker_hobolt_galtan_label))# %>% 
-  # remove "NA " from string
-  mutate(label = str_remove_all(label, "NA"))
+  select(CELEX, bakker_hobolt_econ_label) %>% 
+  # Count label in each group
+  group_by(CELEX) %>% 
+  count(bakker_hobolt_econ_label) %>% 
+  drop_na(bakker_hobolt_econ_label) %>% 
+  # Convert to long format with label as columns
+  pivot_wider(names_from = bakker_hobolt_econ_label, values_from = n, values_fill = 0) %>% 
+  mutate(right = 0)
+
+# Bakker Hobolt Social Scale
+temp_df2 <- temp_df2 %>% 
+  select(CELEX, bakker_hobolt_galtan_label) %>% 
+  # Count label in each group
+  group_by(CELEX) %>% 
+  count(bakker_hobolt_galtan_label) %>% 
+  # drop_na(bakker_hobolt_galtan_label) %>% 
+  # Convert to long format with label as columns
+  pivot_wider(names_from = bakker_hobolt_galtan_label, values_from = n, values_fill = 0)# %>% 
+  # mutate(right = 0)
+
+
 
 
 # 2. Calculate logit-scaled left-right position -------------------------------------------
@@ -131,11 +147,12 @@ count_labels <- function(RoBERT_rile_labels, label) {
 }
 
 # Add new columns for neutral, left, and right counts
-df <- df %>%
+# df <- df %>%
+temp_df2 <- temp_df2 %>%
   mutate(
-    neutral = count_labels(RoBERT_rile_labels, "Neutral"),
-    left = count_labels(RoBERT_rile_labels, "Left"),
-    right = count_labels(RoBERT_rile_labels, "Right"),
+    # neutral = count_labels(RoBERT_rile_labels, "Neutral"),
+    # left = count_labels(RoBERT_rile_labels, "Left"),
+    # right = count_labels(RoBERT_rile_labels, "Right"),
     scale = log(right + 0.5) - log(left + 0.5)
   )
 
