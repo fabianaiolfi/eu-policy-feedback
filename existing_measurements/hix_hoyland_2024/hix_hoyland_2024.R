@@ -44,7 +44,7 @@ RoBERT_classifier <- hf_load_pipeline(
   model = "niksmer/RoBERTa-RILE")
 
 # Function to classify text segments and return labels
-classify_segments <- function(segments) {
+RoBERT_classify_segments <- function(segments) {
   segments <- segments[!is.na(segments)] # Remove NA segments
   RoBERT_rile_labels <- map(segments, ~ RoBERT_classifier(.x)[[1]]$label) # Classify each segment and extract the label
   paste(RoBERT_rile_labels, collapse = ", ") # Combine labels into a single string
@@ -53,7 +53,7 @@ classify_segments <- function(segments) {
 # Apply the function to each row and create a new column 'labels'
 df <- ceps_eurlex_dir_reg_sample %>%
   rowwise() %>%
-  mutate(RoBERT_rile_labels = classify_segments(c_across(starts_with("preamble_segment")))) %>%
+  mutate(RoBERT_rile_labels = RoBERT_classify_segments(c_across(starts_with("preamble_segment")))) %>%
   ungroup() %>%
   select(CELEX, RoBERT_rile_labels) # Select only the required columns
 
@@ -65,7 +65,28 @@ ManiBERT_classifier <- hf_load_pipeline(
   task = "text-classification",
   model = "niksmer/ManiBERT")
 
-ManiBERT_classifier("the creation of a Common European Asylum System has now been achieved. The European Council of 4 November 2004 adopted the Hague Programme, which sets the objectives to be implemented in the area of freedom, security and justice in the period 2005-2010. In this respect, the Hague Programme invited the European Commission to conclude the evaluation of the first-phase legal instruments and to submit the second-phase instruments and measures to the European Parliament and the Council, with a view to their adoption before the end of 2010. (8) In the European Pact on Immigration and Asylum, adopted on 15 and")
+# ManiBERT_classifier(ceps_eurlex_dir_reg_sample$preamble_segment_50[2])[[1]]$label
+
+temp_df <- ceps_eurlex_dir_reg_sample %>% 
+  # select celex column and all columns starting with preamble_segment
+  select(CELEX, starts_with("preamble_segment")) %>% 
+  # convert to long format
+  pivot_longer(cols = starts_with("preamble_segment"), names_to = "segment", values_to = "text") %>% 
+  drop_na(text) %>% 
+  mutate(ManiBERT_label = map_chr(text, ~ ManiBERT_classifier(.x)[[1]]$label))
+
+# "We then use the adjusted categorization of CMP codes provided by Bakker and Hobolt (2013) to identify economic and social left-right sentences, and classify each EU legislation on these two scales separately."
+
+# Table 2.4. Bakker-Hobolt’s modified CMP measures (p. 38)
+bakker_hobolt_right_emphases <- c("free enterprise", "economic incentives", "anti-protectionism", "social services limitation", "education limitation", "productivity: positive", "economic orthodoxy: positive", "labour groups: negative")
+
+bakker_hobolt_left_emphases <- c("regulate capitalism", "economic planning", "pro-protectionism", "social services expansion", "education expansion", "nationalization", "controlled economy", "labour groups: positive", "corporatism: positive", "keynesian demand management: positive", "marxist analysis: positive", "social justice")
+
+temp_df <- temp_df %>%
+  mutate(ManiBERT_label = tolower(ManiBERT_label)) %>% 
+  mutate(bakker_hobolt_label = case_when(ManiBERT_label %in% bakker_hobolt_right_emphases ~ "right",
+                                   ManiBERT_label %in% bakker_hobolt_left_emphases ~ "left",
+                                   T ~ NA))
 
 
 # 2. Calculate logit-scaled left-right position -------------------------------------------
