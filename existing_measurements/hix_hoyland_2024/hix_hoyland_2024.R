@@ -92,7 +92,7 @@ bakker_hobolt_authoritarian <- c("political authority", "national way of life: p
 bakker_hobolt_libertarian <- c("environmental protection", "national way of life: negative", "traditional morality: negative", "culture", "multiculturalism: positive", "anti-growth", "underprivileged minority groups", "non-economic demographic groups: positive", "freedom-human rights", "democracy")
 
 
-temp_df <- temp_df %>%
+temp_df2 <- temp_df %>%
   mutate(ManiBERT_label = tolower(ManiBERT_label)) %>% 
   mutate(cmp_label = case_when(ManiBERT_label %in% cmp_right ~ "right",
                                ManiBERT_label %in% cmp_left ~ "left",
@@ -100,9 +100,17 @@ temp_df <- temp_df %>%
   mutate(bakker_hobolt_econ_label = case_when(ManiBERT_label %in% bakker_hobolt_econ_right ~ "right",
                                               ManiBERT_label %in% bakker_hobolt_econ_left ~ "left",
                                               T ~ NA)) %>% 
-  mutate(bakker_hobolt_galtan_label = case_when(ManiBERT_label %in% bakker_hobolt_authoritarian ~ "authoritarian",
-                                                ManiBERT_label %in% bakker_hobolt_libertarian ~ "libertarian",
+  mutate(bakker_hobolt_galtan_label = case_when(ManiBERT_label %in% bakker_hobolt_authoritarian ~ "right",
+                                                ManiBERT_label %in% bakker_hobolt_libertarian ~ "left",
                                                 T ~ NA))
+
+temp_df2 <- temp_df2 %>% 
+  select(CELEX, cmp_label, bakker_hobolt_econ_label, bakker_hobolt_galtan_label) %>% 
+  # replace NA with ""
+  replace_na(list(cmp_label = "", bakker_hobolt_econ_label = "", bakker_hobolt_galtan_label = "")) %>%
+  mutate(label = paste(cmp_label, bakker_hobolt_econ_label, bakker_hobolt_galtan_label))# %>% 
+  # remove "NA " from string
+  mutate(label = str_remove_all(label, "NA"))
 
 
 # 2. Calculate logit-scaled left-right position -------------------------------------------
