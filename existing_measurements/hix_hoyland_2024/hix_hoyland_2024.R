@@ -77,16 +77,32 @@ temp_df <- ceps_eurlex_dir_reg_sample %>%
 
 # "We then use the adjusted categorization of CMP codes provided by Bakker and Hobolt (2013) to identify economic and social left-right sentences, and classify each EU legislation on these two scales separately."
 
-# Table 2.4. Bakker-Hobolt’s modified CMP measures (p. 38)
-bakker_hobolt_right_emphases <- c("free enterprise", "economic incentives", "anti-protectionism", "social services limitation", "education limitation", "productivity: positive", "economic orthodoxy: positive", "labour groups: negative")
+# Table 2.2. CMP left-right dimension (p. 33)
+cmp_right <- c("pro-military", "freedom, human rights", "constitutionalism", "effective authority", "free enterprise", "economic incentives", "anti-protectionism", "economic orthodoxy", "social services limitation", "national way of life", "traditional morality", "law and order", "social harmony")
 
-bakker_hobolt_left_emphases <- c("regulate capitalism", "economic planning", "pro-protectionism", "social services expansion", "education expansion", "nationalization", "controlled economy", "labour groups: positive", "corporatism: positive", "keynesian demand management: positive", "marxist analysis: positive", "social justice")
+cmp_left <- c("decolonization", "anti-military", "peace", "internationalism", "democracy", "regulate capitalism", "economic planning", "pro-protectionism", "controlled economy", "nationalization", "social services expansion", "education expansion", "pro-labour")
+
+# Table 2.4. Bakker-Hobolt’s modified CMP measures (p. 38)
+bakker_hobolt_econ_right <- c("free enterprise", "economic incentives", "anti-protectionism", "social services limitation", "education limitation", "productivity: positive", "economic orthodoxy: positive", "labour groups: negative")
+
+bakker_hobolt_econ_left <- c("regulate capitalism", "economic planning", "pro-protectionism", "social services expansion", "education expansion", "nationalization", "controlled economy", "labour groups: positive", "corporatism: positive", "keynesian demand management: positive", "marxist analysis: positive", "social justice")
+
+bakker_hobolt_authoritarian <- c("political authority", "national way of life: positive", "traditional morality: positive", "law and order", "multiculturalism: negative", "social harmony")
+
+bakker_hobolt_libertarian <- c("environmental protection", "national way of life: negative", "traditional morality: negative", "culture", "multiculturalism: positive", "anti-growth", "underprivileged minority groups", "non-economic demographic groups: positive", "freedom-human rights", "democracy")
+
 
 temp_df <- temp_df %>%
   mutate(ManiBERT_label = tolower(ManiBERT_label)) %>% 
-  mutate(bakker_hobolt_label = case_when(ManiBERT_label %in% bakker_hobolt_right_emphases ~ "right",
-                                   ManiBERT_label %in% bakker_hobolt_left_emphases ~ "left",
-                                   T ~ NA))
+  mutate(cmp_label = case_when(ManiBERT_label %in% cmp_right ~ "right",
+                               ManiBERT_label %in% cmp_left ~ "left",
+                               T ~ NA)) %>% 
+  mutate(bakker_hobolt_econ_label = case_when(ManiBERT_label %in% bakker_hobolt_econ_right ~ "right",
+                                              ManiBERT_label %in% bakker_hobolt_econ_left ~ "left",
+                                              T ~ NA)) %>% 
+  mutate(bakker_hobolt_galtan_label = case_when(ManiBERT_label %in% bakker_hobolt_authoritarian ~ "authoritarian",
+                                                ManiBERT_label %in% bakker_hobolt_libertarian ~ "libertarian",
+                                                T ~ NA))
 
 
 # 2. Calculate logit-scaled left-right position -------------------------------------------
