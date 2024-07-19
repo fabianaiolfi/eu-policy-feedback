@@ -51,7 +51,7 @@ RoBERT_classify_segments <- function(segments) {
 }
 
 # Apply the function to each row and create a new column 'labels'
-df <- ceps_eurlex_dir_reg_sample %>%
+RoBERT_df <- ceps_eurlex_dir_reg_sample %>%
   rowwise() %>%
   mutate(RoBERT_rile_labels = RoBERT_classify_segments(c_across(starts_with("preamble_segment")))) %>%
   ungroup() %>%
@@ -67,10 +67,10 @@ ManiBERT_classifier <- hf_load_pipeline(
 
 # ManiBERT_classifier(ceps_eurlex_dir_reg_sample$preamble_segment_50[2])[[1]]$label
 
-temp_df <- ceps_eurlex_dir_reg_sample %>% 
-  # select celex column and all columns starting with preamble_segment
+ManiBERT_df <- ceps_eurlex_dir_reg_sample %>% 
+  # Select celex column and all columns starting with preamble_segment
   select(CELEX, starts_with("preamble_segment")) %>% 
-  # convert to long format
+  # Convert to long format
   pivot_longer(cols = starts_with("preamble_segment"), names_to = "segment", values_to = "text") %>% 
   drop_na(text) %>% 
   mutate(ManiBERT_label = map_chr(text, ~ ManiBERT_classifier(.x)[[1]]$label))
@@ -92,7 +92,7 @@ bakker_hobolt_authoritarian <- c("political authority", "national way of life: p
 bakker_hobolt_libertarian <- c("environmental protection", "national way of life: negative", "traditional morality: negative", "culture", "multiculturalism: positive", "anti-growth", "underprivileged minority groups", "non-economic demographic groups: positive", "freedom-human rights", "democracy")
 
 # Convert ManiBERT_label to CMP and Bakker Hobolt label
-temp_df2 <- temp_df %>%
+ManiBERT_df <- ManiBERT_df %>%
   mutate(ManiBERT_label = tolower(ManiBERT_label)) %>% 
   mutate(cmp_label = case_when(ManiBERT_label %in% cmp_right ~ "right",
                                ManiBERT_label %in% cmp_left ~ "left",
@@ -105,7 +105,7 @@ temp_df2 <- temp_df %>%
                                                 T ~ NA))
 
 # Bakker Hobolt Economic Scale
-temp_df2 <- temp_df2 %>% 
+bakker_hobolt_econ <- ManiBERT_df %>% 
   select(CELEX, bakker_hobolt_econ_label) %>% 
   # Count label in each group
   group_by(CELEX) %>% 
@@ -113,10 +113,11 @@ temp_df2 <- temp_df2 %>%
   drop_na(bakker_hobolt_econ_label) %>% 
   # Convert to long format with label as columns
   pivot_wider(names_from = bakker_hobolt_econ_label, values_from = n, values_fill = 0) %>% 
+  # Explicitly add "right" column
   mutate(right = 0)
 
 # Bakker Hobolt Social Scale
-temp_df2 <- temp_df2 %>% 
+bakker_hobolt_social <- ManiBERT_df %>% 
   select(CELEX, bakker_hobolt_galtan_label) %>% 
   # Count label in each group
   group_by(CELEX) %>% 
@@ -124,9 +125,20 @@ temp_df2 <- temp_df2 %>%
   # drop_na(bakker_hobolt_galtan_label) %>% 
   # Convert to long format with label as columns
   pivot_wider(names_from = bakker_hobolt_galtan_label, values_from = n, values_fill = 0)# %>% 
+  # Explicitly add "right" column
   # mutate(right = 0)
 
-
+# CMP Scale
+cmp <- ManiBERT_df %>% 
+  select(CELEX, cmp_label) %>% 
+  # Count label in each group
+  group_by(CELEX) %>% 
+  count(cmp_label) %>% 
+  drop_na(cmp_label) %>%
+  # Convert to long format with label as columns
+  pivot_wider(names_from = cmp_label, values_from = n, values_fill = 0) %>% 
+  # Explicitly add "right" column
+  mutate(right = 0)
 
 
 # 2. Calculate logit-scaled left-right position -------------------------------------------
@@ -138,7 +150,9 @@ temp_df2 <- temp_df2 %>%
 
 # A Scaling Method Based on Log Odds-Ratios
 # P. 131: θ = log(R + .5) - log(L + .5)
-# E.g., `log(13 + .5) - log(7 + .5)`
+
+
+## RoBERT -------------------------
 
 # Count occurence of each label
 # Define function
@@ -147,19 +161,52 @@ count_labels <- function(RoBERT_rile_labels, label) {
 }
 
 # Add new columns for neutral, left, and right counts
-# df <- df %>%
-temp_df2 <- temp_df2 %>%
+RoBERT_df <- RoBERT_df %>%
   mutate(
-    # neutral = count_labels(RoBERT_rile_labels, "Neutral"),
-    # left = count_labels(RoBERT_rile_labels, "Left"),
-    # right = count_labels(RoBERT_rile_labels, "Right"),
-    scale = log(right + 0.5) - log(left + 0.5)
+    neutral = count_labels(RoBERT_rile_labels, "Neutral"),
+    left = count_labels(RoBERT_rile_labels, "Left"),
+    right = count_labels(RoBERT_rile_labels, "Right"),
+    left_right = log(right + 0.5) - log(left + 0.5)
   )
 
-# Output
-df %>% select(CELEX, scale)
-# CELEX       scale
-# <chr>       <dbl>
-# 1 32011L0095  1.10 
-# 2 32006L0123 -0.715
-# 3 32003L0088 -2.40 
+## ManiBERT -------------------------
+
+# Economic Scale
+bakker_hobolt_econ <- bakker_hobolt_econ %>% mutate(economic = log(right + 0.5) - log(left + 0.5))
+
+# Social Scale
+bakker_hobolt_social <- bakker_hobolt_social %>% mutate(social = log(right + 0.5) - log(left + 0.5))
+
+
+# Evaluation -------------------------
+
+# Consolidate own results
+own_results <- RoBERT_df %>% 
+  select(CELEX, left_right) %>% 
+  left_join(select(bakker_hobolt_econ, CELEX, economic), by = "CELEX") %>% 
+  left_join(select(bakker_hobolt_social, CELEX, social), by = "CELEX")
+
+# Reconstruct Table 1 from Hix Hoyland (2024, p. 13)
+hix_hoyland_table_1 <- data.frame(
+  CELEX = c("32003L0088", "32006L0123", "32011L0095"),
+  left_right_hh = c(-2.10, -1.60, 1.42),
+  economic_hh = c(-2.10, -2.98, -0.37),
+  social_hh = c(1.56, -1.66, -1.94)
+)
+
+left_right_results <- own_results %>%
+  select(CELEX, left_right) %>% 
+  left_join(select(hix_hoyland_table_1, CELEX, left_right_hh), by = "CELEX") %>% 
+  mutate(diff = left_right_hh - left_right)
+
+econ_results <- own_results %>%
+  select(CELEX, economic) %>% 
+  left_join(select(hix_hoyland_table_1, CELEX, economic_hh), by = "CELEX") %>% 
+  mutate(diff = economic_hh - economic)
+
+social_results <- own_results %>%
+  select(CELEX, social) %>% 
+  left_join(select(hix_hoyland_table_1, CELEX, social_hh), by = "CELEX") %>% 
+  mutate(diff = social_hh - social)
+
+
