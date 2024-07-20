@@ -33,11 +33,9 @@ docs/
 po/*~
 # RStudio Connect folder
 rsconnect/
-sandbox.R
 lss_cache/
 *.rds
 *.rda
-
 # Custom Ignores
 data/
 report.html
