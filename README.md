@@ -55,6 +55,7 @@
 - [ ] Compare with existing measurments
 - [ ] Compare results with each other
 - [ ] Compare results with left-right tags defined by Hix Høyland (2024), p. 33
+- [ ] Normalise results between different metrics (e.g., Hix Høyland and ELO Ranking) using standardisation or z-index
 
 ## Resources
 - https://michalovadek.github.io/eurlex/
