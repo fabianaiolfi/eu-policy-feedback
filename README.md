@@ -25,6 +25,7 @@
 
 5. Systematic Evaluation of all Measurements (Nice to Have)
 - Compare results amongst themselves and with expert survey (e.g. [this expert survey](https://www.dropbox.com/scl/fi/392u06vxzhz6sqebe5mam/EU_Competencies_Index_codebook_v1.pdf?rlkey=vgbqc57dmxur7rakqpekdswy8&dl=0))
+- How reliable are the summaries compared to the preamble or entire text?
 
 ## General To Do
 - [ ] How to disregard / ignore laws that are *not* relevant? E.g. a law on abortion has no economic left-right ideology → One possible approach could be using a policy’s tags. Are there tags that indicate that a policy can be ignored?
@@ -39,7 +40,7 @@
 - [ ] Scrape EUROVOC descriptors ([example](https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32009L0034&qid=1720174976038))
 
 ### To Do
-- [ ] Which laws have summaries? When does the EU decide to summarise a legislation?
+- [ ] Which laws have summaries? When does the EU decide to summarise a legislation? Are more recent policies more likely to be summarised?
 
 ## Latent Semantic Scaling (LSS)
 - LSS is a method to measure the semantic similarity of terms to a set of seed words
