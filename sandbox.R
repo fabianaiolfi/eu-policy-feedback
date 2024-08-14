@@ -219,3 +219,13 @@ round(log(4 + 0.5) - log(25 + 0.5), 2) # 32006L0123 -0.71 | -1.1 | -1.73
 round(log(3 + 0.5) - log(1 + 0.5), 2) # 32011L0095               |  1.1
 
 
+
+
+
+
+
+ceps_eurlex_dir_reg <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg.rds"))
+
+
+
+
