@@ -15,3 +15,6 @@ ceps_eurlex_dir_reg <- ceps_eurlex_dir_reg %>%
   mutate(Date_document = as.Date(Date_document, format = "%Y-%m-%d")) # Convert date to date format
 
 max(ceps_eurlex_dir_reg$Date_document) # "2019-09-20"
+
+
+# Scrape missing legislations
