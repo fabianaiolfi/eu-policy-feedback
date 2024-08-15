@@ -12,12 +12,16 @@ folder_path <- "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics
 ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
 
 # Load directives and regulations subset
-ceps_eurlex_dir_reg <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg.rds"))
-ceps_eurlex_dir_reg <- ceps_eurlex_dir_reg %>% select(CELEX)
+# ceps_eurlex_dir_reg <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg.rds"))
+# ceps_eurlex_dir_reg <- ceps_eurlex_dir_reg %>% select(CELEX)
+
+# Load meta file
+meta_dir_reg <- readRDS(here("data", "data_collection", "meta_dir_reg.rds"))
 
 # Add EURLEX URL to directives and regulations subset
-ceps_eurlex_dir_reg <- ceps_eurlex_dir_reg %>% 
-  left_join(select(ceps_eurlex, CELEX, Date_document, Act_type, Eurlex_link, Status), by = "CELEX")
+meta_dir_reg <- meta_dir_reg %>% 
+  left_join(select(ceps_eurlex, CELEX, Eurlex_link), by = "CELEX") %>% 
+  # To Do: create link for newest legislations!
 
 # Create summaries link 
 ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg %>% 
@@ -37,10 +41,11 @@ ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg %>%
 # Remove already scraped CELEX IDs
 scraped_240714 <- read_csv(file = "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/eurlex_summaries/scraped_240714.csv")
 scraped_240716 <- read_csv(file = "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/eurlex_summaries/scraped_240716.csv")
-already_scraped <- bind_rows(scraped_240714, scraped_240716)
+scraped_240717 <- read_csv(file = "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/eurlex_summaries/scraped_240717.csv")
+already_scraped <- bind_rows(scraped_240714, scraped_240716, scraped_240717)
 
 ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg_summaries %>% 
-  # Remove CELEX IDs that are in scraped_240714
+  # Remove CELEX IDs that have been already scraped
   anti_join(already_scraped, by = "CELEX")
 
 
