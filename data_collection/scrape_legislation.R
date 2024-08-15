@@ -71,7 +71,27 @@ saveRDS(scraped_reg, file = here("data", "data_collection", "scraped_reg.rds"))
 
 # Merge directives and regulations --------------------------
 
+# TO DO
 scraped_dir_reg <- scraped_dir %>% 
   rbind(scraped_reg)
 
 saveRDS(scraped_dir_reg, file = here("data", "data_collection", "scraped_dir_reg.rds"))
+
+
+# Save meta data (CELEX, date, type) --------------------
+
+meta_scraped_dir_reg <- query_dir %>%
+  rbind(query_reg) %>%
+  select(-work) %>% 
+  mutate(type = case_when(type == "DIR" ~ "Directive",
+                          type == "DIR_DEL" ~ "Directive",
+                          type == "DIR_IMPL" ~ "Directive",
+                          type == "REG" ~ "Regulation",
+                          type == "REG_DEL" ~ "Regulation",
+                          type == "REG_IMPL" ~ "Regulation"
+                          )) %>% 
+  rename(Act_type = type,
+         CELEX = celex,
+         Date_document = date)
+
+saveRDS(meta_scraped_dir_reg, file = here("data", "data_collection", "meta_scraped_dir_reg.rds"))
