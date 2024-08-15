@@ -5,6 +5,7 @@
 library(tidyverse)
 library(dplyr)
 library(here)
+library(purrr)
 
 # LSS
 library(LSX)
@@ -15,6 +16,7 @@ library(text2vec)
 library(rvest)
 library(xml2)
 library(httr)
+library(eurlex)
 
 # Ranking
 # devtools::install_github("ben-aaron188/rgpt3")
