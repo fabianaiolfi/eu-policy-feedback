@@ -5,7 +5,7 @@
 1. Collect all data (Must)
 - Update dataset to include all policies up to today (Aug 2024)
 
-2. Complete Hix Høyland (2024) Recreation 
+2. Complete Hix Høyland (2024) Recreation (Must)
 - Aim: Retrieve scores for both economic and social dimensions → This will result in 2 scores
 - Apply Hix Høyland (2024) technique on policy summaries → This will result in 2 scores
 - To do:
