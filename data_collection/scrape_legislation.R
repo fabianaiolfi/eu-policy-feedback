@@ -48,7 +48,7 @@ scraped_dir <- query_dir %>%
   mutate(title = map_chr(work, possibly(elx_fetch_data, otherwise = NA_character_), "title")) %>% 
   mutate(text = map_chr(work, possibly(elx_fetch_data, otherwise = NA_character_), "text"))
 
-saveRDS(scraped_dir, file = here("data", "data_collection", "scraped_dir.rds"))
+saveRDS(scraped_dir, file = here("data", "data_collection", "scraped_dir.rds")) 
 
 # Regulations
 query_reg <- elx_run_query(query_reg)
@@ -58,6 +58,8 @@ query_reg <- query_reg %>%
   # Only get regulations after ceps_most_recent_date
   dplyr::filter(date >= ceps_most_recent_date)
 
+
+# NOT RUN YET: RUN ON 240815 IN AFTERNOON/EVENING!!!!!!!!!!!
 scraped_reg <- query_reg %>% 
   mutate(work = paste("http://publications.europa.eu/resource/cellar/", work, sep = "")) %>% 
   # possibly() catches errors in case there is a server issue
@@ -65,3 +67,11 @@ scraped_reg <- query_reg %>%
   mutate(text = map_chr(work, possibly(elx_fetch_data, otherwise = NA_character_), "text"))
 
 saveRDS(scraped_reg, file = here("data", "data_collection", "scraped_reg.rds"))
+
+
+# Merge directives and regulations --------------------------
+
+scraped_dir_reg <- scraped_dir %>% 
+  rbind(scraped_reg)
+
+saveRDS(scraped_dir_reg, file = here("data", "data_collection", "scraped_dir_reg.rds"))
