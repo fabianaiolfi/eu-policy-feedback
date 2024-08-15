@@ -21,10 +21,12 @@ meta_dir_reg <- readRDS(here("data", "data_collection", "meta_dir_reg.rds"))
 # Add EURLEX URL to directives and regulations subset
 meta_dir_reg <- meta_dir_reg %>% 
   left_join(select(ceps_eurlex, CELEX, Eurlex_link), by = "CELEX") %>% 
-  # To Do: create link for newest legislations!
+  drop_na(CELEX) %>% 
+  mutate(Eurlex_link = case_when(is.na(Eurlex_link) ~ paste0("https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX:", CELEX),
+                   T ~ Eurlex_link))
 
 # Create summaries link 
-ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg %>% 
+meta_dir_reg_summaries <- meta_dir_reg %>% 
   # Replace `/ALL/` in string with `/LSU/`
   mutate(eurlex_link_summary = str_replace(Eurlex_link, "/ALL/", "/LSU/")) %>% 
   # Adjust link to explicitly detect redirects if summary is not available
@@ -44,7 +46,7 @@ scraped_240716 <- read_csv(file = "/Users/aiolf1/Library/CloudStorage/Dropbox/Wo
 scraped_240717 <- read_csv(file = "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/eurlex_summaries/scraped_240717.csv")
 already_scraped <- bind_rows(scraped_240714, scraped_240716, scraped_240717)
 
-ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg_summaries %>% 
+meta_dir_reg_summaries <- meta_dir_reg_summaries %>% 
   # Remove CELEX IDs that have been already scraped
   anti_join(already_scraped, by = "CELEX")
 
