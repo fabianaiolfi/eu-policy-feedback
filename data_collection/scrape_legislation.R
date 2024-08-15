@@ -58,8 +58,6 @@ query_reg <- query_reg %>%
   # Only get regulations after ceps_most_recent_date
   dplyr::filter(date >= ceps_most_recent_date)
 
-
-# NOT RUN YET: RUN ON 240815 IN AFTERNOON/EVENING!!!!!!!!!!!
 scraped_reg <- query_reg %>% 
   mutate(work = paste("http://publications.europa.eu/resource/cellar/", work, sep = "")) %>% 
   # possibly() catches errors in case there is a server issue
