@@ -1,6 +1,9 @@
 ---
 title: "EU Policy Feedback: NLP Report"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float: true
 date: "`r Sys.Date()`"
 ---
 
@@ -11,6 +14,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Research Question
 How left or right are EU policies?
 
+```{r child = 'data_collection/data_collection_report.Rmd'}
+```
 
 ### Data
 I use the [CEPS EurLex dataset](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/0EGYWY), which contains around 70k directives and regulations dated between 1989 and 2019. To keep the examination efficient, I work with a random selection of 10k directives and regulations.

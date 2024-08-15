@@ -1,0 +1,14 @@
+### Data Collection
+
+- the directives and regulations used in this research come from 2 sources: CEPS Eurlex dataset and manually scraped legislations using the `eurlex` R package (https://michalovadek.github.io/eurlex/)
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg.rds"))
+
+nrow(all_dir_reg)
+table(all_dir_reg$…) # number of regulations and directives
+min(all_dir_reg$Date_document)
+max(all_dir_reg$Date_document)
+
+# maybe plot number of directives and regulations over time
+```
