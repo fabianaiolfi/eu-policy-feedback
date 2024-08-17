@@ -32,6 +32,32 @@ all_dir_reg <- scraped_dir_reg %>%
                               Act_type == "Regulation_FINANC" ~ "Regulation",
                               T ~ Act_type))
 
+# Problem: Some new legislations contain a meta data-like section at the beginning of the text.
+# This causes an error with RoBERTa-RILE in hix_hoyland_2024.R.
+# Solution: Remove this section.
+
+# Function to remove meta data
+remove_meta_data <- function(text) {
+  # Check if the text is NA
+  if (is.na(text)) {
+    return(NA)
+  }
+  
+  # Use regex to find the first occurrence of a double line break
+  match <- regexpr("\n\n", text)
+  
+  # If the double line break is found, truncate the string to start from the match
+  if (match[1] != -1) {
+    return(substr(text, match[1] + 2, nchar(text))) # +2 to exclude the line break itself
+  } else {
+    return(text)
+  }
+}
+
+# Apply the function
+all_dir_reg <- all_dir_reg %>%
+  mutate(act_raw_text = sapply(act_raw_text, remove_meta_data))
+
 # Save to file
 saveRDS(all_dir_reg, file = here("data", "data_collection", "all_dir_reg.rds"))
 
