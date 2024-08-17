@@ -69,9 +69,7 @@ saveRDS(scraped_reg, file = here("data", "data_collection", "scraped_reg.rds"))
 
 # Merge directives and regulations --------------------------
 
-# TO DO
-scraped_dir_reg <- scraped_dir %>% 
-  rbind(scraped_reg)
+scraped_dir_reg <- scraped_dir %>% rbind(scraped_reg)
 
 saveRDS(scraped_dir_reg, file = here("data", "data_collection", "scraped_dir_reg.rds"))
 
