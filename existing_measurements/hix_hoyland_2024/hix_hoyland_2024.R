@@ -7,11 +7,12 @@
 all_dir_reg_sample <- readRDS(file = here("data", "data_collection", "all_dir_reg.rds"))
 set.seed(project_seed)
 all_dir_reg_sample <- all_dir_reg_sample %>% slice_sample(n = 100, replace = F)
+# saveRDS(all_dir_reg_sample, file = here("data", "data_collection", "all_dir_reg_sample.rds")) # Save for Google Colab testing
 
 # Load examples from paper (Table 1, p. 13)
-ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
-examples_paper <- c("32003L0088", "32006L0123", "32011L0095")
-ceps_eurlex_dir_reg_sample <- ceps_eurlex %>% dplyr::filter(CELEX %in% examples_paper)
+# ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
+# examples_paper <- c("32003L0088", "32006L0123", "32011L0095")
+# ceps_eurlex_dir_reg_sample <- ceps_eurlex %>% dplyr::filter(CELEX %in% examples_paper)
 
 
 ## Preprocessing ----------------------------------------
@@ -89,12 +90,18 @@ ManiBERT_classifier <- hf_load_pipeline(
 # ManiBERT_classifier(ceps_eurlex_dir_reg_sample$preamble_segment_50[2])[[1]]$label
 
 ManiBERT_df <- all_dir_reg_sample %>% 
-  # Select celex column and all columns starting with preamble_segment
   select(CELEX, starts_with("preamble_segment")) %>% 
-  # Convert to long format
   pivot_longer(cols = starts_with("preamble_segment"), names_to = "segment", values_to = "text") %>% 
   drop_na(text) %>% 
-  mutate(ManiBERT_label = map_chr(text, ~ ManiBERT_classifier(.x)[[1]]$label))
+  mutate(ManiBERT_label = {
+    total <- n()
+    counter <- 0
+    map_chr(text, ~ {
+      counter <<- counter + 1
+      cat("Processing row", counter, "of", total, "\n")
+      ManiBERT_classifier(.x)[[1]]$label
+    })
+  })
 
 saveRDS(ManiBERT_df, file = here("existing_measurements", "hix_hoyland_2024", "ManiBERT_df.rds"))
 
