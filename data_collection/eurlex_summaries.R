@@ -45,6 +45,7 @@ scraped_240714 <- read_csv(file = "/Users/aiolf1/Library/CloudStorage/Dropbox/Wo
 scraped_240716 <- read_csv(file = "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/eurlex_summaries/scraped_240716.csv")
 scraped_240717 <- read_csv(file = "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/eurlex_summaries/scraped_240717.csv")
 already_scraped <- bind_rows(scraped_240714, scraped_240716, scraped_240717)
+rm(scraped_240714, scraped_240716, scraped_240717)
 
 meta_dir_reg_summaries <- meta_dir_reg_summaries %>% 
   # Remove CELEX IDs that have been already scraped
@@ -54,7 +55,7 @@ meta_dir_reg_summaries <- meta_dir_reg_summaries %>%
 # Scrape Summaries ----------------------------------------------------------------
 
 # Setup main variables
-all_links <- ceps_eurlex_dir_reg_summaries$eurlex_link_summary
+all_links <- meta_dir_reg_summaries$eurlex_link_summary
 user_agent_string <- "Fabian Aiolfi [fabian.aiolfi@gess.ethz.ch]" # User-Agent string with your name and email
 
 
@@ -143,7 +144,7 @@ invisible(lapply(all_links, function(link) {
   } else {
     message("Failed to process file ", counter, " of ", length(all_links), "\n")
   }
-  Sys.sleep(1) # Be polite and do not overload the server
+  Sys.sleep(0.5) # Be polite and do not overload the server
   counter <<- counter + 1
 }))
 
@@ -151,13 +152,15 @@ invisible(lapply(all_links, function(link) {
 # 240714: First 653 files of ceps_eurlex_dir_reg_summaries
 # 240716: First 10275 files of ceps_eurlex_dir_reg_summaries
 # 240717: First 16463 files of ceps_eurlex_dir_reg_summaries
-scraped <- ceps_eurlex_dir_reg_summaries %>% 
-  head(n = 16463) %>% 
+# 240817_1: First 73 files of meta_dir_reg_summaries
+scraped <- meta_dir_reg_summaries %>% 
+  head(n = 73) %>% # n = number of CELEX IDs checked
   select(CELEX)
-write.csv(scraped, paste0(folder_path, "scraped_240717.csv"), row.names = FALSE)
+write.csv(scraped, paste0(folder_path, "scraped_240817_1.csv"), row.names = FALSE)
 
 
-# Load saved files as a dataframe
+# Load saved files as a dataframe ------------------------------
+
 # Get the list of all text files in the folder
 file_list <- list.files(path = folder_path, pattern = "\\.txt$", full.names = TRUE)
 
