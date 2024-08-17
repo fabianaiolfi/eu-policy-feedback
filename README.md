@@ -1,35 +1,40 @@
 # EU Policy Feedback
 
-## Deliverables by end of Aug 2024 (sorted by importance)
+## Deliverables by end of Aug 2024
 
-1. Collect all data (Must)
-- Update dataset to include all policies up to today (Aug 2024)
+### Must
 
-2. Complete Hix Høyland (2024) Recreation (Must)
-- Aim: Retrieve scores for both economic and social dimensions → This will result in 2 scores
-- Apply Hix Høyland (2024) technique on policy summaries → This will result in 2 scores
-- To do:
-	- [ ] Clean text appropriate for word embedding (e.g., remove frequent expressions, see below)
+- [x] Collect all data: `/data/data_collection/all_dir_reg.rds`
+  - Update dataset to include all policies up to today (Aug 2024)
 
-3. Improve LSS (Nice to Have)
-- Improve seed words to be more systematic and based on dictionaries such as [Wordscore](https://tutorials.quanteda.io/machine-learning/wordscores/) and [Wordfish](https://tutorials.quanteda.io/machine-learning/wordfish/)
-- Remove most frequent expressions (see [this paper](https://www.dropbox.com/scl/fi/u1dpvjp9bzmgbmebuqfs9/word_embeddings_for_the_analysis_of_ideological_placement_in_parliamentary_corpora.pdf?rlkey=x3uam6ph6nywag1rlggcobhe4&dl=0))
-- Calculate both dimensions (economic and social)
+- [ ] Complete Hix Høyland (2024) Recreation
+  - Aim: Retrieve scores for both economic and social dimensions → This will result in 2 scores
+  - Apply Hix Høyland (2024) technique on policy summaries → This will result in 2 scores
+  - To do:
+	  - [ ] Clean text appropriate for word embedding (e.g., remove frequent expressions, see below)
+  
+- [ ] Improve LSS
+  - Improve seed words to be more systematic and based on dictionaries such as [Wordscore](https://tutorials.quanteda.io/machine-learning/wordscores/) and [Wordfish](https://tutorials.quanteda.io/machine-learning/wordfish/)
+  - Remove most frequent expressions (see [this paper](https://www.dropbox.com/scl/fi/u1dpvjp9bzmgbmebuqfs9/word_embeddings_for_the_analysis_of_ideological_placement_in_parliamentary_corpora.pdf?rlkey=x3uam6ph6nywag1rlggcobhe4&dl=0))
+  - Calculate both dimensions (economic and social)
 
-4. ChatGPT Approach (Nice to Have)
-- Compare policy summary, preamble (like Hix Høyland (2024)) and entire text to evaluate output
-- Approaches
-	- 0-shot: Query a single law and ask ChatGPT to place it on a left-right scale. Query must clearly explain economic/social left-right dimension
-	- Compare and rank: Comapare two policy and pick the more left one. Then apply Elo ranking.
-- In order to overcome problem that distance between laws is unclear: Somehow combine scores from other techniques in order to retrieve ideological “distance” between laws
+### Nice to Have
+- [ ] ChatGPT Approach
+  - Compare policy summary, preamble (like Hix Høyland (2024)) and entire text to evaluate output
+  - Approaches
+	  - 0-shot: Query a single law and ask ChatGPT to place it on a left-right scale. Query must clearly explain economic/social left-right dimension
+	  - Compare and rank: Comapare two policy and pick the more left one. Then apply Elo ranking.
+  - In order to overcome problem that distance between laws is unclear: Somehow combine scores from other techniques in order to retrieve ideological “distance” between laws
 
-5. Systematic Evaluation of all Measurements (Nice to Have)
-- Compare results amongst themselves and with expert survey (e.g. [this expert survey](https://www.dropbox.com/scl/fi/392u06vxzhz6sqebe5mam/EU_Competencies_Index_codebook_v1.pdf?rlkey=vgbqc57dmxur7rakqpekdswy8&dl=0))
-- How reliable are the summaries compared to the preamble or entire text?
+- [ ] Systematic Evaluation of all Measurements (Nice to Have)
+  - Compare results amongst themselves and with expert survey (e.g. [this expert survey](https://www.dropbox.com/scl/fi/392u06vxzhz6sqebe5mam/EU_Competencies_Index_codebook_v1.pdf?rlkey=vgbqc57dmxur7rakqpekdswy8&dl=0))
+  - How reliable are the summaries compared to the preamble or entire text?
 
 ## General To Do
 - [ ] How to disregard / ignore laws that are *not* relevant? E.g. a law on abortion has no economic left-right ideology → One possible approach could be using a policy’s tags. Are there tags that indicate that a policy can be ignored?
 - [ ] Publish paper? Consider until end of Aug.
+
+--------
 
 ## Data Collection 1989 – Today
 - [x] CEPS EurLex (1952 – 2019)
