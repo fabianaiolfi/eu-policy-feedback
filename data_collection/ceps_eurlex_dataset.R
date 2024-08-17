@@ -22,7 +22,7 @@ ceps_eurlex_dir_reg <- ceps_eurlex %>%
   mutate(Date_document = as.Date(Date_document, format = "%Y-%m-%d")) %>%
   dplyr::filter(Date_document >= "1989-01-01") %>%
   dplyr::filter(str_detect(Act_type, "Regulation|Directive")) %>%
-  select(CELEX, act_raw_text, Act_type) %>%
+  select(CELEX, Date_document, act_raw_text, Act_type) %>%
   # Remove rows where act_raw_text is the string "nan"
   dplyr::filter(act_raw_text != "nan")
 
