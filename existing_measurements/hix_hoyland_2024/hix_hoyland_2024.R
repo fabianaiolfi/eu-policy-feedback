@@ -2,9 +2,9 @@
 # Recreate Hix Hoyland (2024) ------------------------------------
 
 # Load data
-ceps_eurlex_dir_reg_sample <- readRDS(file = here("data", "data_collection", "ceps_eurlex_dir_reg_sample.rds"))
+all_dir_reg_sample <- readRDS(file = here("data", "data_collection", "all_dir_reg.rds"))
 set.seed(project_seed)
-ceps_eurlex_dir_reg_sample <- ceps_eurlex_dir_reg_sample %>% slice_sample(n = 100, replace = F)
+all_dir_reg_sample <- all_dir_reg_sample %>% slice_sample(n = 100, replace = F)
 
 # Load examples from paper (Table 1, p. 13)
 ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
@@ -18,8 +18,21 @@ ceps_eurlex_dir_reg_sample <- ceps_eurlex %>% dplyr::filter(CELEX %in% ratings_d
 # Preprocessing: "For each piece of legislation, we classified each sentence in the preamble, until the phrase “Adopted this directive/regulation”, using a RoBERT-classifier trained on the corpus of party manifestos"
 
 # Get preamble string until “Adopted this directive/regulation”
-ceps_eurlex_dir_reg_sample <- ceps_eurlex_dir_reg_sample %>% 
-  mutate(preamble = str_extract(act_raw_text, "(?i).*?(?=Adopted this directive|Adopted this regulation)"))
+
+# Function to extract the preamble text
+extract_preamble <- function(text) {
+  # Use a case-insensitive regex to find the first occurrence of the keywords
+  match <- regexpr("(?i)(Adopted this directive|Adopted this regulation)", text, perl = TRUE)
+  
+  # If the keyword is found, truncate the string
+  if (match[1] != -1) {
+    return(substr(text, 1, match[1] - 1))
+  } else {
+    return(text)
+  }
+}
+
+all_dir_reg_sample <- all_dir_reg_sample %>% mutate(preamble = sapply(act_raw_text, extract_preamble))
 
 # "We split the preambles into segments of 100 words…"
 
@@ -31,7 +44,7 @@ split_into_segments <- function(text, segment_size = 100) {
 }
 
 # Perform split of preamble segments
-ceps_eurlex_dir_reg_sample <- ceps_eurlex_dir_reg_sample %>%
+all_dir_reg_sample <- all_dir_reg_sample %>%
   mutate(preamble_segment = map(preamble, split_into_segments)) %>%
   unnest_wider(preamble_segment, names_sep = "_")
 
@@ -55,11 +68,13 @@ RoBERT_classify_segments <- function(segments) {
 }
 
 # Apply the function to each row and create a new column 'labels'
-RoBERT_df <- ceps_eurlex_dir_reg_sample %>%
-  rowwise() %>%
-  mutate(RoBERT_rile_labels = RoBERT_classify_segments(c_across(starts_with("preamble_segment")))) %>%
-  ungroup() %>%
-  select(CELEX, RoBERT_rile_labels) # Select only the required columns
+RoBERT_df <- all_dir_reg_sample %>%
+  mutate(row_number = row_number()) %>% # Add row numbers to track progress
+  pmap_df(function(row_number, CELEX, ...) {
+    cat("Processing row", row_number, "of", nrow(all_dir_reg_sample), "\n")
+    RoBERT_rile_labels <- RoBERT_classify_segments(list(...)[startsWith(names(list(...)), "preamble_segment")])
+    tibble(CELEX = CELEX, RoBERT_rile_labels = RoBERT_rile_labels)
+  })
 
 
 ## ManiBERT: Classifier fine-tuned to identify the CMP policy-issue codes
