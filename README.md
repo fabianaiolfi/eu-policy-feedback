@@ -26,7 +26,7 @@
 	  - Compare and rank: Comapare two policy and pick the more left one. Then apply Elo ranking.
   - In order to overcome problem that distance between laws is unclear: Somehow combine scores from other techniques in order to retrieve ideological “distance” between laws
 
-- [ ] Systematic Evaluation of all Measurements (Nice to Have)
+- [ ] Systematic Evaluation of all Measurements
   - Compare results amongst themselves and with expert survey (e.g. [this expert survey](https://www.dropbox.com/scl/fi/392u06vxzhz6sqebe5mam/EU_Competencies_Index_codebook_v1.pdf?rlkey=vgbqc57dmxur7rakqpekdswy8&dl=0))
   - How reliable are the summaries compared to the preamble or entire text?
 
