@@ -44,8 +44,9 @@ meta_dir_reg_summaries <- meta_dir_reg %>%
 scraped_240714 <- read_csv(file = "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/eurlex_summaries/scraped_240714.csv")
 scraped_240716 <- read_csv(file = "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/eurlex_summaries/scraped_240716.csv")
 scraped_240717 <- read_csv(file = "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/eurlex_summaries/scraped_240717.csv")
-already_scraped <- bind_rows(scraped_240714, scraped_240716, scraped_240717)
-rm(scraped_240714, scraped_240716, scraped_240717)
+scraped_240818 <- read_csv(file = "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/eurlex_summaries/scraped_240818.csv")
+already_scraped <- bind_rows(scraped_240714, scraped_240716, scraped_240717, scraped_240818)
+rm(scraped_240714, scraped_240716, scraped_240717, scraped_240818)
 
 meta_dir_reg_summaries <- meta_dir_reg_summaries %>% 
   # Remove CELEX IDs that have been already scraped
@@ -153,10 +154,11 @@ invisible(lapply(all_links, function(link) {
 # 240716: First 10275 files of ceps_eurlex_dir_reg_summaries
 # 240717: First 16463 files of ceps_eurlex_dir_reg_summaries
 # 240817_1: First 73 files of meta_dir_reg_summaries
+# 240818: …
 scraped <- meta_dir_reg_summaries %>% 
-  head(n = 73) %>% # n = number of CELEX IDs checked
+  head(n = 45777) %>% # n = number of CELEX IDs checked
   select(CELEX)
-write.csv(scraped, paste0(folder_path, "scraped_240817_1.csv"), row.names = FALSE)
+write.csv(scraped, paste0(folder_path, "scraped_240818.csv"), row.names = FALSE)
 
 
 # Load saved files as a dataframe ------------------------------
