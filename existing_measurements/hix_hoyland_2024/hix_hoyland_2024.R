@@ -4,10 +4,14 @@
 
 ## Load data ---------------------------------
 
-all_dir_reg_sample <- readRDS(file = here("data", "data_collection", "all_dir_reg.rds"))
+all_dir_reg <- readRDS(file = here("data", "data_collection", "all_dir_reg.rds"))
+write.csv(all_dir_reg, file = here("data", "data_collection", "all_dir_reg.csv"), row.names = FALSE) # Save for Google Colab
+
+# Sample data
 set.seed(project_seed)
-all_dir_reg_sample <- all_dir_reg_sample %>% slice_sample(n = 100, replace = F)
-# saveRDS(all_dir_reg_sample, file = here("data", "data_collection", "all_dir_reg_sample.rds")) # Save for Google Colab testing
+all_dir_reg_sample <- all_dir_reg %>% slice_sample(n = 100, replace = F)
+write.csv(all_dir_reg_sample, file = here("data", "data_collection", "all_dir_reg_sample.csv"), row.names = FALSE) # Save for Google Colab
+
 
 # Load examples from paper (Table 1, p. 13)
 # ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
@@ -77,6 +81,7 @@ RoBERT_df <- all_dir_reg_sample %>%
   })
 
 saveRDS(RoBERT_df, file = here("existing_measurements", "hix_hoyland_2024", "RoBERT_df.rds"))
+write.csv(RoBERT_df, file = here("existing_measurements", "hix_hoyland_2024", "RoBERT_df.csv"), row.names = FALSE) # Save for Google Colab testing
 
 
 ## ManiBERT -------------------------------------
@@ -86,8 +91,6 @@ saveRDS(RoBERT_df, file = here("existing_measurements", "hix_hoyland_2024", "RoB
 ManiBERT_classifier <- hf_load_pipeline(
   task = "text-classification",
   model = "niksmer/ManiBERT")
-
-# ManiBERT_classifier(ceps_eurlex_dir_reg_sample$preamble_segment_50[2])[[1]]$label
 
 ManiBERT_df <- all_dir_reg_sample %>% 
   select(CELEX, starts_with("preamble_segment")) %>% 
