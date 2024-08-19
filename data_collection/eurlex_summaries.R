@@ -155,10 +155,11 @@ invisible(lapply(all_links, function(link) {
 # 240717: First 16463 files of ceps_eurlex_dir_reg_summaries
 # 240817_1: First 73 files of meta_dir_reg_summaries
 # 240818: …
+# 240819: …
 scraped <- meta_dir_reg_summaries %>% 
-  head(n = 45777) %>% # n = number of CELEX IDs checked
+  head(n = 1566) %>% # n = number of CELEX IDs checked
   select(CELEX)
-write.csv(scraped, paste0(folder_path, "scraped_240818.csv"), row.names = FALSE)
+write.csv(scraped, paste0(folder_path, "scraped_240819.csv"), row.names = FALSE)
 
 
 # Load saved files as a dataframe ------------------------------
