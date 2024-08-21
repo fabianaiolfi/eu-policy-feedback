@@ -28,3 +28,27 @@ ggplot(long_df, aes(x = value, fill = variable)) +
   labs(x = "Value", y = "Count") +
   scale_fill_brewer(palette = "Set2")
 ```
+
+**Distribution of Measurements: Summaries (N = 1637)**  
+Please note the log-scaled y-axis. Dotted red line highlights ideological middle (value of 0).
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Reshape the data to long format
+long_df <- hix_hoyland_data_summaries %>%
+  select(-CELEX) %>% 
+  pivot_longer(cols = everything(), 
+               names_to = "variable", 
+               values_to = "value")
+
+ggplot(long_df, aes(x = value, fill = variable)) +
+  geom_histogram(binwidth = 0.2, show.legend = FALSE) +
+  scale_y_log10(labels = label_comma()) +
+  xlim(-5, 5) +
+  facet_wrap(~ variable) +
+  geom_vline(xintercept = 0,
+             linetype = "dashed",
+             color = "red",
+             size = 0.25) +
+  theme_minimal() +
+  labs(x = "Value", y = "Count") +
+  scale_fill_brewer(palette = "Set2")
+```
