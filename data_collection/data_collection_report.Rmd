@@ -1,14 +1,101 @@
 ### Data Collection
 
-- the directives and regulations used in this research come from 2 sources: CEPS Eurlex dataset and manually scraped legislations using the `eurlex` R package (https://michalovadek.github.io/eurlex/)
+The directives and regulations used in this research come from two sources. The first is the [CEPS EurLex dataset](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/0EGYWY), which contains around 70k directives and regulations from 1989 to 2019. The second source is the [EUR-Lex website](https://eur-lex.europa.eu/), an official EU website providing access to EU law. EUR-Lex can be scraped using the [`eurlex`](https://michalovadek.github.io/eurlex/) R package, which has been done to retrieve post-2019 legislation up to August 2024 (the time of writing of this report).
 
-```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+EUR-Lex also provides a summary for some directives and regulations (see [this example](https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32019L0904&qid=1719922563047)). Summaries are provided on a case-by-case basis, as described [here](https://eur-lex.europa.eu/browse/summaries.html).
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
 all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg.rds"))
+all_dir_reg_summaries <- readRDS(here("data", "data_collection", "all_dir_reg_summaries.rds"))
+all_dir_reg <- all_dir_reg %>% left_join(all_dir_reg_summaries, by = "CELEX")
+```
 
-nrow(all_dir_reg)
-table(all_dir_reg$…) # number of regulations and directives
+#### Overview Directives and Regulations
+
+**Count of Directives and Regulations**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+table(all_dir_reg$Act_type)
+```
+
+**Oldest Legislation**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 min(all_dir_reg$Date_document)
-max(all_dir_reg$Date_document)
+```
 
-# maybe plot number of directives and regulations over time
+**Newest Legislation**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+max(all_dir_reg$Date_document)
+```
+
+**Directives and Regulations by Year**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Extract the year from the Date_document column
+all_dir_reg <- all_dir_reg %>% mutate(Year = format(Date_document, "%Y"))
+
+# Count the number of documents per Act_type per year
+document_counts <- all_dir_reg %>%
+  group_by(Year, Act_type) %>%
+  summarise(Count = n()) %>%
+  ungroup()
+
+# Create the bar chart using ggplot2
+ggplot(document_counts, aes(x = Year, y = Count, fill = forcats::fct_rev(Act_type))) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "",
+       x = "",
+       y = "",
+       fill = NULL) +  # Remove the legend's title
+  theme_minimal() +
+  theme(panel.grid.major.x = element_blank(), # Remove vertical grid lines
+        panel.grid.minor.x = element_blank()) + # Remove minor vertical grid lines
+  scale_x_discrete(breaks = scales::pretty_breaks(n = 5)) + # Display every 5 years on the x-axis
+  scale_fill_brewer(palette = "Set2") # Change the color scheme
+```
+
+#### Overview Summaries
+
+**Number of Summaries**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+overview_summaries <- all_dir_reg %>% drop_na(eurlex_summary_clean)
+nrow(overview_summaries)
+```
+
+**Summary Count of Regulations and Directives**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+table(overview_summaries$Act_type)
+```
+
+**Oldest Summary**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+min(overview_summaries$Date_document)
+```
+
+**Newest Summary**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+max(overview_summaries$Date_document)
+```
+
+**Summaries of Directives and Regulations by Year**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Extract the year from the Date_document column
+overview_summaries <- overview_summaries %>% mutate(Year = format(Date_document, "%Y"))
+
+# Count the number of documents per Act_type per year
+document_counts <- overview_summaries %>%
+  group_by(Year, Act_type) %>%
+  summarise(Count = n()) %>%
+  ungroup()
+
+# Create the bar chart using ggplot2
+ggplot(document_counts, aes(x = Year, y = Count, fill = forcats::fct_rev(Act_type))) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "",
+       x = "",
+       y = "",
+       fill = NULL) +  # Remove the legend's title
+  theme_minimal() +
+  theme(panel.grid.major.x = element_blank(), # Remove vertical grid lines
+        panel.grid.minor.x = element_blank()) + # Remove minor vertical grid lines
+  scale_x_discrete(breaks = scales::pretty_breaks(n = 5)) + # Display every 5 years on the x-axis
+  scale_fill_brewer(palette = "Set2") # Change the color scheme
 ```
