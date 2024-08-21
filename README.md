@@ -8,11 +8,10 @@
   - Update dataset to include all policies up to today (Aug 2024)
 - [x] Collect all summaries: `/data/data_collection/all_dir_reg_summaries.rds`
 
-- [ ] Complete Hix Høyland (2024) Recreation
-  - Aim: Retrieve scores for both economic and social dimensions → This will result in 2 scores
-  - Apply Hix Høyland (2024) technique on policy summaries → This will result in 2 scores
-  - To do:
-	  - [ ] Clean text appropriate for word embedding (e.g., remove frequent expressions, see below)
+- [x] Complete Hix Høyland (2024) Recreation
+  - [x] Retrieve scores for both economic and social dimensions
+  - [x] Apply Hix Høyland (2024) technique on policy summaries
+  - [ ] To do: Clean text appropriate for word embedding (e.g., remove frequent expressions, see below)
 
 ### Nice to Have
 - [ ] Improve LSS
@@ -54,6 +53,11 @@ Preview of `hix_hoyland_data.rds` (N = 74,743):
 | 32019L1995  |       -1.0986123   |         0.000000   |        0.0000000     |     0.0000000  |
 | 32021L0338  |       -3.4339872   |         0.000000   |        0.0000000     |     1.0986123  |
 
+`CELEX`: Unique CELEX identifier of an act ([more info](https://eur-lex.europa.eu/content/help/faq/celex-number.html))
+`RoBERT_left_right`: …
+`bakker_hobolt_econ`: …
+`bakker_hobolt_social`: …
+`cmp_left_right`: …
 
 **Minor differences to paper:**
 - Non-english texts were not translated into English (see p. 12)
