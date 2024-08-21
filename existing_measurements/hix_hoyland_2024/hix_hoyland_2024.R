@@ -81,7 +81,7 @@ RoBERT_df <- all_dir_reg_sample %>%
   })
 
 saveRDS(RoBERT_df, file = here("existing_measurements", "hix_hoyland_2024", "RoBERT_df.rds"))
-write.csv(RoBERT_df, file = here("existing_measurements", "hix_hoyland_2024", "RoBERT_df.csv"), row.names = FALSE) # Save for Google Colab testing
+RoBERT_df <- read.csv(file = here("existing_measurements", "hix_hoyland_2024", "RoBERT_df.csv")) # Load output from Google Colab
 
 
 ## ManiBERT -------------------------------------
@@ -107,6 +107,7 @@ ManiBERT_df <- all_dir_reg_sample %>%
   })
 
 saveRDS(ManiBERT_df, file = here("existing_measurements", "hix_hoyland_2024", "ManiBERT_df.rds"))
+ManiBERT_df <- read.csv(file = here("existing_measurements", "hix_hoyland_2024", "ManiBERT_df.csv")) # Load output from Google Colab
 
 # "We then use the adjusted categorization of CMP codes provided by Bakker and Hobolt (2013) to identify economic and social left-right sentences, and classify each EU legislation on these two scales separately."
 
@@ -141,9 +142,7 @@ bakker_hobolt_econ <- ManiBERT_df %>%
   count(bakker_hobolt_econ_label) %>% 
   # drop_na(bakker_hobolt_econ_label) %>% 
   # Convert to long format with label as columns
-  pivot_wider(names_from = bakker_hobolt_econ_label, values_from = n, values_fill = 0) %>% 
-  # Explicitly add "right" column
-  mutate(right = 0)
+  pivot_wider(names_from = bakker_hobolt_econ_label, values_from = n, values_fill = 0)
 
 # Bakker Hobolt Social Scale
 bakker_hobolt_social <- ManiBERT_df %>% 
@@ -153,9 +152,7 @@ bakker_hobolt_social <- ManiBERT_df %>%
   count(bakker_hobolt_galtan_label) %>% 
   # drop_na(bakker_hobolt_galtan_label) %>% 
   # Convert to long format with label as columns
-  pivot_wider(names_from = bakker_hobolt_galtan_label, values_from = n, values_fill = 0)# %>% 
-  # Explicitly add "right" column
-  # mutate(right = 0)
+  pivot_wider(names_from = bakker_hobolt_galtan_label, values_from = n, values_fill = 0)
 
 # CMP Scale
 cmp <- ManiBERT_df %>% 
@@ -163,11 +160,9 @@ cmp <- ManiBERT_df %>%
   # Count label in each group
   group_by(CELEX) %>% 
   count(cmp_label) %>% 
-  drop_na(cmp_label) %>%
+  # drop_na(cmp_label) %>%
   # Convert to long format with label as columns
-  pivot_wider(names_from = cmp_label, values_from = n, values_fill = 0) %>% 
-  # Explicitly add "right" column
-  mutate(right = 0)
+  pivot_wider(names_from = cmp_label, values_from = n, values_fill = 0)
 
 
 # 2. Calculate logit-scaled left-right position -------------------------------------------
