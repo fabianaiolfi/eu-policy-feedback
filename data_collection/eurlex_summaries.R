@@ -176,17 +176,17 @@ read_file_content <- function(file_path) {
 }
 
 # Read all files and combine them into a dataframe
-ceps_eurlex_dir_reg_summaries <- bind_rows(lapply(file_list, read_file_content))
-
+all_dir_reg_summaries <- bind_rows(lapply(file_list, read_file_content))
 
 
 # Clean Up Summaries ----------------------------------------------------------------
 
-ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg_summaries %>% 
+all_dir_reg_summaries <- all_dir_reg_summaries %>% 
   mutate(eurlex_summary = as.character(eurlex_summary)) %>% 
-  # replace "NA" and "character(0)" string with NA
+  # replace "NA", "character(0)" and "" strings with NA
   mutate(eurlex_summary = ifelse(eurlex_summary == "NA", NA, eurlex_summary)) %>% 
   mutate(eurlex_summary = ifelse(eurlex_summary == "character(0)", NA, eurlex_summary)) %>%
+  mutate(eurlex_summary = ifelse(eurlex_summary == "", NA, eurlex_summary)) %>%
   drop_na(eurlex_summary) %>% 
   mutate(eurlex_summary_clean = str_squish(eurlex_summary)) %>% # Remove excessive whitespace
   mutate(eurlex_summary_clean = str_replace_all(eurlex_summary_clean, "\n", " ")) %>% # Replace newline characters with space
@@ -197,4 +197,4 @@ ceps_eurlex_dir_reg_summaries <- ceps_eurlex_dir_reg_summaries %>%
 
 # Save to file ----------------------------------------------------------------
 
-saveRDS(ceps_eurlex_dir_reg_summaries, file = here("data", "data_collection", "ceps_eurlex_dir_reg_summaries_xx.rds"))
+saveRDS(all_dir_reg_summaries, file = here("data", "data_collection", "all_dir_reg_summaries.rds"))
