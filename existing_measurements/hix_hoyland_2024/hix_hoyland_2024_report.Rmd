@@ -1,0 +1,30 @@
+### Recreating Hix Høyland (2024)
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+hix_hoyland_data <- readRDS(here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data.rds"))
+hix_hoyland_data_summaries <- readRDS(here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data_summaries.rds"))
+```
+
+**Distribution of Measurements: All Directives and Regulations (N = 74,734)**  
+Please note the log-scaled y-axis. Dotted red line highlights ideological middle (value of 0).
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Reshape the data to long format
+long_df <- hix_hoyland_data %>%
+  select(-CELEX) %>% 
+  pivot_longer(cols = everything(), 
+               names_to = "variable", 
+               values_to = "value")
+
+ggplot(long_df, aes(x = value, fill = variable)) +
+  geom_histogram(binwidth = 0.2, show.legend = FALSE) +
+  scale_y_log10(labels = label_comma()) +
+  xlim(-5, 5) +
+  facet_wrap(~ variable) +
+  geom_vline(xintercept = 0,
+             linetype = "dashed",
+             color = "red",
+             size = 0.25) +
+  theme_minimal() +
+  labs(x = "Value", y = "Count") +
+  scale_fill_brewer(palette = "Set2")
+```

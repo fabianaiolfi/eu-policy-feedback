@@ -10,12 +10,16 @@ date: "`r Sys.Date()`"
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(scales)
 ```
 
 **Research Question**  
 How left or right are EU directives and regulations introduced between 1989 and 2024?
 
 ```{r child = 'data_collection/data_collection_report.Rmd'}
+```
+
+```{r child = 'existing_measurements/hix_hoyland_2024/hix_hoyland_2024_report.Rmd'}
 ```
 
 ```{r child = 'lss/lss_report.Rmd'}
