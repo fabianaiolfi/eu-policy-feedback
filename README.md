@@ -6,6 +6,7 @@
 
 - [x] Collect all data: `/data/data_collection/all_dir_reg.rds`
   - Update dataset to include all policies up to today (Aug 2024)
+- [x] Collect all summaries: `/data/data_collection/all_dir_reg_summaries.rds`
 
 - [ ] Complete Hix Høyland (2024) Recreation
   - Aim: Retrieve scores for both economic and social dimensions → This will result in 2 scores
@@ -33,6 +34,16 @@
 ## General To Do
 - [ ] How to disregard / ignore laws that are *not* relevant? E.g. a law on abortion has no economic left-right ideology → One possible approach could be using a policy’s tags. Are there tags that indicate that a policy can be ignored?
 - [ ] Publish paper? Consider until end of Aug.
+
+--------
+
+## Documentation
+
+### Recreating Hix Høyland (2024)
+- Provide preview of data output as a table
+- Minor differences to paper:
+  - Non-english texts were not translated into English (see p. 12)
+  - Did not split on the median word-length if “Adopted this directive/regulation” does not appear (see p. 12)
 
 --------
 
