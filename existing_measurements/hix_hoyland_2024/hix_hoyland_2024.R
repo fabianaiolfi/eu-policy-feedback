@@ -109,7 +109,7 @@ ManiBERT_df <- all_dir_reg_sample %>%
 saveRDS(ManiBERT_df, file = here("existing_measurements", "hix_hoyland_2024", "ManiBERT_df.rds"))
 ManiBERT_df <- read.csv(file = here("existing_measurements", "hix_hoyland_2024", "ManiBERT_df.csv")) # Load output from Google Colab
 
-# "We then use the adjusted categorization of CMP codes provided by Bakker and Hobolt (2013) to identify economic and social left-right sentences, and classify each EU legislation on these two scales separately."
+# "We then use the adjusted categorization of CMP codes provided by Bakker and Hobolt (2013) to identify economic and social left-right sentences, and classify each EU legislation on these two scales separately." (p. 12)
 
 # Table 2.2. CMP left-right dimension (p. 33)
 cmp_right <- c("pro-military", "freedom, human rights", "constitutionalism", "effective authority", "free enterprise", "economic incentives", "anti-protectionism", "economic orthodoxy", "social services limitation", "national way of life", "traditional morality", "law and order", "social harmony")
@@ -200,3 +200,22 @@ bakker_hobolt_econ <- bakker_hobolt_econ %>% mutate(economic = log(right + 0.5) 
 
 # Social Scale
 bakker_hobolt_social <- bakker_hobolt_social %>% mutate(social = log(right + 0.5) - log(left + 0.5))
+
+# CMP Scale
+cmp <- cmp %>% mutate(left_right = log(right + 0.5) - log(left + 0.5))
+
+
+## Merge Data -------------------------
+
+hix_hoyland_data <- RoBERT_df %>% 
+  select(CELEX, left_right) %>%
+  dplyr::filter(CELEX != "") %>% # Drop rows missing CELEX
+  rename(RoBERT_left_right = left_right) %>%
+  left_join(select(bakker_hobolt_econ, CELEX, economic), by = "CELEX") %>%
+  rename(bakker_hobolt_econ = economic) %>% 
+  left_join(select(bakker_hobolt_social, CELEX, social), by = "CELEX") %>%
+  rename(bakker_hobolt_social = social) %>% 
+  left_join(select(cmp, CELEX, left_right), by = "CELEX") %>%
+  rename(cmp_left_right = left_right)
+
+saveRDS(hix_hoyland_data, file = here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data.rds"))

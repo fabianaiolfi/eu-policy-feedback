@@ -39,11 +39,25 @@
 
 ## Documentation
 
+### Data Collection
+- Preview of all_dir_reg.rds and all_dir_reg_summaries.rds
+
 ### Recreating Hix Høyland (2024)
-- Provide preview of data output as a table
-- Minor differences to paper:
-  - Non-english texts were not translated into English (see p. 12)
-  - Did not split on the median word-length if “Adopted this directive/regulation” does not appear (see p. 12)
+Preview of `hix_hoyland_data.rds` (N = 74,743):
+
+|    CELEX    | RoBERT_left_right | bakker_hobolt_econ | bakker_hobolt_social | cmp_left_right |
+|-------------|-------------------|--------------------|----------------------|----------------|
+| 32019L2121  |       -4.1108739   |        -2.944439   |       -0.3364722     |    -0.3364722  |
+| 32020L0262  |        0.5108256   |         0.000000   |        0.0000000     |     0.0000000  |
+| 32019L1922  |       -1.0986123   |         0.000000   |       -2.1972246     |     0.0000000  |
+| 32019L2034  |       -4.2046926   |        -1.098612   |       -1.0986123     |    -1.6094379  |
+| 32019L1995  |       -1.0986123   |         0.000000   |        0.0000000     |     0.0000000  |
+| 32021L0338  |       -3.4339872   |         0.000000   |        0.0000000     |     1.0986123  |
+
+
+**Minor differences to paper:**
+- Non-english texts were not translated into English (see p. 12)
+- Did not split on the median word-length if “Adopted this directive/regulation” does not appear (see p. 12)
 
 --------
 
