@@ -4,20 +4,19 @@
 
 ### Must
 
-- [x] Collect all data: `/data/data_collection/all_dir_reg.rds`
-  - Update dataset to include all policies up to today (Aug 2024)
+- [x] Collect all data; Update dataset to include all policies up to mid August 2024: `/data/data_collection/all_dir_reg.rds`
 - [x] Collect all summaries: `/data/data_collection/all_dir_reg_summaries.rds`
 
-- [x] Complete Hix Høyland (2024) Recreation
+- [ ] Complete Hix Høyland (2024) Recreation
   - [x] Retrieve scores for both economic and social dimensions
   - [x] Apply Hix Høyland (2024) technique on policy summaries
   - [ ] To do: Clean text appropriate for word embedding (e.g., remove frequent expressions, see below)
 
 ### Nice to Have
 - [ ] Improve LSS
-  - Improve seed words to be more systematic and based on dictionaries such as [Wordscore](https://tutorials.quanteda.io/machine-learning/wordscores/) and [Wordfish](https://tutorials.quanteda.io/machine-learning/wordfish/)
-  - Remove most frequent expressions (see [this paper](https://www.dropbox.com/scl/fi/u1dpvjp9bzmgbmebuqfs9/word_embeddings_for_the_analysis_of_ideological_placement_in_parliamentary_corpora.pdf?rlkey=x3uam6ph6nywag1rlggcobhe4&dl=0))
-  - Calculate both dimensions (economic and social)
+  - [ ] Improve seed words to be more systematic and based on dictionaries such as [Wordscore](https://tutorials.quanteda.io/machine-learning/wordscores/) and [Wordfish](https://tutorials.quanteda.io/machine-learning/wordfish/)
+  - [ ] Remove most frequent expressions (see [this paper](https://www.dropbox.com/scl/fi/u1dpvjp9bzmgbmebuqfs9/word_embeddings_for_the_analysis_of_ideological_placement_in_parliamentary_corpora.pdf?rlkey=x3uam6ph6nywag1rlggcobhe4&dl=0))
+  - [ ] Calculate both dimensions (economic and social)
 
 - [ ] ChatGPT Approach
   - Compare policy summary, preamble (like Hix Høyland (2024)) and entire text to evaluate output
