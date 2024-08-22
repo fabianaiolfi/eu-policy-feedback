@@ -11,6 +11,7 @@ date: "`r Sys.Date()`"
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(scales)
+library(cowplot)
 ```
 
 **Research Question**  

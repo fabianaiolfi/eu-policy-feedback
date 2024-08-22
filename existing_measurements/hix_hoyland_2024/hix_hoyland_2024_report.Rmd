@@ -76,33 +76,45 @@ comparison <- hix_hoyland_data_summaries %>%
          cmp_left_right_preamble = cmp_left_right)
 ```
 
-**Scatter Plot with Line of Equality**
-*Red dashed line of equality shows where the values from the preamble and the summary would be equal. Points below the line indicate that preamble value is greater than the summary value (i.e., more right), and points above indicate the opposite.*  
-*Plot applies jitter in order to counteract overlapping points (e.g., at `0,0`).*
+**Scatter Plot with Line of Equality**  
+*Red dashed line of equality shows where the values from the preamble and the summary would be equal. Points below the line indicate that preamble value is greater than the summary value (i.e., more right), and points above indicate the opposite. Plot applies jitter in order to counteract overlapping points (e.g., at `0,0`).*
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(comparison, aes(x = RoBERT_left_right_preamble, y = RoBERT_left_right_summary)) +
-  geom_jitter(size = 1.5, alpha = 0.5, width = 0.1, height = 0.1) +
-  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "red") +
-  labs(x = "Preamble", y = "Summary", title = "") +
-  xlim(-6, 3) +
-  ylim(-6, 3) +
-  theme_minimal()
+# Define the pairs of preamble and summary columns
+prefixes <- c("RoBERT_left_right", "bakker_hobolt_econ", "bakker_hobolt_social", "cmp_left_right")
+
+# Function to generate the scatter plot for each pair
+generate_plot <- function(prefix) {
+  ggplot(comparison, aes_string(x = paste0(prefix, "_preamble"), y = paste0(prefix, "_summary"))) +
+    geom_jitter(size = 1, alpha = 0.3, width = 0.1, height = 0.1) +
+    geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "red") +
+    labs(x = "Preamble", y = "Summary", subtitle = prefix) +
+    theme_minimal()
+}
+
+# Generate the plots and display them
+plots <- map(prefixes, generate_plot)
+plot_grid(plotlist = plots, ncol = 2)
 ```
 
-
-**Mean-Difference Plot (Bland-Altman Plot)**
-*Red dashed line of equality shows where the values from the preamble and the summary would be equal. Points below the line indicate that preamble value is lower than the summary value (i.e., more left), and points above indicate the opposite.*  
-*Plot applies jitter in order to counteract overlapping points.*
+**Mean-Difference Plot (Bland-Altman Plot)**  
+*Red dashed line of equality shows where the values from the preamble and the summary would be equal. Points below the line indicate that preamble value is lower than the summary value (i.e., more left), and points above indicate the opposite. Plot applies jitter in order to counteract overlapping points.*
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-df <- comparison %>%
-  mutate(mean_value = (RoBERT_left_right_preamble + RoBERT_left_right_summary) / 2,
-         difference = RoBERT_left_right_preamble - RoBERT_left_right_summary)
+# Function to generate the Bland-Altman plot for each pair
+generate_bland_altman_plot <- function(prefix) {
+  df <- comparison %>%
+    mutate(mean_value = (get(paste0(prefix, "_preamble")) + get(paste0(prefix, "_summary"))) / 2,
+           difference = get(paste0(prefix, "_preamble")) - get(paste0(prefix, "_summary")))
+  
+  ggplot(df, aes(x = mean_value, y = difference)) +
+    geom_jitter(size = 1, alpha = 0.3, width = 0.1, height = 0.1) +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+    labs(x = "Mean of Preamble and Summary", y = "Preamble - Summary",
+         subtitle = prefix) +
+    theme_minimal()
+}
 
-ggplot(df, aes(x = mean_value, y = difference)) +
-  geom_jitter(size = 1.5, alpha = 0.5, width = 0.1, height = 0.1) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
-  labs(x = "Mean of Preamble and Summary", y = "Difference (Preamble - Summary)", title = "") +
-  theme_minimal()
-
+bland_altman_plots <- map(prefixes, generate_bland_altman_plot)
+plot_grid(plotlist = bland_altman_plots, ncol = 2)
 ```
+
 
