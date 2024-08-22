@@ -7,20 +7,24 @@ seed <- as.seedwords(dict$ideology, concatenator = " ")
 
 # Import CEPS data -----------------------
 
-ceps_eurlex_dir_reg <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg_sample.rds"))
-
+all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg.rds"))
 
 # Clean corpus --------------------------
 # https://tutorials.quanteda.io/machine-learning/lss/
 
+all_dir_reg <- all_dir_reg %>% distinct(CELEX, .keep_all = T)
+
+# Create subset
+all_dir_reg <- all_dir_reg %>% head(n = 10)
+
 # Convert to corpus object
-ceps_eurlex_dir_reg <- corpus(ceps_eurlex_dir_reg,
-                              docid_field = "CELEX",
-                              text_field = "act_raw_text",
-                              meta = "test_id")
+all_dir_reg <- corpus(all_dir_reg,
+                      docid_field = "CELEX",
+                      text_field = "act_raw_text",
+                      meta = "test_id")
 
 # Tokenize text corpus and remove various features
-corp_sent <- corpus_reshape(ceps_eurlex_dir_reg, to = "sentences") # to = "paragraphs"
+corp_sent <- corpus_reshape(all_dir_reg, to = "sentences") # to = "paragraphs"
 
 toks_sent <- corp_sent %>% 
   tokens(remove_punct = TRUE,
@@ -148,8 +152,9 @@ lss <- as.textmodel_lss(mt, seed)
 glove_polarity_scores <- predict(lss, newdata = dfmat_sent)
 
 # Calculate average document polarity based on sentence weight
-glove_polarity_scores <- as.data.frame(glove_polarity_scores)
-glove_polarity_scores$CELEX <- rownames(glove_polarity_scores) # Convert row names to column
+glove_polarity_scores <- data.frame(
+  CELEX = names(glove_polarity_scores),
+  glove_polarity_scores = as.numeric(glove_polarity_scores))
 glove_polarity_scores <- glove_polarity_scores %>% left_join(toks_sent_df, by = c("CELEX" = "sent_id")) # Add sentence weight
 glove_polarity_scores$CELEX <- gsub("\\..*", "", glove_polarity_scores$CELEX) # Remove all characters after the "."
 
@@ -157,7 +162,7 @@ glove_polarity_scores <- glove_polarity_scores %>%
   group_by(CELEX) %>%
   summarise(avg_glove_polarity_scores = weighted.mean(glove_polarity_scores, sent_weight, na.rm = T))
 
-saveRDS(glove_polarity_scores, file = here("data", "lss", "glove_polarity_scores_240710.rds"))
+saveRDS(glove_polarity_scores, file = here("data", "lss", "glove_polarity_scores_xxxx.rds"))
 
 
 # Selection and evaluation of seed words ---------------
