@@ -5,7 +5,8 @@ hix_hoyland_data <- readRDS(here("existing_measurements", "hix_hoyland_2024", "h
 hix_hoyland_data_summaries <- readRDS(here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data_summaries.rds"))
 ```
 
-**Distribution of Ideological Values: All Directives and Regulations (N = 74,734)**  
+#### Distribution of Ideological Values
+**All Directives and Regulations (N = 74,734)**  
 *Please note the log-scaled y-axis*  
 *Negative values: More left*  
 *Positive values: More right*  
@@ -32,7 +33,7 @@ ggplot(long_df, aes(x = value, fill = variable)) +
   scale_fill_brewer(palette = "Set2")
 ```
 
-**Distribution of Ideological Values: Summaries (N = 1637)**  
+**All Summaries (N = 1637)**  
 *Please note the log-scaled y-axis*  
 *Negative values: More left*  
 *Positive values: More right*  
@@ -58,3 +59,50 @@ ggplot(long_df, aes(x = value, fill = variable)) +
   labs(x = "Value", y = "Count") +
   scale_fill_brewer(palette = "Set2")
 ```
+
+#### Comparing Preamble with Summaries
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# Merge preamble and summary dataframes
+comparison <- hix_hoyland_data_summaries %>% 
+  rename(RoBERT_left_right_summary = RoBERT_left_right,
+         bakker_hobolt_econ_summary = bakker_hobolt_econ,
+         bakker_hobolt_social_summary = bakker_hobolt_social,
+         cmp_left_right_summary = cmp_left_right) %>% 
+  left_join(hix_hoyland_data, by = "CELEX") %>% 
+  rename(RoBERT_left_right_preamble = RoBERT_left_right,
+         bakker_hobolt_econ_preamble = bakker_hobolt_econ,
+         bakker_hobolt_social_preamble = bakker_hobolt_social,
+         cmp_left_right_preamble = cmp_left_right)
+```
+
+**Scatter Plot with Line of Equality**
+*Red dashed line of equality shows where the values from the preamble and the summary would be equal. Points below the line indicate that preamble value is greater than the summary value (i.e., more right), and points above indicate the opposite.*  
+*Plot applies jitter in order to counteract overlapping points (e.g., at `0,0`).*
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(comparison, aes(x = RoBERT_left_right_preamble, y = RoBERT_left_right_summary)) +
+  geom_jitter(size = 1.5, alpha = 0.5, width = 0.1, height = 0.1) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "red") +
+  labs(x = "Preamble", y = "Summary", title = "") +
+  xlim(-6, 3) +
+  ylim(-6, 3) +
+  theme_minimal()
+```
+
+
+**Mean-Difference Plot (Bland-Altman Plot)**
+*Red dashed line of equality shows where the values from the preamble and the summary would be equal. Points below the line indicate that preamble value is lower than the summary value (i.e., more left), and points above indicate the opposite.*  
+*Plot applies jitter in order to counteract overlapping points.*
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+df <- comparison %>%
+  mutate(mean_value = (RoBERT_left_right_preamble + RoBERT_left_right_summary) / 2,
+         difference = RoBERT_left_right_preamble - RoBERT_left_right_summary)
+
+ggplot(df, aes(x = mean_value, y = difference)) +
+  geom_jitter(size = 1.5, alpha = 0.5, width = 0.1, height = 0.1) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  labs(x = "Mean of Preamble and Summary", y = "Difference (Preamble - Summary)", title = "") +
+  theme_minimal()
+
+```
+
