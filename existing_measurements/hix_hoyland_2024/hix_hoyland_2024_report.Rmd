@@ -5,8 +5,11 @@ hix_hoyland_data <- readRDS(here("existing_measurements", "hix_hoyland_2024", "h
 hix_hoyland_data_summaries <- readRDS(here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data_summaries.rds"))
 ```
 
-**Distribution of Measurements: All Directives and Regulations (N = 74,734)**  
-Please note the log-scaled y-axis. Dotted red line highlights ideological middle (value of 0).
+**Distribution of Ideological Values: All Directives and Regulations (N = 74,734)**  
+*Please note the log-scaled y-axis*  
+*Negative values: More left*  
+*Positive values: More right*  
+*Dotted red line highlights ideological middle (value of 0)*  
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 # Reshape the data to long format
 long_df <- hix_hoyland_data %>%
@@ -29,8 +32,11 @@ ggplot(long_df, aes(x = value, fill = variable)) +
   scale_fill_brewer(palette = "Set2")
 ```
 
-**Distribution of Measurements: Summaries (N = 1637)**  
-Please note the log-scaled y-axis. Dotted red line highlights ideological middle (value of 0).
+**Distribution of Ideological Values: Summaries (N = 1637)**  
+*Please note the log-scaled y-axis*  
+*Negative values: More left*  
+*Positive values: More right*  
+*Dotted red line highlights ideological middle (value of 0)*  
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 # Reshape the data to long format
 long_df <- hix_hoyland_data_summaries %>%
