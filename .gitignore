@@ -36,10 +36,12 @@ rsconnect/
 lss_cache/
 *.rds
 *.rda
+
 # Custom Ignores
 data/
 report.html
 access_key.txt
+manifesto_apikey.txt
 *.pdf
 sandbox.R
 *.csv
