@@ -15,7 +15,13 @@
 ### Nice to Have
 - [ ] Improve LSS
   - [ ] Improve seed words to be more systematic and based on dictionaries such as [Wordscore](https://tutorials.quanteda.io/machine-learning/wordscores/) and [Wordfish](https://tutorials.quanteda.io/machine-learning/wordfish/)
-  - [ ] Remove most frequent expressions (see [this paper](https://www.dropbox.com/scl/fi/u1dpvjp9bzmgbmebuqfs9/word_embeddings_for_the_analysis_of_ideological_placement_in_parliamentary_corpora.pdf?rlkey=x3uam6ph6nywag1rlggcobhe4&dl=0))
+  - [ ] Preprocess text (see [this paper](https://www.dropbox.com/scl/fi/u1dpvjp9bzmgbmebuqfs9/word_embeddings_for_the_analysis_of_ideological_placement_in_parliamentary_corpora.pdf?rlkey=x3uam6ph6nywag1rlggcobhe4&dl=0))
+    - [ ] Subsampling (random removal of frequent words)
+    - [x] Remove digits
+    - [x] Remove words with two letters or fewer
+    - [x] Remove English stop words, including overly common procedural words
+    - [x] Limit the vocabulary to tokens with a minimum count of 50 occurrences
+  - [ ] Detect collocations
   - [ ] Calculate both dimensions (economic and social)
 
 - [ ] ChatGPT Approach
