@@ -5,7 +5,7 @@
 
 # all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg_sample.rds")) # 100 docs
 all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg.rds"))
-all_dir_reg <- all_dir_reg %>% slice_sample(n = 100)
+all_dir_reg <- all_dir_reg %>% slice_sample(n = 5000)
 
 procedural_stop_words <- scan(here("lss", "procedural_stop_words.txt"), character(), quote = "")
 
@@ -34,6 +34,9 @@ toks_all_dir_reg <- all_dir_reg_corpus %>%
   tokens_remove("\\b(?=\\w*[A-Za-z])(?=\\w*\\d)\\w+\\b", valuetype = "regex") %>% # Remove mixed letter-number tokens
   tokens_remove("\\b(?=.*\\d)(?=.*[[:punct:]])\\S+\\b", valuetype = "regex") %>% # Remove mixed letter-punctuation tokens
   tokens_remove(min_nchar = 3) # Remove tokens that are shorter than 3 characters
+
+# Create bigrams
+# toks_all_dir_reg <- tokens_ngrams(toks_all_dir_reg, n = 2)
 
 # Create document-feature matrix
 dfmat_all_dir_reg <- dfm(toks_all_dir_reg)
@@ -97,3 +100,5 @@ full_feature_scores_df <- data.frame(
   feature = tokens,
   beta = beta,
   psi = psi)
+
+# saveRDS(full_feature_scores_df, file = here("lss", "full_feature_scores_df_5k_unigrams.rds"))
