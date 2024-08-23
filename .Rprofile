@@ -12,6 +12,9 @@ library(LSX)
 library(quanteda)
 library(text2vec)
 
+# Wordfish
+library(quanteda.textmodels)
+
 # Scraping
 library(rvest)
 library(xml2)
