@@ -15,6 +15,9 @@ library(text2vec)
 # Wordfish
 library(quanteda.textmodels)
 
+# Wordscore
+library(manifestoR)
+
 # Scraping
 library(rvest)
 library(xml2)
