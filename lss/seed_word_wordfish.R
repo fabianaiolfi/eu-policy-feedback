@@ -1,11 +1,14 @@
 
 # Seed Words: Wordfish Approach -----------------------
 
+project_seed <- 999
+set.seed(project_seed)
+
 ## Import data -----------------------
 
 # all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg_sample.rds")) # 100 docs
 all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg.rds"))
-all_dir_reg <- all_dir_reg %>% slice_sample(n = 5000)
+all_dir_reg <- all_dir_reg %>% slice_sample(n = 1000)
 
 procedural_stop_words <- scan(here("lss", "procedural_stop_words.txt"), character(), quote = "")
 
@@ -19,9 +22,9 @@ all_dir_reg <- all_dir_reg %>%
 
 # Convert to corpus object
 all_dir_reg_corpus <- corpus(all_dir_reg,
-                      docid_field = "CELEX",
-                      text_field = "act_raw_text",
-                      meta = "test_id")
+                             docid_field = "CELEX",
+                             text_field = "act_raw_text",
+                             meta = "test_id")
 
 # Clean text
 toks_all_dir_reg <- all_dir_reg_corpus %>% 
@@ -36,7 +39,7 @@ toks_all_dir_reg <- all_dir_reg_corpus %>%
   tokens_remove(min_nchar = 3) # Remove tokens that are shorter than 3 characters
 
 # Create bigrams
-# toks_all_dir_reg <- tokens_ngrams(toks_all_dir_reg, n = 2)
+toks_all_dir_reg <- tokens_ngrams(toks_all_dir_reg, n = 2)
 
 # Create document-feature matrix
 dfmat_all_dir_reg <- dfm(toks_all_dir_reg)
