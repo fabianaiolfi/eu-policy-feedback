@@ -1,6 +1,7 @@
 
 # Seed Words: Wordscores Approach -----------------------
 
+
 ## Get Manifesto Data -----------------------
 
 parties_MPDataset <- read.csv(file = here("lss", "parties_MPDataset_MPDS2024a.csv"))
@@ -33,10 +34,12 @@ w_europe <- c("Sweden", "Norway", "Denmark", "Finland", "Belgium", "Netherlands"
                "Luxembourg", "France", "Italy", "Spain", "Greece", "Portugal",
                "Germany", "Austria", "Switzerland", "United Kingdom", "Ireland", "Cyprus")
 
+# English manifesto texts
 subset_manifesto_corpus <- english_translation_manifesto_corpus %>% 
   dplyr::filter(date > 198900) %>% 
   dplyr::filter(countryname %in% w_europe)
 
+# Manifesto IDs and their RILE score
 MPDataset_MPDS2024a_subset <- MPDataset_MPDS2024a %>% 
   dplyr::filter(date > 198900) %>% 
   mutate(manifesto_id = paste0(party, "_", date)) %>% 
@@ -53,75 +56,85 @@ subset_manifesto_corpus <- subset_manifesto_corpus %>%
 subset_manifesto_corpus <- subset_manifesto_corpus %>% 
   left_join(MPDataset_MPDS2024a_subset, by = "manifesto_id")
 
-# Convert to corpus object ######## CONTINUE HERE ##############
-test_df <- corpus(subset_manifesto_corpus,
-                  docid_field = "manifesto_id",
-                  text = "text")
-                  # rile = "rile")
-                  # meta = "test_id")
-# head(test_df)
-# subset_manifesto_corpus$text[1]
+# Convert to corpus object
+subset_manifesto_corpus_obj <- corpus(subset_manifesto_corpus,
+                                      docid_field = "manifesto_id",
+                                      text_field = "text")
+
+
+## Train Wordscores model -----------------------------
+# Guide/Documentation: https://tutorials.quanteda.io/machine-learning/wordscores/
 
 # tokenize texts
-toks_ger <- tokens(test_df, remove_punct = TRUE)
+toks_manifesto <- tokens(subset_manifesto_corpus_obj, remove_punct = TRUE)
 
 # create a document-feature matrix
-dfmat_ger <- dfm(toks_ger) %>% 
+dfmat_manifesto <- dfm(toks_manifesto) %>% 
   dfm_remove(pattern = stopwords("de"))
 
 # apply Wordscores algorithm to document-feature matrix
-tmod_ws <- textmodel_wordscores(dfmat_ger, y = corp_ger$ref_score, smooth = 1)
-summary(tmod_ws)
+tmod_ws <- textmodel_wordscores(dfmat_manifesto, y = subset_manifesto_corpus$rile , smooth = 1)
+
+# Extract Wordscores
+wordscores_manifesto <- tmod_ws$wordscores
+wordscores_manifesto <- as.data.frame(wordscores_manifesto)
+wordscores_manifesto <- wordscores_manifesto %>% rownames_to_column(var = "token")
+
+######## CONTINUE HERE ##############
+# create bigrams
+
+
+
 
 
 #####
 
 
-
-# corpus <- mp_corpus_df(date == 202103, translation = "en")
-
-doclist <- mp_metadata(TRUE) %>% dplyr::filter(translation_en == TRUE | language == "english")
-
-# w_europe <- c("swedish", "norwegian", "danish", "finnish", "french", "dutch", "german", "italian",
-#               "spanish", "greek", "portuguese", "english")
-
-w_europe <- doclist %>% 
-  dplyr::filter(date > 198900) %>% 
-  dplyr::filter(language %in% w_europe)
-  
-
-#test_df <- my_doclist %>% slice_sample(n = 10)
-
-#corpus_test <- mp_corpus_df(ids = (manifesto_id == "160956_201905"))
-
-# english_annotated <- mp_availability(TRUE) %>% dplyr::filter(annotations == TRUE & language == "english")
-english_translation <- mp_availability(TRUE) %>% dplyr::filter(translation_en == TRUE | language == "english")
-
-corpus_test <- mp_corpus(english_translation)
-saveRDS(corpus_test, file = here("lss", "corpus_test.rds"))
-
-corpus_test_df <- mp_corpus_df(english_translation)
-saveRDS(corpus_test_df, file = here("lss", "corpus_test_df.rds"))
-
-corpus_test_df_3 <- mp_corpus_df(english_translation, translation = "en")
-saveRDS(corpus_test_df_3, file = here("lss", "corpus_test_df_3.rds"))
-
-max(corpus_test_df_3$date)
-
-###################
-
-my_doclist$party
-my_doclist$date
-
-corpus_test_df_2 <- mp_corpus_df(party == 11220 & date == 200609,
-                                 translation = "en")
-
-
-corpus_test_df_2 <- mp_corpus_df(party == my_doclist$party & date == my_doclist$date,
-                                 translation = "en")
-
-
-
-
-
-
+# 
+# # corpus <- mp_corpus_df(date == 202103, translation = "en")
+# 
+# doclist <- mp_metadata(TRUE) %>% dplyr::filter(translation_en == TRUE | language == "english")
+# 
+# # w_europe <- c("swedish", "norwegian", "danish", "finnish", "french", "dutch", "german", "italian",
+# #               "spanish", "greek", "portuguese", "english")
+# 
+# w_europe <- doclist %>% 
+#   dplyr::filter(date > 198900) %>% 
+#   dplyr::filter(language %in% w_europe)
+#   
+# 
+# #test_df <- my_doclist %>% slice_sample(n = 10)
+# 
+# #corpus_test <- mp_corpus_df(ids = (manifesto_id == "160956_201905"))
+# 
+# # english_annotated <- mp_availability(TRUE) %>% dplyr::filter(annotations == TRUE & language == "english")
+# english_translation <- mp_availability(TRUE) %>% dplyr::filter(translation_en == TRUE | language == "english")
+# 
+# corpus_test <- mp_corpus(english_translation)
+# saveRDS(corpus_test, file = here("lss", "corpus_test.rds"))
+# 
+# corpus_test_df <- mp_corpus_df(english_translation)
+# saveRDS(corpus_test_df, file = here("lss", "corpus_test_df.rds"))
+# 
+# corpus_test_df_3 <- mp_corpus_df(english_translation, translation = "en")
+# saveRDS(corpus_test_df_3, file = here("lss", "corpus_test_df_3.rds"))
+# 
+# max(corpus_test_df_3$date)
+# 
+# ###################
+# 
+# my_doclist$party
+# my_doclist$date
+# 
+# corpus_test_df_2 <- mp_corpus_df(party == 11220 & date == 200609,
+#                                  translation = "en")
+# 
+# 
+# corpus_test_df_2 <- mp_corpus_df(party == my_doclist$party & date == my_doclist$date,
+#                                  translation = "en")
+# 
+# 
+# 
+# 
+# 
+# 
