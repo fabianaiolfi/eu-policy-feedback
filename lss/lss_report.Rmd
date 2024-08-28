@@ -49,7 +49,7 @@ all_wordscores_manifesto_datasets <- lapply(all_wordscores_manifesto_datasets, f
 ```
 
 **RILE: Right-left position of party as given in Michael Laver/Ian Budge**  
-_Most negative values (left-wing terms)_
+_Most negative values (left-wing terms)_  
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 # Set number of rows to be shown in tables
 nr_of_rows <- 3
@@ -59,7 +59,12 @@ print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_2
 print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_3"]], nr_of_rows), row.names = FALSE)
 print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_4"]], nr_of_rows), row.names = FALSE)
 ```
-
+More results:
+[Unigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_rile_ngram_1_head.csv) |
+[Bigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_rile_ngram_2_head.csv) |
+[Trigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_rile_ngram_3_head.csv) |
+[4-grams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_rile_ngram_4_head.csv)
+  
 _Most positive values (right-wing terms)_
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_1"]], nr_of_rows), row.names = FALSE)
@@ -67,6 +72,12 @@ print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_2
 print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_3"]], nr_of_rows), row.names = FALSE)
 print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_4"]], nr_of_rows), row.names = FALSE)
 ```
+More results:
+[Unigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_rile_ngram_1_tail.csv) |
+[Bigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_rile_ngram_2_tail.csv) |
+[Trigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_rile_ngram_3_tail.csv) |
+[4-grams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_rile_ngram_4_tail.csv)
+
 
 **Planeco: per403 + per404 + per412**  
 _Most negative values (left-wing terms)_
@@ -76,6 +87,11 @@ print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_planeco_ngra
 print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_planeco_ngram_3"]], nr_of_rows), row.names = FALSE)
 print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_planeco_ngram_4"]], nr_of_rows), row.names = FALSE)
 ```
+More results:
+[Unigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_planeco_ngram_1_head.csv) |
+[Bigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_planeco_ngram_2_head.csv) |
+[Trigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_planeco_ngram_3_head.csv) |
+[4-grams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_planeco_ngram_4_head.csv)
 
 _Most positive values (right-wing terms)_
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -84,6 +100,11 @@ print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_planeco_ngra
 print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_planeco_ngram_3"]], nr_of_rows), row.names = FALSE)
 print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_planeco_ngram_4"]], nr_of_rows), row.names = FALSE)
 ```
+More results:
+[Unigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_planeco_ngram_1_tail.csv) |
+[Bigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_planeco_ngram_2_tail.csv) |
+[Trigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_planeco_ngram_3_tail.csv) |
+[4-grams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_planeco_ngram_4_tail.csv)
 
 **Markeco: per401 + per414**  
 _Most negative values (left-wing terms)_
@@ -93,6 +114,11 @@ print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_markeco_ngra
 print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_markeco_ngram_3"]], nr_of_rows), row.names = FALSE)
 print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_markeco_ngram_4"]], nr_of_rows), row.names = FALSE)
 ```
+More results:
+[Unigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_markeco_ngram_1_head.csv) |
+[Bigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_markeco_ngram_2_head.csv) |
+[Trigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_markeco_ngram_3_head.csv) |
+[4-grams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_markeco_ngram_4_head.csv)
 
 _Most positive values (right-wing terms)_
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -101,6 +127,11 @@ print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_markeco_ngra
 print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_markeco_ngram_3"]], nr_of_rows), row.names = FALSE)
 print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_markeco_ngram_4"]], nr_of_rows), row.names = FALSE)
 ```
+More results:
+[Unigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_markeco_ngram_1_tail.csv) |
+[Bigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_markeco_ngram_2_tail.csv) |
+[Trigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_markeco_ngram_3_tail.csv) |
+[4-grams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_markeco_ngram_4_tail.csv)
 
 **Welfare: per503 + per504**  
 _Most negative values (left-wing terms)_
@@ -110,6 +141,11 @@ print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_welfare_ngra
 print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_welfare_ngram_3"]], nr_of_rows), row.names = FALSE)
 print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_welfare_ngram_4"]], nr_of_rows), row.names = FALSE)
 ```
+More results:
+[Unigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_welfare_ngram_1_head.csv) |
+[Bigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_welfare_ngram_2_head.csv) |
+[Trigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_welfare_ngram_3_head.csv) |
+[4-grams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_welfare_ngram_4_head.csv)
 
 _Most positive values (right-wing terms)_
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -118,6 +154,11 @@ print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_welfare_ngra
 print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_welfare_ngram_3"]], nr_of_rows), row.names = FALSE)
 print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_welfare_ngram_4"]], nr_of_rows), row.names = FALSE)
 ```
+More results:
+[Unigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_welfare_ngram_1_tail.csv) |
+[Bigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_welfare_ngram_2_tail.csv) |
+[Trigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_welfare_ngram_3_tail.csv) |
+[4-grams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_welfare_ngram_4_tail.csv)
 
 #### LSS Evaluation
 
