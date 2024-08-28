@@ -117,4 +117,4 @@ bland_altman_plots <- map(prefixes, generate_bland_altman_plot)
 plot_grid(plotlist = bland_altman_plots, ncol = 2)
 ```
 
-
+TO DO: Plot interpretation
