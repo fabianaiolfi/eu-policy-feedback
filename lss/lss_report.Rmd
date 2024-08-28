@@ -7,7 +7,7 @@ LSS is a method for measuring the semantic similarity between documents and a se
 In a first approach, I manually come up my own seed words:
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-dict <- dictionary(file = here("lss", "left_right_v3.yml"))
+dict <- dictionary(file = here("lss", "seed_words_econ_manual.yml"))
 seed <- as.seedwords(dict$ideology, concatenator = " ")
 ```
 
@@ -42,7 +42,9 @@ all_wordscores_manifesto_datasets <- lapply(rds_files, readRDS) # Load all .rds 
 names(all_wordscores_manifesto_datasets) <- gsub("\\.rds$", "", basename(rds_files))
 
 all_wordscores_manifesto_datasets <- lapply(all_wordscores_manifesto_datasets, function(df) {
-  df %>% arrange(wordscores_manifesto)  # Replace 'token' with the column name you want to sort by
+  df %>%
+    arrange(wordscores_manifesto) %>% # Replace 'token' with the column name you want to sort by
+    select(-wordscores_manifesto) # Remove scores, as these are not needed for report
 })
 ```
 
@@ -50,7 +52,7 @@ all_wordscores_manifesto_datasets <- lapply(all_wordscores_manifesto_datasets, f
 _Most negative values (left-wing terms)_
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 # Set number of rows to be shown in tables
-nr_of_rows <- 10
+nr_of_rows <- 3
 
 print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_1"]], nr_of_rows), row.names = FALSE)
 print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_2"]], nr_of_rows), row.names = FALSE)
