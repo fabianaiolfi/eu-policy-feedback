@@ -37,6 +37,10 @@ library(reticulate)
 # hf_python_depends()
 library(huggingfaceR) # https://github.com/farach/huggingfaceR # https://rdrr.io/github/farach/huggingfaceR/
 
+# Plotting
+library(scales)
+library(cowplot)
+
 # Set Seed
 project_seed <- 123
 set.seed(project_seed)

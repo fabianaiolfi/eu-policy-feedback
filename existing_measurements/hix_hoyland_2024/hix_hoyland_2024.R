@@ -81,7 +81,7 @@ RoBERT_df <- all_dir_reg_sample %>%
   })
 
 saveRDS(RoBERT_df, file = here("existing_measurements", "hix_hoyland_2024", "RoBERT_df.rds"))
-RoBERT_df <- read.csv(file = here("existing_measurements", "hix_hoyland_2024", "RoBERT_df.csv")) # Load output from Google Colab
+RoBERT_df <- read.csv(file = here("existing_measurements", "hix_hoyland_2024", "RoBERT_df_add_preprocessing.csv")) # Load output from Google Colab
 
 
 ## ManiBERT -------------------------------------
@@ -107,7 +107,7 @@ ManiBERT_df <- all_dir_reg_sample %>%
   })
 
 saveRDS(ManiBERT_df, file = here("existing_measurements", "hix_hoyland_2024", "ManiBERT_df.rds"))
-ManiBERT_df <- read.csv(file = here("existing_measurements", "hix_hoyland_2024", "ManiBERT_df.csv")) # Load output from Google Colab
+ManiBERT_df <- read.csv(file = here("existing_measurements", "hix_hoyland_2024", "ManiBERT_df_add_preprocessing.csv")) # Load output from Google Colab
 
 # "We then use the adjusted categorization of CMP codes provided by Bakker and Hobolt (2013) to identify economic and social left-right sentences, and classify each EU legislation on these two scales separately." (p. 12)
 
@@ -141,6 +141,7 @@ bakker_hobolt_econ <- ManiBERT_df %>%
   group_by(CELEX) %>% 
   count(bakker_hobolt_econ_label) %>% 
   # drop_na(bakker_hobolt_econ_label) %>% 
+  mutate(right = 0) %>% # Some datasets do not have any "right" tags, so column must be added manually
   # Convert to long format with label as columns
   pivot_wider(names_from = bakker_hobolt_econ_label, values_from = n, values_fill = 0)
 
@@ -218,4 +219,4 @@ hix_hoyland_data <- RoBERT_df %>%
   left_join(select(cmp, CELEX, left_right), by = "CELEX") %>%
   rename(cmp_left_right = left_right)
 
-saveRDS(hix_hoyland_data, file = here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data.rds"))
+saveRDS(hix_hoyland_data, file = here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data_add_preprocessing.rds"))

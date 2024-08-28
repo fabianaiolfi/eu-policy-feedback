@@ -10,13 +10,13 @@
 - [ ] Complete Hix Høyland (2024) Recreation
   - [x] Retrieve scores for both economic and social dimensions
   - [x] Apply Hix Høyland (2024) technique on policy summaries
-  - [ ] To do: Clean text appropriate for word embedding (e.g., remove frequent expressions, see below)
+  - [x] To do: Clean text appropriate for word embedding (e.g., remove frequent expressions, see below)
 
 ### Nice to Have
 - [ ] Improve LSS
-  - [ ] Improve seed words to be more systematic and based on dictionaries such as [Wordscore](https://tutorials.quanteda.io/machine-learning/wordscores/) and [Wordfish](https://tutorials.quanteda.io/machine-learning/wordfish/)
-  - [ ] Preprocess text (see [this paper](https://www.dropbox.com/scl/fi/u1dpvjp9bzmgbmebuqfs9/word_embeddings_for_the_analysis_of_ideological_placement_in_parliamentary_corpora.pdf?rlkey=x3uam6ph6nywag1rlggcobhe4&dl=0))
-    - [ ] Subsampling (random removal of frequent words)
+  - [x] Improve seed words to be more systematic and based on dictionaries such as [Wordscore](https://tutorials.quanteda.io/machine-learning/wordscores/) and [Wordfish](https://tutorials.quanteda.io/machine-learning/wordfish/)
+  - [x] Preprocess text (see [this paper](https://www.dropbox.com/scl/fi/u1dpvjp9bzmgbmebuqfs9/word_embeddings_for_the_analysis_of_ideological_placement_in_parliamentary_corpora.pdf?rlkey=x3uam6ph6nywag1rlggcobhe4&dl=0))
+    - [x] Subsampling (random removal of frequent words)
     - [x] Remove digits
     - [x] Remove words with two letters or fewer
     - [x] Remove English stop words, including overly common procedural words
