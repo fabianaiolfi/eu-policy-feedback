@@ -68,6 +68,13 @@ Preview of `hix_hoyland_data.rds` (N = 74,743):
 - Non-english texts were not translated into English (see p. 12)
 - Did not split on the median word-length if “Adopted this directive/regulation” does not appear (see p. 12)
 
+### LSS
+[add documentation here]
+
+#### Seed Word Selection
+- systematic approach: using Wordfish and Wordscores to extract seed words from legislations and from party manifestos
+
+
 --------
 
 ## Data Collection 1989 – Today
