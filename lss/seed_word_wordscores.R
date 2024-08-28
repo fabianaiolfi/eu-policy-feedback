@@ -43,11 +43,11 @@ subset_manifesto_corpus <- english_translation_manifesto_corpus %>%
   dplyr::filter(date > 198900) %>% 
   dplyr::filter(countryname %in% w_europe)
 
-# Manifesto IDs and their RILE score
+# Manifesto IDs and their scores
 MPDataset_MPDS2024a_subset <- MPDataset_MPDS2024a %>% 
   dplyr::filter(date > 198900) %>% 
   mutate(manifesto_id = paste0(party, "_", date)) %>% 
-  select(manifesto_id, rile)
+  select(manifesto_id, rile, planeco, markeco, welfare)
 
 
 ## Create Corpus --------------------
@@ -71,48 +71,50 @@ subset_manifesto_corpus_obj <- corpus(subset_manifesto_corpus,
 
 # Use for-loop to create different ngram sizes (1 to 4)
 
-for (i in 1:4) {
-  
-  # Clean and tokenize texts
-  toks_manifesto <- subset_manifesto_corpus_obj %>% 
-    tokens(remove_punct = TRUE,
-           remove_symbols = TRUE, 
-           remove_numbers = TRUE,
-           remove_url = TRUE) %>% 
-    tokens_remove(quanteda::stopwords("en", source = "marimo")) %>% 
-    tokens_remove(manifesto_stop_words) %>%  # Remove corpus specific irrelevant words
-    tokens_remove("\\b(?=\\w*[A-Za-z])(?=\\w*\\d)\\w+\\b", valuetype = "regex") %>% # Remove mixed letter-number tokens
-    tokens_remove("\\b(?=.*\\d)(?=.*[[:punct:]])\\S+\\b", valuetype = "regex") %>% # Remove mixed letter-punctuation tokens
-    tokens_remove(min_nchar = 3) # Remove tokens that are shorter than 3 characters
-  
-  # Set ngram length
-  toks_manifesto <- tokens_ngrams(toks_manifesto, n = i)
-  
-  # create a document-feature matrix
-  dfmat_manifesto <- dfm(toks_manifesto)
-  
-  # Limit the vocabulary to tokens with a minimum count of n occurrences
-  dfmat_manifesto <- dfm_trim(dfmat_manifesto, min_termfreq = 50)
-  
-  # apply Wordscores algorithm to document-feature matrix
-  tmod_ws <- textmodel_wordscores(dfmat_manifesto, y = subset_manifesto_corpus$rile , smooth = 1)
-  
-  # Extract Wordscores
-  wordscores_manifesto <- tmod_ws$wordscores
-  wordscores_manifesto <- as.data.frame(wordscores_manifesto)
-  wordscores_manifesto <- wordscores_manifesto %>% rownames_to_column(var = "token")
-  
-  filename <- paste0("wordscores_manifesto_ngram_", i, ".rds")
-  
-  # Save to file
-  saveRDS(wordscores_manifesto, file = here("lss", filename))
-  
-  message("Completed ", i, " of 4")
-  
-  }
+# List of variables to process
+variables <- c("rile", "planeco", "markeco", "welfare")
 
-# Load all ngram sizes
-wordscores_manifesto_ngram_1 <- readRDS(file = here("lss", "wordscores_manifesto_ngram_1.rds"))
-wordscores_manifesto_ngram_2 <- readRDS(file = here("lss", "wordscores_manifesto_ngram_2.rds"))
-wordscores_manifesto_ngram_3 <- readRDS(file = here("lss", "wordscores_manifesto_ngram_3.rds"))
-wordscores_manifesto_ngram_4 <- readRDS(file = here("lss", "wordscores_manifesto_ngram_4.rds"))
+# Outer loop over variables
+for (variable in variables) {
+  
+  # Inner loop over n-gram lengths
+  for (i in 1:4) {
+    
+    # Clean and tokenize texts
+    toks_manifesto <- subset_manifesto_corpus_obj %>% 
+      tokens(remove_punct = TRUE,
+             remove_symbols = TRUE, 
+             remove_numbers = TRUE,
+             remove_url = TRUE) %>% 
+      tokens_remove(quanteda::stopwords("en", source = "marimo")) %>% 
+      tokens_remove(manifesto_stop_words) %>%  # Remove corpus specific irrelevant words
+      tokens_remove("\\b(?=\\w*[A-Za-z])(?=\\w*\\d)\\w+\\b", valuetype = "regex") %>% # Remove mixed letter-number tokens
+      tokens_remove("\\b(?=.*\\d)(?=.*[[:punct:]])\\S+\\b", valuetype = "regex") %>% # Remove mixed letter-punctuation tokens
+      tokens_remove(min_nchar = 3) # Remove tokens that are shorter than 3 characters
+    
+    # Set n-gram length
+    toks_manifesto <- tokens_ngrams(toks_manifesto, n = i)
+    
+    # Create a document-feature matrix
+    dfmat_manifesto <- dfm(toks_manifesto)
+    
+    # Limit the vocabulary to tokens with a minimum count of n occurrences
+    dfmat_manifesto <- dfm_trim(dfmat_manifesto, min_termfreq = 50)
+    
+    # Apply Wordscores algorithm to document-feature matrix
+    tmod_ws <- textmodel_wordscores(dfmat_manifesto, y = subset_manifesto_corpus[[variable]], smooth = 1)
+    
+    # Extract Wordscores
+    wordscores_manifesto <- tmod_ws$wordscores
+    wordscores_manifesto <- as.data.frame(wordscores_manifesto)
+    wordscores_manifesto <- wordscores_manifesto %>% rownames_to_column(var = "token")
+    
+    # Create filename using both variable and n-gram length
+    filename <- paste0("wordscores_manifesto_", variable, "_ngram_", i, ".rds")
+    
+    # Save to file
+    saveRDS(wordscores_manifesto, file = here("lss", "wordscores_manifesto_datasets", filename))
+    
+    message("Completed ", variable, " with n-gram length ", i, " of 4")
+  }
+}
