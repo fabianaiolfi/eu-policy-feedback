@@ -1,0 +1,22 @@
+ideology:
+    left: [
+      "national insurance",
+      "child welfare",
+      "health service",
+      "higher education",
+      "renewable energy",
+      "government pension fund",
+      "earned income tax credit",
+      "early childhood education care",
+      "active labor market policy",
+      "low middle income earners",
+      "mental health care",
+      "public social security system",
+      "social market economy",
+      "social housing",
+      "public services",
+      "good working conditions"
+    ]
+    right: [
+      "personal responsibility"
+    ]
