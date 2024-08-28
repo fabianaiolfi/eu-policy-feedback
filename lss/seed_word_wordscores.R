@@ -118,3 +118,42 @@ for (variable in variables) {
     message("Completed ", variable, " with n-gram length ", i, " of 4")
   }
 }
+
+
+## Export head() and tail() of dataframes for report ----------------------
+
+# Load all .rds files from wordscores_manifesto_datasets
+rds_dir <- here("lss", "wordscores_manifesto_datasets")  # Specify the directory containing the .rds files
+rds_files <- list.files(path = rds_dir, pattern = "\\.rds$", full.names = TRUE) # List all .rds files in the directory
+all_wordscores_manifesto_datasets <- lapply(rds_files, readRDS) # Load all .rds files into a list
+
+names(all_wordscores_manifesto_datasets) <- gsub("\\.rds$", "", basename(rds_files))
+
+all_wordscores_manifesto_datasets <- lapply(all_wordscores_manifesto_datasets, function(df) {
+  df %>%
+    arrange(wordscores_manifesto)# Replace 'token' with the column name you want to sort by
+})
+
+# Define number of rows
+nr_of_rows <- 20
+
+# Loop over each dataframe in the list
+for (name in names(all_wordscores_manifesto_datasets)) {
+  
+  # Extract the dataframe
+  df <- all_wordscores_manifesto_datasets[[name]]
+  
+  # Get the head and tail of the dataframe
+  df_head <- head(df, nr_of_rows)
+  df_tail <- tail(df, nr_of_rows)
+  
+  # Define filenames for head and tail
+  head_filename <- paste0(name, "_head.csv")
+  tail_filename <- paste0(name, "_tail.csv")
+  
+  # Save head and tail as separate CSV files
+  write.csv(df_head, file = here("lss", "wordscores_manifesto_seed_words", head_filename), row.names = FALSE)
+  write.csv(df_tail, file = here("lss", "wordscores_manifesto_seed_words", tail_filename), row.names = FALSE)
+  
+  message("Saved head and tail for ", name)
+}
