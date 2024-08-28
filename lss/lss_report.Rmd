@@ -1,6 +1,10 @@
 ### Latent Semantic Scaling (LSS)
 
-LSS is a method for measuring the semantic similarity between documents and a set of seed words. In our case, each directive or regulation is a document and the seed words convey "typical" left-right terms. I apply these seed words:
+LSS is a method for measuring the semantic similarity between documents and a set of seed words. In our case, each directive or regulation is a document and the seed words convey "typical" left-right terms. The semantic similarity between documents and seed words is calculated using word embeddings provided by [GloVe](https://nlp.stanford.edu/projects/glove/). To keep computation efficient, I use the smallest pre-trained word vectors model available (6B tokens, 400K vocab, 50 dimensions).
+
+#### Seed Word Selection: Own Seed Words
+
+In a first approach, I create my own seed words:
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 dict <- dictionary(file = here("lss", "left_right_v3.yml"))
@@ -20,9 +24,53 @@ right_terms <- names(right_terms)
 right_terms
 ```
 
-The semantic similarity between documents and seed words is calculated using word embeddings provided by [GloVe](https://nlp.stanford.edu/projects/glove/). To keep computation efficient, I use the smallest pre-trained word vectors model available (6B tokens, 400K vocab, 50 dimensions).
+#### Seed Word Selection: Systematic Approach
 
-#### Evaluation
+In a second approach, I apply two different models to extract seed words from text. I apply [Wordscores](https://tutorials.quanteda.io/machine-learning/wordscores/) to extract seed words from party manifestos. I also use [Wordfish](https://tutorials.quanteda.io/machine-learning/wordfish/) to extract seed words from existing legislations.
+
+##### Wordscores
+
+I apply the Wordscores model using reference scores from the [Manifesto Project](https://manifesto-project.wzb.eu/). Specifically, I use `rile` […].
+The following tables display the top and bottom of the tables displaysing extracted Wordscore scores for terms extracted from the manifestos. Negative values are associated with left-wing characteristics, positive values with right-wing subjects.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+wordscores_manifesto_ngram_1 <- readRDS(file = here("lss", "wordscores_manifesto_ngram_1.rds"))
+wordscores_manifesto_ngram_2 <- readRDS(file = here("lss", "wordscores_manifesto_ngram_2.rds"))
+wordscores_manifesto_ngram_3 <- readRDS(file = here("lss", "wordscores_manifesto_ngram_3.rds"))
+wordscores_manifesto_ngram_4 <- readRDS(file = here("lss", "wordscores_manifesto_ngram_4.rds"))
+
+wordscores_manifesto_ngram_1 <- wordscores_manifesto_ngram_1 %>% arrange(wordscores_manifesto)
+wordscores_manifesto_ngram_2 <- wordscores_manifesto_ngram_2 %>% arrange(wordscores_manifesto)
+wordscores_manifesto_ngram_3 <- wordscores_manifesto_ngram_3 %>% arrange(wordscores_manifesto)
+wordscores_manifesto_ngram_4 <- wordscores_manifesto_ngram_4 %>% arrange(wordscores_manifesto)
+```
+
+**Unigrams**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+head(wordscores_manifesto_ngram_1)
+tail(wordscores_manifesto_ngram_1)
+```
+
+**Bigrams**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+head(wordscores_manifesto_ngram_2)
+tail(wordscores_manifesto_ngram_2)
+```
+
+**Trigrams**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+head(wordscores_manifesto_ngram_3)
+tail(wordscores_manifesto_ngram_3)
+```
+
+**4-grams**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+head(wordscores_manifesto_ngram_4)
+tail(wordscores_manifesto_ngram_4)
+```
+
+
+#### LSS Evaluation
 
 How well can LSS measure the left-right polarity of EU policies? To answer this question, I analyse the keywords that are attached to each document. The EU gives each policy a set of keywords that describe the policy's content. If LSS works correctly, then the keywords should be associated with economic left/right terms. There are two sets of keywords, as described in the [dataset’s codebook](https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/0EGYWY/RVEJU9&version=2.0):
 
