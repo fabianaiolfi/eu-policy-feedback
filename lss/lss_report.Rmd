@@ -2,9 +2,9 @@
 
 LSS is a method for measuring the semantic similarity between documents and a set of seed words. In our case, each directive or regulation is a document and the seed words convey "typical" left-right terms. The semantic similarity between documents and seed words is calculated using word embeddings provided by [GloVe](https://nlp.stanford.edu/projects/glove/). To keep computation efficient, I use the smallest pre-trained word vectors model available (6B tokens, 400K vocab, 50 dimensions).
 
-#### Seed Word Selection: Own Seed Words
+#### Seed Word Selection: Manual Seed Words
 
-In a first approach, I create my own seed words:
+In a first approach, I manually come up my own seed words:
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 dict <- dictionary(file = here("lss", "left_right_v3.yml"))
@@ -50,7 +50,7 @@ all_wordscores_manifesto_datasets <- lapply(all_wordscores_manifesto_datasets, f
 _Most negative values (left-wing terms)_
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 # Set number of rows to be shown in tables
-nr_of_rows <- 3
+nr_of_rows <- 10
 
 print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_1"]], nr_of_rows), row.names = FALSE)
 print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_2"]], nr_of_rows), row.names = FALSE)
