@@ -31,44 +31,91 @@ In a second approach, I apply two different models to extract seed words from te
 ##### Wordscores
 
 I apply the Wordscores model using reference scores from the [Manifesto Project](https://manifesto-project.wzb.eu/). Specifically, I use `rile` […].
-The following tables display the top and bottom of the tables displaysing extracted Wordscore scores for terms extracted from the manifestos. Negative values are associated with left-wing characteristics, positive values with right-wing subjects.
+The following tables display the top and bottom of the tables displaysing extracted Wordscore scores for terms extracted from the manifestos. Negative values are associated with left-wing terms, positive values with right-wing terms
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-wordscores_manifesto_ngram_1 <- readRDS(file = here("lss", "wordscores_manifesto_ngram_1.rds"))
-wordscores_manifesto_ngram_2 <- readRDS(file = here("lss", "wordscores_manifesto_ngram_2.rds"))
-wordscores_manifesto_ngram_3 <- readRDS(file = here("lss", "wordscores_manifesto_ngram_3.rds"))
-wordscores_manifesto_ngram_4 <- readRDS(file = here("lss", "wordscores_manifesto_ngram_4.rds"))
+# Load all .rds files from wordscores_manifesto_datasets
+rds_dir <- here("lss", "wordscores_manifesto_datasets")  # Specify the directory containing the .rds files
+rds_files <- list.files(path = rds_dir, pattern = "\\.rds$", full.names = TRUE) # List all .rds files in the directory
+all_wordscores_manifesto_datasets <- lapply(rds_files, readRDS) # Load all .rds files into a list
 
-wordscores_manifesto_ngram_1 <- wordscores_manifesto_ngram_1 %>% arrange(wordscores_manifesto)
-wordscores_manifesto_ngram_2 <- wordscores_manifesto_ngram_2 %>% arrange(wordscores_manifesto)
-wordscores_manifesto_ngram_3 <- wordscores_manifesto_ngram_3 %>% arrange(wordscores_manifesto)
-wordscores_manifesto_ngram_4 <- wordscores_manifesto_ngram_4 %>% arrange(wordscores_manifesto)
+names(all_wordscores_manifesto_datasets) <- gsub("\\.rds$", "", basename(rds_files))
+
+all_wordscores_manifesto_datasets <- lapply(all_wordscores_manifesto_datasets, function(df) {
+  df %>% arrange(wordscores_manifesto)  # Replace 'token' with the column name you want to sort by
+})
 ```
 
-**Unigrams**
+**RILE: Right-left position of party as given in Michael Laver/Ian Budge**  
+_Most negative values (left-wing terms)_
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-head(wordscores_manifesto_ngram_1)
-tail(wordscores_manifesto_ngram_1)
+# Set number of rows to be shown in tables
+nr_of_rows <- 3
+
+print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_1"]], nr_of_rows), row.names = FALSE)
+print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_2"]], nr_of_rows), row.names = FALSE)
+print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_3"]], nr_of_rows), row.names = FALSE)
+print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_4"]], nr_of_rows), row.names = FALSE)
 ```
 
-**Bigrams**
+_Most positive values (right-wing terms)_
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-head(wordscores_manifesto_ngram_2)
-tail(wordscores_manifesto_ngram_2)
+print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_1"]], nr_of_rows), row.names = FALSE)
+print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_2"]], nr_of_rows), row.names = FALSE)
+print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_3"]], nr_of_rows), row.names = FALSE)
+print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_rile_ngram_4"]], nr_of_rows), row.names = FALSE)
 ```
 
-**Trigrams**
+**Planeco: per403 + per404 + per412**  
+_Most negative values (left-wing terms)_
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-head(wordscores_manifesto_ngram_3)
-tail(wordscores_manifesto_ngram_3)
+print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_planeco_ngram_1"]], nr_of_rows), row.names = FALSE)
+print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_planeco_ngram_2"]], nr_of_rows), row.names = FALSE)
+print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_planeco_ngram_3"]], nr_of_rows), row.names = FALSE)
+print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_planeco_ngram_4"]], nr_of_rows), row.names = FALSE)
 ```
 
-**4-grams**
+_Most positive values (right-wing terms)_
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-head(wordscores_manifesto_ngram_4)
-tail(wordscores_manifesto_ngram_4)
+print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_planeco_ngram_1"]], nr_of_rows), row.names = FALSE)
+print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_planeco_ngram_2"]], nr_of_rows), row.names = FALSE)
+print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_planeco_ngram_3"]], nr_of_rows), row.names = FALSE)
+print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_planeco_ngram_4"]], nr_of_rows), row.names = FALSE)
 ```
 
+**Markeco: per401 + per414**  
+_Most negative values (left-wing terms)_
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_markeco_ngram_1"]], nr_of_rows), row.names = FALSE)
+print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_markeco_ngram_2"]], nr_of_rows), row.names = FALSE)
+print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_markeco_ngram_3"]], nr_of_rows), row.names = FALSE)
+print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_markeco_ngram_4"]], nr_of_rows), row.names = FALSE)
+```
+
+_Most positive values (right-wing terms)_
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_markeco_ngram_1"]], nr_of_rows), row.names = FALSE)
+print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_markeco_ngram_2"]], nr_of_rows), row.names = FALSE)
+print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_markeco_ngram_3"]], nr_of_rows), row.names = FALSE)
+print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_markeco_ngram_4"]], nr_of_rows), row.names = FALSE)
+```
+
+**Welfare: per503 + per504**  
+_Most negative values (left-wing terms)_
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_welfare_ngram_1"]], nr_of_rows), row.names = FALSE)
+print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_welfare_ngram_2"]], nr_of_rows), row.names = FALSE)
+print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_welfare_ngram_3"]], nr_of_rows), row.names = FALSE)
+print(head(all_wordscores_manifesto_datasets[["wordscores_manifesto_welfare_ngram_4"]], nr_of_rows), row.names = FALSE)
+```
+
+_Most positive values (right-wing terms)_
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_welfare_ngram_1"]], nr_of_rows), row.names = FALSE)
+print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_welfare_ngram_2"]], nr_of_rows), row.names = FALSE)
+print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_welfare_ngram_3"]], nr_of_rows), row.names = FALSE)
+print(tail(all_wordscores_manifesto_datasets[["wordscores_manifesto_welfare_ngram_4"]], nr_of_rows), row.names = FALSE)
+```
 
 #### LSS Evaluation
 
