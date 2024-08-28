@@ -2,7 +2,7 @@
 
 LSS is a method for measuring the semantic similarity between documents and a set of seed words. In our case, each directive or regulation is a document and the seed words convey "typical" left-right terms. The semantic similarity between documents and seed words is calculated using word embeddings provided by [GloVe](https://nlp.stanford.edu/projects/glove/). To keep computation efficient, I use the smallest pre-trained word vectors model available (6B tokens, 400K vocab, 50 dimensions).
 
-#### Seed Word Selection: Manual Seed Words
+#### Seed Word: Manual Seed Words
 
 In a first approach, I manually come up my own seed words:
 
@@ -24,7 +24,7 @@ right_terms <- names(right_terms)
 right_terms
 ```
 
-#### Seed Word Selection: Systematic Approach
+#### Seed Word: Systematic Approach
 
 In a second approach, I apply two different models to extract seed words from text. I apply [Wordscores](https://tutorials.quanteda.io/machine-learning/wordscores/) to extract seed words from party manifestos. I also use [Wordfish](https://tutorials.quanteda.io/machine-learning/wordfish/) to extract seed words from existing legislations.
 
@@ -159,6 +159,39 @@ More results:
 [Bigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_welfare_ngram_2_tail.csv) |
 [Trigrams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_welfare_ngram_3_tail.csv) |
 [4-grams](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/wordscores_manifesto_seed_words/wordscores_manifesto_welfare_ngram_4_tail.csv)
+
+##### Wordfish
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+full_feature_scores_df_5k_unigrams <- readRDS(file = here("lss", "wordfish_output", "full_feature_scores_df_5k_unigrams.rds"))
+full_feature_scores_df_5k_bigrams <- readRDS(file = here("lss", "wordfish_output", "full_feature_scores_df_5k_bigrams.rds"))
+full_feature_scores_df_10k_bigrams <- readRDS(file = here("lss", "wordfish_output", "full_feature_scores_df_10k_bigrams.rds"))
+```
+
+Wordfish is an unsupervised method, meaning that it estimates the positions of documents solely based on the observed word frequencies. Due to computational restraints, I could only process a random sample of 5k and 10k legislations while running the Wordfish model. I believe that including more or even all 70k legislations would not render much different results or would not justify the longer compute time.
+
+The tables below display features (i.e., tokens) and their respective beta (i.e., the estimated effect of the token on the latent dimension). A positive beta value indicates that the word is more associated with the positive side of the dimension, while a negative beta value indicates association with the negative side. As the tables display below, the results are difficult to interpret. Tokens on both sides of the latent dimension (i.e., highest and lowest beta values) cannot be assigned to a political dimension.
+
+**Wordfish Scores: Random Subsample of 5000 Legislations (Unigrams, highest and lowest beta values)**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+full_feature_scores_df_5k_unigrams %>% select(-psi) %>% arrange(-beta) %>% head(10)
+full_feature_scores_df_5k_unigrams %>% select(-psi) %>% arrange(beta) %>% head(10)
+```
+
+**Wordfish Scores: Random Subsample of 5000 Legislations (Bigrams, highest and lowest beta values)**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+full_feature_scores_df_5k_bigrams %>% select(-psi) %>% arrange(-beta) %>% head(10)
+full_feature_scores_df_5k_bigrams %>% select(-psi) %>% arrange(beta) %>% head(10)
+```
+
+**Wordfish Scores: Random Subsample of 10,000 Legislations (Bigrams, highest and lowest beta values)**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+full_feature_scores_df_10k_bigrams %>% select(-psi) %>% arrange(-beta) %>% head(10)
+full_feature_scores_df_10k_bigrams %>% select(-psi) %>% arrange(beta) %>% head(10)
+```
+
+##### Evaluation
+Both methods do not return satisfying results. Some terms returned by Wordscores faintly resemble the manual seed words. On the other hand, almost all terms returned by Wordfish cannot be assigned to a clear political side or topic. The Wordscore and Wordfish seed words will not be applied in the LSS method for the time being.
 
 #### LSS Evaluation
 

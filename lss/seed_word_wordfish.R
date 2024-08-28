@@ -104,4 +104,4 @@ full_feature_scores_df <- data.frame(
   beta = beta,
   psi = psi)
 
-# saveRDS(full_feature_scores_df, file = here("lss", "full_feature_scores_df_5k_unigrams.rds"))
+# saveRDS(full_feature_scores_df, file = here("lss", "wordfish_output", "full_feature_scores_df_5k_unigrams.rds"))
