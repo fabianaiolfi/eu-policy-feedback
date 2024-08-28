@@ -4,9 +4,9 @@
 
 ## Load Data -----------------------
 
-# Manifesto Data 
-parties_MPDataset <- read.csv(file = here("lss", "parties_MPDataset_MPDS2024a.csv"))
-MPDataset_MPDS2024a <- read.csv(file = here("data", "lss", "MPDataset_MPDS2024a.csv"))
+# Manifesto Data (https://manifesto-project.wzb.eu/datasets)
+parties_MPDataset <- read.csv(file = here("lss", "parties_MPDataset_MPDS2024a.csv")) # Dataset
+MPDataset_MPDS2024a <- read.csv(file = here("data", "lss", "MPDataset_MPDS2024a.csv")) # Parties
 
 manifesto_stop_words <- scan(here("lss", "manifesto_stop_words.txt"), character(), quote = "")
 
