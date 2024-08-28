@@ -2,10 +2,13 @@
 # Seed Words: Wordscores Approach -----------------------
 
 
-## Get Manifesto Data -----------------------
+## Load Data -----------------------
 
+# Manifesto Data 
 parties_MPDataset <- read.csv(file = here("lss", "parties_MPDataset_MPDS2024a.csv"))
 MPDataset_MPDS2024a <- read.csv(file = here("data", "lss", "MPDataset_MPDS2024a.csv"))
+
+manifesto_stop_words <- scan(here("lss", "manifesto_stop_words.txt"), character(), quote = "")
 
 # Documentation:
 # https://manifesto-project.wzb.eu/information/documents/translation
@@ -19,6 +22,7 @@ english_translation <- mp_availability(TRUE) %>%
 
 english_translation_manifesto_corpus <- mp_corpus_df(english_translation, translation = "en")
 
+# Save / load dataset
 saveRDS(english_translation_manifesto_corpus, file = here("lss", "english_translation_manifesto_corpus.rds"))
 english_translation_manifesto_corpus <- readRDS(file = here("lss", "english_translation_manifesto_corpus.rds"))
 
@@ -63,78 +67,52 @@ subset_manifesto_corpus_obj <- corpus(subset_manifesto_corpus,
 
 
 ## Train Wordscores model -----------------------------
-# Guide/Documentation: https://tutorials.quanteda.io/machine-learning/wordscores/
+# Wordscores Guide/Documentation: https://tutorials.quanteda.io/machine-learning/wordscores/
 
-# tokenize texts
-toks_manifesto <- tokens(subset_manifesto_corpus_obj, remove_punct = TRUE)
+# Use for-loop to create different ngram sizes (1 to 4)
 
-# create a document-feature matrix
-dfmat_manifesto <- dfm(toks_manifesto) %>% 
-  dfm_remove(pattern = stopwords("de"))
+for (i in 1:4) {
+  
+  # Clean and tokenize texts
+  toks_manifesto <- subset_manifesto_corpus_obj %>% 
+    tokens(remove_punct = TRUE,
+           remove_symbols = TRUE, 
+           remove_numbers = TRUE,
+           remove_url = TRUE) %>% 
+    tokens_remove(quanteda::stopwords("en", source = "marimo")) %>% 
+    tokens_remove(manifesto_stop_words) %>%  # Remove corpus specific irrelevant words
+    tokens_remove("\\b(?=\\w*[A-Za-z])(?=\\w*\\d)\\w+\\b", valuetype = "regex") %>% # Remove mixed letter-number tokens
+    tokens_remove("\\b(?=.*\\d)(?=.*[[:punct:]])\\S+\\b", valuetype = "regex") %>% # Remove mixed letter-punctuation tokens
+    tokens_remove(min_nchar = 3) # Remove tokens that are shorter than 3 characters
+  
+  # Set ngram length
+  toks_manifesto <- tokens_ngrams(toks_manifesto, n = i)
+  
+  # create a document-feature matrix
+  dfmat_manifesto <- dfm(toks_manifesto)
+  
+  # Limit the vocabulary to tokens with a minimum count of n occurrences
+  dfmat_manifesto <- dfm_trim(dfmat_manifesto, min_termfreq = 50)
+  
+  # apply Wordscores algorithm to document-feature matrix
+  tmod_ws <- textmodel_wordscores(dfmat_manifesto, y = subset_manifesto_corpus$rile , smooth = 1)
+  
+  # Extract Wordscores
+  wordscores_manifesto <- tmod_ws$wordscores
+  wordscores_manifesto <- as.data.frame(wordscores_manifesto)
+  wordscores_manifesto <- wordscores_manifesto %>% rownames_to_column(var = "token")
+  
+  filename <- paste0("wordscores_manifesto_ngram_", i, ".rds")
+  
+  # Save to file
+  saveRDS(wordscores_manifesto, file = here("lss", filename))
+  
+  message("Completed ", i, " of 4")
+  
+  }
 
-# apply Wordscores algorithm to document-feature matrix
-tmod_ws <- textmodel_wordscores(dfmat_manifesto, y = subset_manifesto_corpus$rile , smooth = 1)
-
-# Extract Wordscores
-wordscores_manifesto <- tmod_ws$wordscores
-wordscores_manifesto <- as.data.frame(wordscores_manifesto)
-wordscores_manifesto <- wordscores_manifesto %>% rownames_to_column(var = "token")
-
-######## CONTINUE HERE ##############
-# create bigrams
-
-
-
-
-
-#####
-
-
-# 
-# # corpus <- mp_corpus_df(date == 202103, translation = "en")
-# 
-# doclist <- mp_metadata(TRUE) %>% dplyr::filter(translation_en == TRUE | language == "english")
-# 
-# # w_europe <- c("swedish", "norwegian", "danish", "finnish", "french", "dutch", "german", "italian",
-# #               "spanish", "greek", "portuguese", "english")
-# 
-# w_europe <- doclist %>% 
-#   dplyr::filter(date > 198900) %>% 
-#   dplyr::filter(language %in% w_europe)
-#   
-# 
-# #test_df <- my_doclist %>% slice_sample(n = 10)
-# 
-# #corpus_test <- mp_corpus_df(ids = (manifesto_id == "160956_201905"))
-# 
-# # english_annotated <- mp_availability(TRUE) %>% dplyr::filter(annotations == TRUE & language == "english")
-# english_translation <- mp_availability(TRUE) %>% dplyr::filter(translation_en == TRUE | language == "english")
-# 
-# corpus_test <- mp_corpus(english_translation)
-# saveRDS(corpus_test, file = here("lss", "corpus_test.rds"))
-# 
-# corpus_test_df <- mp_corpus_df(english_translation)
-# saveRDS(corpus_test_df, file = here("lss", "corpus_test_df.rds"))
-# 
-# corpus_test_df_3 <- mp_corpus_df(english_translation, translation = "en")
-# saveRDS(corpus_test_df_3, file = here("lss", "corpus_test_df_3.rds"))
-# 
-# max(corpus_test_df_3$date)
-# 
-# ###################
-# 
-# my_doclist$party
-# my_doclist$date
-# 
-# corpus_test_df_2 <- mp_corpus_df(party == 11220 & date == 200609,
-#                                  translation = "en")
-# 
-# 
-# corpus_test_df_2 <- mp_corpus_df(party == my_doclist$party & date == my_doclist$date,
-#                                  translation = "en")
-# 
-# 
-# 
-# 
-# 
-# 
+# Load all ngram sizes
+wordscores_manifesto_ngram_1 <- readRDS(file = here("lss", "wordscores_manifesto_ngram_1.rds"))
+wordscores_manifesto_ngram_2 <- readRDS(file = here("lss", "wordscores_manifesto_ngram_2.rds"))
+wordscores_manifesto_ngram_3 <- readRDS(file = here("lss", "wordscores_manifesto_ngram_3.rds"))
+wordscores_manifesto_ngram_4 <- readRDS(file = here("lss", "wordscores_manifesto_ngram_4.rds"))
