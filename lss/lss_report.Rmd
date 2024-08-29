@@ -5,6 +5,8 @@ LSS is a method for measuring the semantic similarity between documents and a se
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 glove_polarity_scores_econ <- readRDS(here("data", "lss", "glove_polarity_scores_all_dir_reg_econ.rds"))
 glove_polarity_scores_social <- readRDS(here("data", "lss", "glove_polarity_scores_all_dir_reg_social.rds"))
+
+hix_hoyland_data <- readRDS(here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data.rds"))
 ```
 
 #### Seed Word: Manual Seed Words
@@ -210,7 +212,7 @@ full_feature_scores_df_10k_bigrams %>% select(-psi) %>% arrange(-beta) %>% head(
 full_feature_scores_df_10k_bigrams %>% select(-psi) %>% arrange(beta) %>% head(10)
 ```
 
-##### Evaluation
+##### Wordscores & Wordfish Evaluation
 Both methods do not return satisfying results. Some terms returned by Wordscores faintly resemble the manual seed words. On the other hand, almost all terms returned by Wordfish cannot be assigned to a clear political side or topic. The Wordscore and Wordfish seed words will not be applied in the LSS method for the time being.
 
 #### LSS Evaluation
@@ -220,9 +222,9 @@ How well can LSS measure the left-right polarity of EU policies? To answer this 
 1. EUROVOC: A group of EuroVoc keywords associated with the act. See [here](https://op.europa.eu/en/web/eu-vocabularies) for details
 2. Subject Matter: Group of keywords representing the subject matter of the act. Similar to EUROVOC, only less detailed, more abstract.
 
-LSS calculates a polarity score for each document. Values range between -1.5 and +2. A negative score is associated with economic right terms, a positive score with economic left terms. I create three bins of equal width, containing an unequal number of observations and label them "left", "centre" and "right".
+LSS calculates a polarity score for each document. Values range between ca. -2.5 and +2. A negative score is associated with right terms, a positive score with left terms. I create three bins of equal width, containing an unequal number of observations and label them "left", "centre" and "right".
 
-**Number of documents per bin**
+**Number of documents per bin**  
 Economy
 ```
 centre   left  right 
@@ -353,30 +355,84 @@ As a comparison, here are the most frequent keywords overall:
 4 tariff policy               10597
 5 prices                       9460
 ```
-
-**Economy vs Social Scores**
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-# Create plot dataframe
-plot_df <- glove_polarity_scores_econ %>% 
-  rename(avg_glove_polarity_scores_econ = avg_glove_polarity_scores) %>% 
-  left_join(glove_polarity_scores_social, by = "CELEX") %>% 
-  rename(avg_glove_polarity_scores_social = avg_glove_polarity_scores) %>% 
-  left_join(select(all_dir_reg, CELEX, Act_type)) %>% 
-  mutate(Act_type = as.factor(Act_type))
-
-ggplot(plot_df, aes(x = avg_glove_polarity_scores_econ, y = avg_glove_polarity_scores_social, color = Act_type)) +
-  geom_jitter(size = 1, alpha = 0.2, width = 0.1, height = 0.1) + 
-  labs(x = "Economy Score", y = "Social Score") +
-  theme_minimal()
-
-unique(ceps_eurlex_Subject_matter_cluster_names$subject_matter_cluster_name)
-unique(ceps_eurlex_dir_reg_keywords$Subject_matter)
-```
-
-#### Results
+##### Keyword Results
 A first analysis of the results shows that the keywords partially align with typical economic left/right terms. Keywords like “equal opportunity”, “State pension”, “employment”, “labour market” and “social protection” fit well with an economic left ideology, while “trade policy”, “tariff policy” and “international trade” can be more strongly associated with an economic right ideology.
 
 However, there are keywords that appear to have no ideological connotation but still appear in the “most frequent” list, e.g., “exchange of information”, “beef” or “Europe”. This indicates that the polarity score calculated by LSS has its flaws.
 
 Eyeballing the results, I feel that the Subject Matter keywords are more suitable for the evaluation than the EUROVOC keywords. This may be due to the Subject Matter keywords being more general than EUROVOC and thus capturing broader meanings. The results show that the Subject Matter keywords align better with my expectations, likely because their general nature allows them to capture a wider range of topics and themes within the dataset, while the EUROVOC keywords are too specific to do this.
+
+#### LSS Plots
+
+**Overview LSS Scores**  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(glove_polarity_scores_econ) +
+  geom_histogram(aes(x = avg_glove_polarity_scores)) +
+  geom_vline(xintercept = 0,
+             linetype = "dashed",
+             color = "red",
+             size = 0.25) +
+  labs(x = "Economy Score", subtitle = "LSS Economy") +
+  theme_minimal()
+
+ggplot(glove_polarity_scores_social) +
+  geom_histogram(aes(x = avg_glove_polarity_scores)) +
+  geom_vline(xintercept = 0,
+             linetype = "dashed",
+             color = "red",
+             size = 0.25) +
+  labs(x = "Social Score", subtitle = "LSS Social") +
+  theme_minimal()
+```
+
+**LSS Economy vs LSS Social Scores**  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Create plot dataframe
+plot_df <- glove_polarity_scores_econ %>% 
+  rename(avg_glove_polarity_scores_econ = avg_glove_polarity_scores) %>% 
+  left_join(glove_polarity_scores_social, by = "CELEX") %>% 
+  rename(avg_glove_polarity_scores_social = avg_glove_polarity_scores)# %>% 
+  # left_join(select(all_dir_reg, CELEX, Act_type)) %>% 
+  # mutate(Act_type = as.factor(Act_type))
+
+ggplot(plot_df, aes(x = avg_glove_polarity_scores_econ, y = avg_glove_polarity_scores_social)) + # color = Act_type
+  geom_point(size = 1, alpha = 0.2, width = 0.1, height = 0.1) + 
+  labs(x = "Economy Score", y = "Social Score") +
+  theme_minimal()
+```
+
+**LSS vs Hix Høyland (normalised and reversed scores)**  
+LSS scores are reversed in these plots: Negative values are ideologically left, positive values are ideologically right.
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Create plot dataframe
+plot_df <- glove_polarity_scores_econ %>% 
+  rename(avg_glove_polarity_scores_econ = avg_glove_polarity_scores) %>% 
+  mutate(avg_glove_polarity_scores_econ = avg_glove_polarity_scores_econ * -1) %>% 
+  left_join(glove_polarity_scores_social, by = "CELEX") %>% 
+  rename(avg_glove_polarity_scores_social = avg_glove_polarity_scores) %>% 
+  mutate(avg_glove_polarity_scores_social = avg_glove_polarity_scores_social * -1) %>% 
+  left_join(hix_hoyland_data, by = "CELEX") %>% 
+  mutate(glove_avg = (avg_glove_polarity_scores_econ + avg_glove_polarity_scores_social) / 2) %>% 
+  # replace NA with 0
+  mutate(RoBERT_left_right = ifelse(is.na(RoBERT_left_right), 0, RoBERT_left_right)) %>%
+  mutate(bakker_hobolt_econ = ifelse(is.na(bakker_hobolt_econ), 0, bakker_hobolt_econ)) %>%
+  mutate(bakker_hobolt_social = ifelse(is.na(bakker_hobolt_social), 0, bakker_hobolt_social)) %>%
+  mutate(cmp_left_right = ifelse(is.na(cmp_left_right), 0, cmp_left_right)) %>%
+  # Perform Z-Score Standardization, making the different scores comparable
+  mutate_if(is.numeric, ~ (. - mean(.)) / sd(.))
+  
+ggplot(plot_df, aes(x = glove_avg, y = RoBERT_left_right)) + 
+  geom_point(size = 1, alpha = 0.2, width = 0.1, height = 0.1) + 
+  labs(x = "Average LSS Score (Economy & Social)", y = "RoBERT Left Right") +
+  theme_minimal()
+
+ggplot(plot_df, aes(x = avg_glove_polarity_scores_econ, y = bakker_hobolt_econ)) + 
+  geom_point(size = 1, alpha = 0.2, width = 0.1, height = 0.1) + 
+  labs(x = "LSS Economy", y = "Bakker Hobolt Economy") +
+  theme_minimal()
+
+ggplot(plot_df, aes(x = avg_glove_polarity_scores_social, y = bakker_hobolt_social)) + 
+  geom_point(size = 1, alpha = 0.2, width = 0.1, height = 0.1) + 
+  labs(x = "LSS Social", y = "Bakker Hobolt Social") +
+  theme_minimal()
+```
