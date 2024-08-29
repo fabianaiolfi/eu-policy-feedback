@@ -7,10 +7,11 @@
 # Load data --------------------------
 
 # Output of 01_run_lss.R
-glove_polarity_scores <- readRDS(here("data", "lss", "glove_polarity_scores_240705.rds"))
+# glove_polarity_scores <- readRDS(here("data", "lss", "glove_polarity_scores_all_dir_reg_econ.rds"))
+glove_polarity_scores <- readRDS(here("data", "lss", "glove_polarity_scores_all_dir_reg_social.rds"))
 
 # CEPS with keywords
-ceps_eurlex_dir_reg_keywords <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg_keywords_sample.rds"))
+ceps_eurlex_dir_reg_keywords <- readRDS(here("data", "data_collection", "ceps_eurlex_dir_reg_keywords.rds"))
 
 # Clustered keywords: Clustered subject matters based on embeddings (topics/subject_matter.R)
 ceps_eurlex_Subject_matter_cluster_names <- readRDS(here("data", "topics", "ceps_eurlex_Subject_matter_cluster_names.rds"))
@@ -58,13 +59,13 @@ top_keywords <- evaluation %>%
   rename(EUROVOC_Keyword = EUROVOC) %>% 
   rename(Occurences = n)
 
-print(top_keywords, n = 10)
+print(top_keywords, n = 5)
 
 
 # Create 3 broad groups (left, center, right) and examine top *Subject_matter* keywords in each group
 
 top_keywords <- evaluation %>% 
-  # dplyr::filter(polarity_score_group_cut == "right") %>% # "right" "centre"
+  dplyr::filter(polarity_score_group_cut == "right") %>% # "right" "centre"
   select(Subject_matter) %>% 
   separate_rows(Subject_matter, sep = ";") %>% 
   mutate(Subject_matter = trimws(Subject_matter)) %>% 
@@ -74,7 +75,7 @@ top_keywords <- evaluation %>%
   rename(Subject_matter_Keyword = Subject_matter) %>% 
   rename(Occurences = n)
 
-print(top_keywords, n = 10)
+print(top_keywords, n = 5)
 
 
 # Evaluation 2: Correlation --------------------
@@ -112,8 +113,8 @@ correlation_with_scores <- correlation_with_scores %>%
   dplyr::filter(correlation_with_scores != 1) %>% 
   arrange(-correlation_with_scores)
 
-head(correlation_with_scores, 10)
-tail(correlation_with_scores, 10)
+head(correlation_with_scores, 5)
+tail(correlation_with_scores, 5)
 
 
 # Keyword: Subject_matter --------------------
