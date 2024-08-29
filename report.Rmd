@@ -20,8 +20,8 @@ How left or right are EU directives and regulations introduced between 1989 and 
 ```{r child = 'data_collection/data_collection_report.Rmd', eval=FALSE, include=FALSE }
 ```
 
-```{r child = 'existing_measurements/hix_hoyland_2024/hix_hoyland_2024_report.Rmd'}
+```{r child = 'existing_measurements/hix_hoyland_2024/hix_hoyland_2024_report.Rmd', eval=FALSE, include=FALSE}
 ```
 
-```{r child = 'lss/lss_report.Rmd', eval=FALSE, include=FALSE}
+```{r child = 'lss/lss_report.Rmd'}
 ```
