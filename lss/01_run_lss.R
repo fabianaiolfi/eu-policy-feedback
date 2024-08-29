@@ -83,6 +83,7 @@ toks_sent_df <- toks_sent_df %>%
 # saveRDS(tokens_list, file = "/Volumes/iPhone_Backup_2/eu-policy-feedback-data/tokens_list.rds")
 # saveRDS(toks_sent_df, file = "/Volumes/iPhone_Backup_2/eu-policy-feedback-data/toks_sent_df.rds")
 
+# Also available on Dropbox under "data_backup/large_lss_files"
 corp_sent <- readRDS(file = "/Volumes/iPhone_Backup_2/eu-policy-feedback-data/corp_sent.rds")
 toks_sent <- readRDS(file = "/Volumes/iPhone_Backup_2/eu-policy-feedback-data/toks_sent.rds")
 dfmat_sent <- readRDS(file = "/Volumes/iPhone_Backup_2/eu-policy-feedback-data/dfmat_sent.rds")
