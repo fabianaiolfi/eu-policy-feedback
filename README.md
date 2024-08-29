@@ -13,7 +13,7 @@
   - [x] To do: Clean text appropriate for word embedding (e.g., remove frequent expressions, see below)
 
 ### Nice to Have
-- [ ] Improve LSS
+- [x] Improve LSS
   - [x] Improve seed words to be more systematic and based on dictionaries such as [Wordscore](https://tutorials.quanteda.io/machine-learning/wordscores/) and [Wordfish](https://tutorials.quanteda.io/machine-learning/wordfish/)
   - [x] Preprocess text (see [this paper](https://www.dropbox.com/scl/fi/u1dpvjp9bzmgbmebuqfs9/word_embeddings_for_the_analysis_of_ideological_placement_in_parliamentary_corpora.pdf?rlkey=x3uam6ph6nywag1rlggcobhe4&dl=0))
     - [x] Subsampling (random removal of frequent words)
@@ -21,8 +21,8 @@
     - [x] Remove words with two letters or fewer
     - [x] Remove English stop words, including overly common procedural words
     - [x] Limit the vocabulary to tokens with a minimum count of 50 occurrences
-  - [ ] Detect collocations
-  - [ ] Calculate both dimensions (economic and social)
+  - [ ] ~~Detect collocations~~
+  - [x] Calculate both dimensions (economic and social)
 
 - [ ] ChatGPT Approach
   - Compare policy summary, preamble (like Hix Høyland (2024)) and entire text to evaluate output
@@ -32,7 +32,7 @@
   - In order to overcome problem that distance between laws is unclear: Somehow combine scores from other techniques in order to retrieve ideological “distance” between laws
 
 - [ ] Systematic Evaluation of all Measurements
-  - Compare results amongst themselves and with expert survey (e.g. [this expert survey](https://www.dropbox.com/scl/fi/392u06vxzhz6sqebe5mam/EU_Competencies_Index_codebook_v1.pdf?rlkey=vgbqc57dmxur7rakqpekdswy8&dl=0))
+  - Compare results amongst themselves and with expert survey (e.g. [this expert survey](https://www.dropbox.com/scl/fi/392u06vxzhz6sqebe5mam/EU_Competencies_Index_codebook_v1.pdf?rlkey=vgbqc57dmxur7rakqpekdswy8&dl=0), data: https://www.eucompetencies.com/data/)
   - How reliable are the summaries compared to the preamble or entire text?
 
 ## General To Do
@@ -47,7 +47,7 @@
 - Preview of all_dir_reg.rds and all_dir_reg_summaries.rds
 
 ### Recreating Hix Høyland (2024)
-Preview of `hix_hoyland_data.rds` (N = 74,743):
+Preview of `hix_hoyland_data.rds` (N = 74,734):
 
 |    CELEX    | RoBERT_left_right | bakker_hobolt_econ | bakker_hobolt_social | cmp_left_right |
 |-------------|-------------------|--------------------|----------------------|----------------|
@@ -69,7 +69,28 @@ Preview of `hix_hoyland_data.rds` (N = 74,743):
 - Did not split on the median word-length if “Adopted this directive/regulation” does not appear (see p. 12)
 
 ### LSS
-[add documentation here]
+Preview of `glove_polarity_scores_all_dir_reg_econ.rds` (N = 74,734):
+
+| CELEX       | avg_glove_polarity_scores |
+|-------------|---------------------------|
+| 31989L0083  | 0.398                     |
+| 31989L0100  | 0.349                     |
+| 31989L0117  | 1.01                      |
+| 31989L0130  | 0.431                     |
+| 31989L0174  | -0.0563                   |
+| 31989L0178  | 0.00868                   |
+
+Preview of `glove_polarity_scores_all_dir_reg_social.rds` (N = 74,734):
+
+| CELEX       | avg_glove_polarity_scores |
+|-------------|---------------------------|
+| 31989L0083  | 0.440                     |
+| 31989L0100  | 0.0452                    |
+| 31989L0117  | 0.519                     |
+| 31989L0130  | 0.503                     |
+| 31989L0174  | -0.669                    |
+| 31989L0178  | -0.242                    |
+
 
 #### Seed Word Selection
 - systematic approach: using Wordfish and Wordscores to extract seed words from legislations and from party manifestos
