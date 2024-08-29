@@ -12,6 +12,11 @@ library(LSX)
 library(quanteda)
 library(text2vec)
 
+# Parallel Processing
+library(pbapply)
+library(doParallel)
+library(foreach)
+
 # Wordfish
 library(quanteda.textmodels)
 

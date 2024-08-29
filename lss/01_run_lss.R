@@ -15,7 +15,7 @@ all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg.rds"))
 all_dir_reg <- all_dir_reg %>% distinct(CELEX, .keep_all = T)
 
 # Create subset
-all_dir_reg <- all_dir_reg %>% head(n = 10)
+all_dir_reg <- all_dir_reg %>% head(n = 10000)
 
 # Convert to corpus object
 all_dir_reg <- corpus(all_dir_reg,
@@ -30,9 +30,9 @@ toks_sent <- corp_sent %>%
   tokens(remove_punct = TRUE,
          remove_symbols = TRUE, 
          remove_numbers = TRUE,
-         remove_url = TRUE)# %>% 
-  # tokens_remove(quanteda::stopwords("en", source = "marimo")) %>% 
-  # tokens_remove(min_nchar = 3) %>% # Remove tokens that are shorter than 3 characters
+         remove_url = TRUE) %>% 
+  tokens_remove(quanteda::stopwords("en", source = "marimo")) %>%
+  tokens_remove(min_nchar = 3)# %>% # Remove tokens that are shorter than 3 characters
   # tokens_remove(c("article", "shall", "annex", "commission", "decision", "member", "european", "state*", "measure*", "regard", "directive")) # Remove corpus specific irrelevant words
 
 
@@ -42,7 +42,17 @@ toks_sent <- corp_sent %>%
 dfmat_sent <- toks_sent %>%
   dfm() %>% 
   dfm_remove(pattern = "") %>% 
-  dfm_trim(min_termfreq = 5)
+  dfm_trim(min_termfreq = 50#,
+           # min_docfreq = 0.15,
+           # max_docfreq = 0.85,
+           # docfreq_type = "prop"
+           )
+
+# library(bigmemory)
+
+# Convert dfmat_sent to a big.matrix
+# dfmat_sent <- as.big.matrix(as.matrix(dfmat_sent))
+
 
 
 # Calculate sentence weight ----------------------------------
@@ -151,10 +161,77 @@ lss <- as.textmodel_lss(mt, seed)
 # Predict document polarity
 glove_polarity_scores <- predict(lss, newdata = dfmat_sent)
 
+
+# Increase Memory Efficiency -------------------
+
+# with parallel processing
+# Define batch size
+# batch_size <- 500 # Adjust based on your system's memory
+# 
+# # Determine the number of batches
+# num_batches <- ceiling(nrow(dfmat_sent) / batch_size)
+# 
+# # Initialize a vector to store results
+# glove_polarity_scores <- numeric(nrow(dfmat_sent))
+# 
+# # Set up parallel backend to use the maximum number of available cores
+# num_cores <- detectCores() - 1 # Leave one core free
+# 
+# # Use pblapply instead of mclapply for automatic progress bar
+# results <- pblapply(1:num_batches, function(i) {
+#   # Calculate the indices for the current batch
+#   start_idx <- (i - 1) * batch_size + 1
+#   end_idx <- min(i * batch_size, nrow(dfmat_sent))
+#   
+#   # Extract the batch
+#   batch <- dfmat_sent[start_idx:end_idx, ]
+#   
+#   # Predict polarity scores for the batch
+#   batch_scores <- predict(lss, newdata = batch)
+#   
+#   return(batch_scores)
+# }, cl = num_cores)
+
+# Define batch size
+batch_size <- 1000  # Adjust based on your system's memory
+
+# Determine the number of batches
+num_batches <- ceiling(nrow(dfmat_sent) / batch_size)
+
+# Initialize a named vector to store results
+glove_polarity_scores <- numeric(nrow(dfmat_sent))
+names(glove_polarity_scores) <- docnames(dfmat_sent)  # Assign document IDs as names
+
+for (i in 1:num_batches) {
+  # Calculate the indices for the current batch
+  start_idx <- (i - 1) * batch_size + 1
+  end_idx <- min(i * batch_size, nrow(dfmat_sent))
+  
+  # Extract the batch
+  batch <- dfmat_sent[start_idx:end_idx, ]
+  
+  # Predict polarity scores for the batch
+  glove_polarity_scores[start_idx:end_idx] <- predict(lss, newdata = batch)
+  
+  # Optionally, remove the batch from memory
+  rm(batch)
+  
+  # Trigger garbage collection
+  gc()
+  
+  # (Optional) Print progress
+  cat(sprintf("Processed batch %d of %d\n", i, num_batches))
+}
+
+
+# Assign the results back to the main results vector
+glove_polarity_scores <- results
+flattened_scores <- unlist(glove_polarity_scores)
+
 # Calculate average document polarity based on sentence weight
 glove_polarity_scores <- data.frame(
-  CELEX = names(glove_polarity_scores),
-  glove_polarity_scores = as.numeric(glove_polarity_scores))
+  CELEX = names(glove_polarity_scores), # flattened_scores
+  glove_polarity_scores = as.numeric(glove_polarity_scores)) # flattened_scores
 glove_polarity_scores <- glove_polarity_scores %>% left_join(toks_sent_df, by = c("CELEX" = "sent_id")) # Add sentence weight
 glove_polarity_scores$CELEX <- gsub("\\..*", "", glove_polarity_scores$CELEX) # Remove all characters after the "."
 
@@ -162,7 +239,7 @@ glove_polarity_scores <- glove_polarity_scores %>%
   group_by(CELEX) %>%
   summarise(avg_glove_polarity_scores = weighted.mean(glove_polarity_scores, sent_weight, na.rm = T))
 
-saveRDS(glove_polarity_scores, file = here("data", "lss", "glove_polarity_scores_xxxx.rds"))
+saveRDS(glove_polarity_scores, file = here("data", "lss", "glove_polarity_scores_240829_5_1000_batches.rds"))
 
 
 # Selection and evaluation of seed words ---------------
