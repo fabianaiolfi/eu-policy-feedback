@@ -1,0 +1,43 @@
+ideology:
+    left: [
+      "lgbtq rights",
+      "gender equality",
+      "reproductive rights",
+      "anti-discrimination laws",
+      "affirmative action",
+      "marriage equality",
+      "racial justice",
+      "environmental justice",
+      "prison reform",
+      "immigrant integration",
+      "workers rights",
+      "secularism",
+      "universal human rights",
+      "income equality",
+      "cultural diversity",
+      "refugee rights",
+      "climate justice",
+      "social inclusion",
+      "anti-austerity",
+      "freedom of movement",
+      "multiculturalism"
+    ]
+    right: [
+      "traditional family values",
+      "pro-life",
+      "national sovereignty",
+      "law and order",
+      "patriotism",
+      "immigration control",
+      "anti multiculturalism",
+      "individualism",
+      "christian heritage",
+      "border security",
+      "conservatism",
+      "cultural identity protection",
+      "anti lgbtq adoption",
+      "cultural homogeneity",
+      "anti secularism",
+      "tightening asylum policies",
+      "pro national identity"
+    ]
