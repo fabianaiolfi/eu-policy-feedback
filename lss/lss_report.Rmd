@@ -2,24 +2,44 @@
 
 LSS is a method for measuring the semantic similarity between documents and a set of seed words. In our case, each directive or regulation is a document and the seed words convey "typical" left-right terms. The semantic similarity between documents and seed words is calculated using word embeddings provided by [GloVe](https://nlp.stanford.edu/projects/glove/). To keep computation efficient, I use the smallest pre-trained word vectors model available (6B tokens, 400K vocab, 50 dimensions).
 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+glove_polarity_scores_econ <- readRDS(here("data", "lss", "glove_polarity_scores_all_dir_reg_econ.rds"))
+glove_polarity_scores_social <- readRDS(here("data", "lss", "glove_polarity_scores_all_dir_reg_social.rds"))
+```
+
 #### Seed Word: Manual Seed Words
 
 In a first approach, I manually come up my own seed words:
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-dict <- dictionary(file = here("lss", "seed_words_econ_manual.yml"))
-seed <- as.seedwords(dict$ideology, concatenator = " ")
+dict_econ <- dictionary(file = here("lss", "seed_words_econ_manual.yml"))
+dict_social <- dictionary(file = here("lss", "seed_words_social_manual.yml"))
+
+seed_econ <- as.seedwords(dict_econ$ideology, concatenator = " ")
+seed_social <- as.seedwords(dict_social$ideology, concatenator = " ")
 ```
 
 **Economic left seed words**
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-left_terms <- seed[seed == 1]
+left_terms <- seed_econ[seed_econ == 1]
 left_terms <- names(left_terms)
 left_terms
 ```
 **Economic right seed words**
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-right_terms <- seed[seed == -1]
+right_terms <- seed_econ[seed_econ == -1]
+right_terms <- names(right_terms)
+right_terms
+```
+**Social left seed words**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+left_terms <- seed_social[seed_social == 1]
+left_terms <- names(left_terms)
+left_terms
+```
+**Social right seed words**
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+right_terms <- seed_social[seed_social == -1]
 right_terms <- names(right_terms)
 right_terms
 ```
@@ -203,182 +223,158 @@ How well can LSS measure the left-right polarity of EU policies? To answer this 
 LSS calculates a polarity score for each document. Values range between -1.5 and +2. A negative score is associated with economic right terms, a positive score with economic left terms. I create three bins of equal width, containing an unequal number of observations and label them "left", "centre" and "right".
 
 **Number of documents per bin**
+Economy
 ```
 centre   left  right 
-  9760     98    142 
+ 68019   6277    438 
 ```
 
-I then examine the most frequent keywords in each bin.
-
-**Most frequent keywords in "left" bin**
+Social
 ```
-   EUROVOC_Keyword            Occurences
- 1 Community statistics               13
- 2 exchange of information             9
- 3 compiling data                      7
- 4 equal opportunity                   7
- 5 national insurance                  7
- 6 statistical harmonisation           7
- 7 disclosure of information           6
- 8 EC auxiliary staff                  5
- 9 State pension                       5
-10 administrative cooperation          5
-
-   Subject_matter_Keyword                     Occurences
- 1 employment                                         20
- 2 information technology and data processing         17
- 3 labour market                                      16
- 4 economic analysis                                  14
- 5 executive power and public service                 14
- 6 information and information processing             14
- 7 EU institutions and European civil service         12
- 8 rights and freedoms                                12
- 9 international law                                  11
-10 social protection                                  11
+centre   left  right 
+ 26580  47133   1021 
 ```
 
-**Most frequent keywords in "centre" bin**
+**Most frequent keywords in economic "left" bin**
+```
+  EUROVOC_Keyword     Occurences
+1 PDO                        502
+2 product description        467
+3 blockade                   452
+4 ban on sales               433
+5 economic sanctions         425
+
+  Subject_matter_Keyword Occurences
+1 marketing                    1515
+2 agricultural policy          1029
+3 health                       1021
+4 agricultural activity         804
+5 consumption                   790
+```
+
+**Most frequent keywords in social "left" bin**
+```
+  EUROVOC_Keyword          Occurences
+1 Community aid to exports       5934
+2 entry price                    5263
+3 aubergine                      5243
+4 citron                         5190
+5 apple                          4686
+
+    Subject_matter_Keyword Occurences
+1 plant product               13369
+2 trade policy                10386
+3 prices                       7992
+4 trade                        7936
+5 tariff policy                7351
+```
+
+**Most frequent keywords in economic "centre" bin**
 ```
   EUROVOC_Keyword            Occurences
- 1 Community aid to exports         1106
- 2 aubergine                         786
- 3 entry price                       783
- 4 citron                            767
- 5 automatic public tendering        749
- 6 import                            718
- 7 apple                             696
- 8 Community import                  506
- 9 import authorisation              491
-10 CCT duties                        473
+1 Community aid to exports         7570
+2 automatic public tendering       5558
+3 entry price                      5514
+4 aubergine                        5463
+5 citron                           5371
 
-   Subject_matter_Keyword Occurences
- 1 plant product                2482
- 2 trade policy                 2149
- 3 trade                        1608
- 4 tariff policy                1497
- 5 prices                       1325
- 6 agricultural policy          1208
- 7 Europe                       1203
- 8 foodstuff                    1074
- 9 marketing                     874
-10 cooperation policy            870
+  Subject_matter_Keyword Occurences
+1 plant product               17042
+2 trade policy                14421
+3 trade                       10926
+4 tariff policy               10286
+5 prices                       9357
 ```
 
-**Most frequent keywords in "right" bin**
+**Most frequent keywords in social "centre" bin**
 ```
-   EUROVOC_Keyword            Occurences
- 1 beef                               34
- 2 automatic public tendering         23
- 3 EC country                         16
- 4 intervention agency                14
- 5 offering for sale                  14
- 6 floor price                        10
- 7 import                             10
- 8 selling price                      10
- 9 CCT duties                          9
-10 Community import                    8
+  EUROVOC_Keyword            Occurences
+1 Community aid to exports         1649
+2 automatic public tendering       1472
+3 import                           1453
+4 sea fish                         1434
+5 catch plan                       1313
 
-   Subject_matter_Keyword Occurences
- 1 trade policy                   41
- 2 animal product                 36
- 3 trade                          32
- 4 Europe                         25
- 5 marketing                      23
- 6 prices                         20
- 7 tariff policy                  17
- 8 economic geography             16
- 9 European construction          14
-10 international trade            13
+  Subject_matter_Keyword Occurences
+1 trade policy                 4444
+2 plant product                3961
+3 Europe                       3905
+4 trade                        3204
+5 tariff policy                3088
+```
+
+**Most frequent keywords in economic "right" bin**
+```
+  EUROVOC_Keyword            Occurences
+1 beef                               80
+2 automatic public tendering         59
+3 floor price                        48
+4 EC country                         44
+5 CCT duties                         41
+
+  Subject_matter_Keyword Occurences
+1 trade policy                  145
+2 animal product                 84
+3 prices                         80
+4 Europe                         75
+5 trade                          67
+```
+
+**Most frequent keywords in social "right" bin**
+```
+  EUROVOC_Keyword         Occurences
+1 agri-foodstuffs product         99
+2 food product safety             97
+3 fungicide                       85
+4 blockade                        71
+5 agricultural product            69
+
+  Subject_matter_Keyword Occurences
+1 marketing                     165
+2 tariff policy                 158
+3 agricultural activity         146
+4 trade policy                  125
+5 foodstuff                     123
 ```
 
 As a comparison, here are the most frequent keywords overall:
 ```
-   EUROVOC_Keyword            Occurences
- 1 Community aid to exports         1106
- 2 aubergine                         786
- 3 entry price                       785
- 4 automatic public tendering        772
- 5 citron                            767
- 6 import                            729
- 7 apple                             696
- 8 Community import                  514
- 9 import authorisation              499
-10 CCT duties                        482
+  EUROVOC_Keyword            Occurences
+1 Community aid to exports         7590
+2 automatic public tendering       5633
+3 entry price                      5518
+4 aubergine                        5481
+5 citron                           5387
 
-   Subject_matter_Keyword Occurences
-   <chr>                       <int>
- 1 plant product                2494
- 2 trade policy                 2192
- 3 trade                        1641
- 4 tariff policy                1515
- 5 prices                       1346
- 6 Europe                       1233
- 7 agricultural policy          1221
- 8 foodstuff                    1082
- 9 marketing                     904
-10 cooperation policy            883
+  Subject_matter_Keyword Occurences
+1 plant product               17447
+2 trade policy                14955
+3 trade                       11202
+4 tariff policy               10597
+5 prices                       9460
 ```
 
-In a next step, I measure the correlation between the polarity scores and keywords. In other words: How much do the keywords correlate with the polarity scores? A positive correlation should be associated with economic left terms, while a negative correlation should be associated with economic right terms.
+**Economy vs Social Scores**
 
-**Top positive correlations**
-```
-   correlation_with_scores                  EUROVOC
-1                0.1593743                 blockade
-2                0.1477281       economic sanctions
-3                0.1344094             ban on sales
-4                0.1328099  exchange of information
-5                0.1272232                       NA
-6                0.1266202                      PDO
-7                0.1219182      product description
-8                0.1148520 elimination of terrorism
-9                0.1090292     Community statistics
-10               0.1031237  agri-foodstuffs product
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Create plot dataframe
+plot_df <- glove_polarity_scores_econ %>% 
+  rename(avg_glove_polarity_scores_econ = avg_glove_polarity_scores) %>% 
+  left_join(glove_polarity_scores_social, by = "CELEX") %>% 
+  rename(avg_glove_polarity_scores_social = avg_glove_polarity_scores) %>% 
+  left_join(select(all_dir_reg, CELEX, Act_type)) %>% 
+  mutate(Act_type = as.factor(Act_type))
 
-   correlation_with_scores                             Subject_matter
-1                0.1982763                                     health
-2                0.1746146                                 employment
-3                0.1695153                                  marketing
-4                0.1656535 EU institutions and European civil service
-5                0.1523293     information and information processing
-6                0.1510933                      international affairs
-7                0.1510488 information technology and data processing
-8                0.1507761                              labour market
-9                0.1447519                 politics and public safety
-10               0.1445159           means of agricultural production
+ggplot(plot_df, aes(x = avg_glove_polarity_scores_econ, y = avg_glove_polarity_scores_social, color = Act_type)) +
+  geom_jitter(size = 1, alpha = 0.2, width = 0.1, height = 0.1) + 
+  labs(x = "Economy Score", y = "Social Score") +
+  theme_minimal()
+
+unique(ceps_eurlex_Subject_matter_cluster_names$subject_matter_cluster_name)
+unique(ceps_eurlex_dir_reg_keywords$Subject_matter)
 ```
 
-**Top negative correlations**
-```
-     correlation_with_scores                    EUROVOC
-2499              -0.1387161                      grape
-2500              -0.1485295                        CMO
-2501              -0.1519911                    apricot
-2502              -0.1526409           Community import
-2503              -0.1745075 automatic public tendering
-2504              -0.1756601       agri-monetary policy
-2505              -0.2747642                      apple
-2506              -0.2758296                  aubergine
-2507              -0.2770651                     citron
-2508              -0.2925299                entry price
-
-    correlation_with_scores                         Subject_matter
-117             -0.05063899 iron, steel and other metal industries
-118             -0.05172661                            soft energy
-119             -0.05609725                    beverages and sugar
-120             -0.05759779                                America
-121             -0.05950036                            competition
-122             -0.09135739                    agricultural policy
-123             -0.18789545                           trade policy
-124             -0.20253832                                  trade
-125             -0.31335321                          plant product
-126             -0.33752753                                 prices
-```
-
-*Note: Using the full dataset (ca. 70k observations) showed almost identical results. Also using a larger GloVe model, e.g. 300 dimensions, doesn’t alter results in a way that justifies the longer computational time.*
-
-
-#### Preliminary Results
+#### Results
 A first analysis of the results shows that the keywords partially align with typical economic left/right terms. Keywords like “equal opportunity”, “State pension”, “employment”, “labour market” and “social protection” fit well with an economic left ideology, while “trade policy”, “tariff policy” and “international trade” can be more strongly associated with an economic right ideology.
 
 However, there are keywords that appear to have no ideological connotation but still appear in the “most frequent” list, e.g., “exchange of information”, “beef” or “Europe”. This indicates that the polarity score calculated by LSS has its flaws.
