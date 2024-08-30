@@ -1,0 +1,68 @@
+### ChatGPT: 0-Shot
+
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+preamble_0_shot <- readRDS(here("data", "chatgpt_0_shot", "chatgpt_preamble_0_shot.rds"))
+summary_0_shot <- readRDS(here("data", "chatgpt_0_shot", "chatgpt_summary_0_shot.rds"))
+hix_hoyland_data <- readRDS(here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data.rds"))
+hix_hoyland_data_summaries <- readRDS(here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data_summaries.rds"))
+```
+
+#### Overview
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(preamble_0_shot) +
+  geom_histogram(aes(x = chatgpt_answer), binwidth = 5) +
+  xlim(0, 100) +
+  ggtitle("Preamble") +
+  theme_minimal()
+
+ggplot(summary_0_shot) +
+  geom_histogram(aes(x = chatgpt_answer), binwidth = 5) +
+  xlim(0, 100) +
+  ggtitle("Summary") +
+  theme_minimal()
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+plot_df <- preamble_0_shot %>% 
+  rename(chatgpt_answer_preamble = chatgpt_answer) %>% 
+  left_join(summary_0_shot, by = "CELEX") %>% 
+  rename(chatgpt_answer_summary = chatgpt_answer)
+
+ggplot(plot_df) +
+  geom_jitter(aes(x = chatgpt_answer_preamble, y = chatgpt_answer_summary), alpha = 0.25) +
+  ggtitle("Preamble vs Summary") +
+  xlim(0, 100) +
+  ylim(0, 100) +
+  theme_minimal()
+```
+
+
+
+#### ChatGPT vs Hix Høyland
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+plot_df <- preamble_0_shot %>% 
+  rename(chatgpt_answer_preamble = chatgpt_answer) %>% 
+  left_join(summary_0_shot, by = "CELEX") %>% 
+  rename(chatgpt_answer_summary = chatgpt_answer) %>% 
+  left_join(hix_hoyland_data, by = "CELEX") %>% 
+  # replace NA with 0
+  mutate(chatgpt_answer_preamble = ifelse(is.na(chatgpt_answer_preamble), 0, chatgpt_answer_preamble)) %>%
+  mutate(RoBERT_left_right = ifelse(is.na(RoBERT_left_right), 0, RoBERT_left_right)) %>%
+  mutate(bakker_hobolt_econ = ifelse(is.na(bakker_hobolt_econ), 0, bakker_hobolt_econ)) %>%
+  mutate(bakker_hobolt_social = ifelse(is.na(bakker_hobolt_social), 0, bakker_hobolt_social)) %>%
+  mutate(cmp_left_right = ifelse(is.na(cmp_left_right), 0, cmp_left_right)) %>%
+  # Perform Z-Score Standardization, making the different scores comparable
+  mutate_if(is.numeric, ~ (. - mean(.)) / sd(.))
+
+ggplot(plot_df) +
+  geom_jitter(aes(x = chatgpt_answer_preamble, y = bakker_hobolt_econ), alpha = 0.25) +
+  theme_minimal()
+
+ggplot(plot_df) +
+  geom_jitter(aes(x = chatgpt_answer_summary, y = bakker_hobolt_econ), alpha = 0.25) +
+  theme_minimal()
+```

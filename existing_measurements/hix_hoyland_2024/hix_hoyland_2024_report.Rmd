@@ -117,13 +117,14 @@ bland_altman_plots <- map(prefixes, generate_bland_altman_plot)
 plot_grid(plotlist = bland_altman_plots, ncol = 2)
 ```
 
-[TO DO: Plot interpretation]
+In general, we can observe that summaries tend to be scored more to the right. We can also observe that summaries often receive a score of 0, while the (longer) preamble contains more data and thus receives a more differentiated score.
 
 #### Comparing Additional Preprocessing Steps
-- are results different if more preprocessing steps are done (based on [this paper](https://www.dropbox.com/scl/fi/u1dpvjp9bzmgbmebuqfs9/word_embeddings_for_the_analysis_of_ideological_placement_in_parliamentary_corpora.pdf?rlkey=x3uam6ph6nywag1rlggcobhe4&dl=0))
-- to keep computational time low, i pick a random subset of 5000 legislations and perform additional preprocessing steps. i then compare these with the scores without the additional preprocessing steps.
-- eyeballing the results, we can see that legislations with additional preprocessing tend to drift towards the right
-- we can also observe clusters. e.g. in the robert_rile plot, we can see that legislations that were previously scored between -4 and +2 receive a score of 0 after being preprocessed. this makes sense, as the preprocessing steps remove data, making it more difficult for the model to create a score.
+Do the results differ when more preprocessing steps are applied? [Rheault and Cochrane 2020](https://www.dropbox.com/scl/fi/u1dpvjp9bzmgbmebuqfs9/word_embeddings_for_the_analysis_of_ideological_placement_in_parliamentary_corpora.pdf?rlkey=x3uam6ph6nywag1rlggcobhe4&dl=0) perform subsampling, remove digits and words with two letters or less, remove English stop words and overly common words that appear in their corpus.
+
+I do the same on a random subset of 5000 legislations. I use a subset to keep the computation time low. I then compare these with the results without the additional preprocessing steps.
+
+Eyeballing the results, we can see that legislations with additional preprocessing tend to drift towards the right. We can also see clusters, e.g. in the RoBERT_rile plot. There we can see that legislation that previously scored between -4 and +2 gets a score of 0 after preprocessing. This makes sense because the preprocessing steps remove data, making it more difficult for the model to generate a score.
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 hix_hoyland_data_add_preprocessing <- readRDS(here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data_add_preprocessing.rds"))
