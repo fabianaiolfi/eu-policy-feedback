@@ -7,7 +7,7 @@
 - [x] Collect all data; Update dataset to include all policies up to mid August 2024: `/data/data_collection/all_dir_reg.rds`
 - [x] Collect all summaries: `/data/data_collection/all_dir_reg_summaries.rds`
 
-- [ ] Complete Hix Høyland (2024) Recreation
+- [x] Complete Hix Høyland (2024) Recreation
   - [x] Retrieve scores for both economic and social dimensions
   - [x] Apply Hix Høyland (2024) technique on policy summaries
   - [x] To do: Clean text appropriate for word embedding (e.g., remove frequent expressions, see below)
