@@ -37,7 +37,12 @@ extract_preamble <- function(text) {
   }
 }
 
-all_dir_reg_sample <- all_dir_reg_sample %>% mutate(preamble = sapply(act_raw_text, extract_preamble))
+all_dir_reg <- all_dir_reg %>% drop_na(act_raw_text)
+all_dir_reg <- all_dir_reg %>% mutate(preamble = sapply(act_raw_text, extract_preamble))
+
+# Save for ChatGPT Approach
+# all_dir_reg <- all_dir_reg %>% select(CELEX, preamble)
+# saveRDS(all_dir_reg, file = here("existing_measurements", "hix_hoyland_2024", "all_dir_reg_preamble.rds"))
 
 # "We split the preambles into segments of 100 words…"
 
