@@ -2,16 +2,14 @@
 
 ## Data Sets
 
-[All directives and regulations](https://www.dropbox.com/scl/fi/pk1kt8adgv39880o5pq21/all_dir_reg.rds?rlkey=2zp2ugclhux2jv4gj4dtipgzo&dl=0) (N = 75,570 | .rds | 497.6MB)
+### [All directives and regulations](https://www.dropbox.com/scl/fi/pk1kt8adgv39880o5pq21/all_dir_reg.rds?rlkey=2zp2ugclhux2jv4gj4dtipgzo&dl=0)
+N = 75,570 | .rds | 497.6MB
 
 | CELEX      | Date_document | act_raw_text                                                         | Act_type |
 |------------|---------------|----------------------------------------------------------------------|----------|
 | 32019L2121 | 2019-11-27    | "DIRECTIVE (EU) 2019/2121 OF THE EUROPEAN PARLIAMENT AND OF THE CO…" | Directive |
 | 32020L0262 | 2019-12-19    | "COUNCIL DIRECTIVE (EU) 2020/262\n\nof 19 December 2019\n\nlaying …" | Directive |
 | 32019L1922 | 2019-11-18    | "COMMISSION DIRECTIVE (EU) 2019/1922\n\nof 18 November 2019\n\name…" | Directive |
-| 32019L2034 | 2019-11-27    | "DIRECTIVE (EU) 2019/2034 OF THE EUROPEAN PARLIAMENT AND OF THE CO…" | Directive |
-| 32019L1995 | 2019-11-21    | "COUNCIL DIRECTIVE (EU) 2019/1995\n\nof 21 November 2019\n\namendi…" | Directive |
-| 32021L0338 | 2021-02-16    | "DIRECTIVE (EU) 2021/338 OF THE EUROPEAN PARLIAMENT AND OF THE COU…" | Directive |
 
 [Summaries of all directives and regulations](https://www.dropbox.com/scl/fi/q2fm5su8k02353rmb5li4/all_dir_reg_summaries.rds?rlkey=q34f7y5hwf4ksrvlhvuqvoml2&dl=0) (N = 1637 | .rds | 2.6MB)
 
@@ -20,70 +18,54 @@
 | 31989L0117 | "Accounting documents of branches of foreign credit and financial institutions SUMMARY OF: Directive 89/117/EEC — obligations of branches of …" |
 | 31989L0130 | "Harmonisation of the compilation of GNP The creation of an additional own resource for the Communities, based on the gross national product …" |
 | 31989L0297 | "Motor vehicles with trailers: lateral protection for goods vehicles (until 2014) 1) OBJECTIVE To harmonize the requirements to be met by veh…" |
-| 31989L0361 | "Intra-Community trade in pure-bred breeding sheep and goats The European Union (EU) harmonises the rules applicable to the trade in pure-bre…" |
-| 31989L0384 | "Health criteria for untreated and heat-treated milk SUMMARY The European Union lays down health criteria for heat-treated milk (pasteurised, …" |
-| 31989L0391 | "Health and safety at work — general rules SUMMARY OF: Council Directive 89/391/EEC — measures to improve the safety and health of workers at…" |
 
-
-| Column Name     | Description                                                                                                                                                          |
-|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `CELEX`         | Unique CELEX identifier of an act ([more info](https://eur-lex.europa.eu/content/help/faq/celex-number.html))                                                        |
-| `Date_document` | Date of the document. The eur-lex.eu website does not provide an explanation of which exact date in the legislative process this represents.                         |
-| `act_raw_text`  | The full raw text of the act in one string. Mostly includes: title, recitals, legal articles and annex. Please note that the text of older laws is not always clean. |
-| `Act_type`      | Is either "Directive" or "Regulation"                                                                                                                                |
-| `eurlex_summary_clean`      | Summary of directive or regulation retrieved from eur-lex.com ([example summary](https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:31989L0117&qid=1725090724730)) |
-
-Descriptions provided by the [CEPS EurLex codebook](https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/0EGYWY/RVEJU9&version=2.0).
-
-
-### Recreating Hix Høyland (2024)
-Preview of `hix_hoyland_data.rds` (N = 74,734):
+[Hix Høyland Data](https://www.dropbox.com/scl/fi/asaxyfvma4xd9o7kzpnj7/hix_hoyland_data.rds?rlkey=iwklhk49pnn8h97x8si3uujwj&dl=0) (N = 74,734 | .rds | 301KB)
 
 |    CELEX    | RoBERT_left_right | bakker_hobolt_econ | bakker_hobolt_social | cmp_left_right |
 |-------------|-------------------|--------------------|----------------------|----------------|
 | 32019L2121  |       -4.1108739   |        -2.944439   |       -0.3364722     |    -0.3364722  |
 | 32020L0262  |        0.5108256   |         0.000000   |        0.0000000     |     0.0000000  |
 | 32019L1922  |       -1.0986123   |         0.000000   |       -2.1972246     |     0.0000000  |
-| 32019L2034  |       -4.2046926   |        -1.098612   |       -1.0986123     |    -1.6094379  |
-| 32019L1995  |       -1.0986123   |         0.000000   |        0.0000000     |     0.0000000  |
-| 32021L0338  |       -3.4339872   |         0.000000   |        0.0000000     |     1.0986123  |
-
-`CELEX`: Unique CELEX identifier of an act ([more info](https://eur-lex.europa.eu/content/help/faq/celex-number.html))
-`RoBERT_left_right`: …
-`bakker_hobolt_econ`: …
-`bakker_hobolt_social`: …
-`cmp_left_right`: …
 
 **Minor differences to paper:**
 - Non-english texts were not translated into English (see p. 12)
 - Did not split on the median word-length if “Adopted this directive/regulation” does not appear (see p. 12)
 
-### LSS
-Preview of `glove_polarity_scores_all_dir_reg_econ.rds` (N = 74,734):
+[LSS: Economic Seed Words](https://www.dropbox.com/scl/fi/xivjtmasr72vmat8mqsih/glove_polarity_scores_all_dir_reg_econ.rds?rlkey=32zmjd08rm9669iww691bd8ls&dl=0) (N = 74,734 | .rds | 663KB)
 
 | CELEX       | avg_glove_polarity_scores |
 |-------------|---------------------------|
 | 31989L0083  | 0.398                     |
 | 31989L0100  | 0.349                     |
 | 31989L0117  | 1.01                      |
-| 31989L0130  | 0.431                     |
-| 31989L0174  | -0.0563                   |
-| 31989L0178  | 0.00868                   |
 
-Preview of `glove_polarity_scores_all_dir_reg_social.rds` (N = 74,734):
+[LSS: Social Seed Words](https://www.dropbox.com/scl/fi/496oc0pjyk1g4zqyvzrs2/glove_polarity_scores_all_dir_reg_social.rds?rlkey=idcspqo4bun8mznzstlzxljp6&dl=0) (N = 74,734 | .rds | 663KB)
 
 | CELEX       | avg_glove_polarity_scores |
 |-------------|---------------------------|
 | 31989L0083  | 0.440                     |
 | 31989L0100  | 0.0452                    |
 | 31989L0117  | 0.519                     |
-| 31989L0130  | 0.503                     |
-| 31989L0174  | -0.669                    |
-| 31989L0178  | -0.242                    |
 
 
-#### Seed Word Selection
-- systematic approach: using Wordfish and Wordscores to extract seed words from legislations and from party manifestos
+### Column Descriptions
+
+| Column Name     | Description                                                                                                                                                          |
+|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `act_raw_text`  | The full raw text of the act in one string. Mostly includes: title, recitals, legal articles and annex. Please note that the text of older laws is not always clean. |
+| `Act_type`      | Is either "Directive" or "Regulation"                                                                                                                                |
+| `CELEX`         | Unique CELEX identifier of an act ([more info](https://eur-lex.europa.eu/content/help/faq/celex-number.html))                                                        |
+| `Date_document` | Date of the document. The eur-lex.eu website does not provide an explanation of which exact date in the legislative process this represents.                         |
+| `eurlex_summary_clean` | Summary of directive or regulation retrieved from eur-lex.com ([example summary](https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:31989L0117&qid=1725090724730)) |
+| `RoBERT_left_right` | … |
+| `bakker_hobolt_econ` | … |
+| `bakker_hobolt_social` | … |
+| `cmp_left_right` | … |
+| `avg_glove_polarity_scores` (Economic and Social) | … |
+
+Some descriptions provided by the [CEPS EurLex codebook](https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/0EGYWY/RVEJU9&version=2.0).
+
+
 
 
 --------
