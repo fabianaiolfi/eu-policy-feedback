@@ -2,8 +2,7 @@
 
 ## Data Sets
 
-### [All directives and regulations](https://www.dropbox.com/scl/fi/pk1kt8adgv39880o5pq21/all_dir_reg.rds?rlkey=2zp2ugclhux2jv4gj4dtipgzo&dl=0)
-N = 75,570 | .rds | 497.6MB
+### [All directives and regulations](https://www.dropbox.com/scl/fi/pk1kt8adgv39880o5pq21/all_dir_reg.rds?rlkey=2zp2ugclhux2jv4gj4dtipgzo&dl=0) (N = 75,570 | .rds | 497.6MB)
 
 | CELEX      | Date_document | act_raw_text                                                         | Act_type |
 |------------|---------------|----------------------------------------------------------------------|----------|
