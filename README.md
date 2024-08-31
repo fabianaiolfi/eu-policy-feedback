@@ -70,7 +70,7 @@ N = 74,734 | .rds | 663KB
 | `avg_glove_polarity_scores` (Economic and Social) | LSS score. Negative values: Right; Positive values: Left |
 | `bakker_hobolt_econ` | Economic left-right classification based on [Bakker and Hobolt (2013), p. 38](https://www.dropbox.com/scl/fi/htb19lqo8g41l4hxusy34/bakker_hobolt_2013_chapter.pdf?rlkey=l9ofp62s38b73wxu4xpdk2wm0&dl=0)'s modified CMP measures. Negative values: Left; Positive values: Right |
 | `bakker_hobolt_social` | Social left-right classification based on [Bakker and Hobolt (2013), p. 38](https://www.dropbox.com/scl/fi/htb19lqo8g41l4hxusy34/bakker_hobolt_2013_chapter.pdf?rlkey=l9ofp62s38b73wxu4xpdk2wm0&dl=0)'s modified CMP measures. Negative values: Left; Positive values: Right |
-| `CELEX`         | Unique CELEX identifier of an act ([more info](https://eur-lex.europa.eu/content/help/faq/celex-number.html) (1))                                                        |
+| `CELEX`         | Unique CELEX identifier of an act ([more info](https://eur-lex.europa.eu/content/help/eurlex-content/celex-number.html)) (1) |
 | `cmp_left_right` | Comparative Manifesto Project left-right dimension based on [Bakker and Hobolt (2013), p. 33](https://www.dropbox.com/scl/fi/htb19lqo8g41l4hxusy34/bakker_hobolt_2013_chapter.pdf?rlkey=l9ofp62s38b73wxu4xpdk2wm0&dl=0). Negative values: Left; Positive values: Right |
 | `Date_document` | Date of the document. The eur-lex.eu website does not provide an explanation of which exact date in the legislative process this represents. (1) |
 | `eurlex_summary_clean` | Summary of directive or regulation retrieved from eur-lex.com ([example summary](https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:31989L0117&qid=1725090724730)) |
