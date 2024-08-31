@@ -43,7 +43,7 @@ N = 1637 | .rds | 10KB
 - Did not split on the median word-length if “Adopted this directive/regulation” does not appear (see p. 12)
 
 ### [LSS method: Economic Seed Words](https://www.dropbox.com/scl/fi/xivjtmasr72vmat8mqsih/glove_polarity_scores_all_dir_reg_econ.rds?rlkey=32zmjd08rm9669iww691bd8ls&dl=0)
-N = 74,734 | .rds | 663KB
+N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/seed_words_econ_manual.yml)
 
 | CELEX       | avg_glove_polarity_scores |
 |-------------|---------------------------|
@@ -52,7 +52,7 @@ N = 74,734 | .rds | 663KB
 | 31989L0117  | 1.01                      |
 
 ### [LSS method: Social Seed Words](https://www.dropbox.com/scl/fi/496oc0pjyk1g4zqyvzrs2/glove_polarity_scores_all_dir_reg_social.rds?rlkey=idcspqo4bun8mznzstlzxljp6&dl=0)
-N = 74,734 | .rds | 663KB
+N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/seed_words_social_manual.yml)
 
 | CELEX       | avg_glove_polarity_scores |
 |-------------|---------------------------|
