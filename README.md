@@ -2,7 +2,8 @@
 
 ## Data Sets
 
-### [All directives and regulations](https://www.dropbox.com/scl/fi/pk1kt8adgv39880o5pq21/all_dir_reg.rds?rlkey=2zp2ugclhux2jv4gj4dtipgzo&dl=0) (N = 75,570 | .rds | 497.6MB)
+### [All directives and regulations](https://www.dropbox.com/scl/fi/pk1kt8adgv39880o5pq21/all_dir_reg.rds?rlkey=2zp2ugclhux2jv4gj4dtipgzo&dl=0)
+N = 75,570 | .rds | 497.6MB
 
 | CELEX      | Date_document | act_raw_text                                                         | Act_type |
 |------------|---------------|----------------------------------------------------------------------|----------|
@@ -10,7 +11,8 @@
 | 32020L0262 | 2019-12-19    | "COUNCIL DIRECTIVE (EU) 2020/262\n\nof 19 December 2019\n\nlaying …" | Directive |
 | 32019L1922 | 2019-11-18    | "COMMISSION DIRECTIVE (EU) 2019/1922\n\nof 18 November 2019\n\name…" | Directive |
 
-[Summaries of all directives and regulations](https://www.dropbox.com/scl/fi/q2fm5su8k02353rmb5li4/all_dir_reg_summaries.rds?rlkey=q34f7y5hwf4ksrvlhvuqvoml2&dl=0) (N = 1637 | .rds | 2.6MB)
+### [Summaries of all directives and regulations](https://www.dropbox.com/scl/fi/q2fm5su8k02353rmb5li4/all_dir_reg_summaries.rds?rlkey=q34f7y5hwf4ksrvlhvuqvoml2&dl=0)
+N = 1637 | .rds | 2.6MB
 
 | CELEX      | eurlex_summary_clean                                                                                                                        |
 |------------|---------------------------------------------------------------------------------------------------------------------------------------------|
@@ -18,7 +20,8 @@
 | 31989L0130 | "Harmonisation of the compilation of GNP The creation of an additional own resource for the Communities, based on the gross national product …" |
 | 31989L0297 | "Motor vehicles with trailers: lateral protection for goods vehicles (until 2014) 1) OBJECTIVE To harmonize the requirements to be met by veh…" |
 
-[Hix Høyland Data](https://www.dropbox.com/scl/fi/asaxyfvma4xd9o7kzpnj7/hix_hoyland_data.rds?rlkey=iwklhk49pnn8h97x8si3uujwj&dl=0) (N = 74,734 | .rds | 301KB)
+### [Hix Høyland Data](https://www.dropbox.com/scl/fi/asaxyfvma4xd9o7kzpnj7/hix_hoyland_data.rds?rlkey=iwklhk49pnn8h97x8si3uujwj&dl=0)
+N = 74,734 | .rds | 301KB
 
 |    CELEX    | RoBERT_left_right | bakker_hobolt_econ | bakker_hobolt_social | cmp_left_right |
 |-------------|-------------------|--------------------|----------------------|----------------|
@@ -30,7 +33,8 @@
 - Non-english texts were not translated into English (see p. 12)
 - Did not split on the median word-length if “Adopted this directive/regulation” does not appear (see p. 12)
 
-[LSS: Economic Seed Words](https://www.dropbox.com/scl/fi/xivjtmasr72vmat8mqsih/glove_polarity_scores_all_dir_reg_econ.rds?rlkey=32zmjd08rm9669iww691bd8ls&dl=0) (N = 74,734 | .rds | 663KB)
+### [LSS: Economic Seed Words](https://www.dropbox.com/scl/fi/xivjtmasr72vmat8mqsih/glove_polarity_scores_all_dir_reg_econ.rds?rlkey=32zmjd08rm9669iww691bd8ls&dl=0)
+N = 74,734 | .rds | 663KB
 
 | CELEX       | avg_glove_polarity_scores |
 |-------------|---------------------------|
@@ -38,7 +42,8 @@
 | 31989L0100  | 0.349                     |
 | 31989L0117  | 1.01                      |
 
-[LSS: Social Seed Words](https://www.dropbox.com/scl/fi/496oc0pjyk1g4zqyvzrs2/glove_polarity_scores_all_dir_reg_social.rds?rlkey=idcspqo4bun8mznzstlzxljp6&dl=0) (N = 74,734 | .rds | 663KB)
+### [LSS: Social Seed Words](https://www.dropbox.com/scl/fi/496oc0pjyk1g4zqyvzrs2/glove_polarity_scores_all_dir_reg_social.rds?rlkey=idcspqo4bun8mznzstlzxljp6&dl=0)
+N = 74,734 | .rds | 663KB
 
 | CELEX       | avg_glove_polarity_scores |
 |-------------|---------------------------|
@@ -51,21 +56,18 @@
 
 | Column Name     | Description                                                                                                                                                          |
 |-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `act_raw_text`  | The full raw text of the act in one string. Mostly includes: title, recitals, legal articles and annex. Please note that the text of older laws is not always clean. |
+| `act_raw_text`  | The full raw text of the act in one string. Mostly includes: title, recitals, legal articles and annex. Please note that the text of older laws is not always clean. (1) |
 | `Act_type`      | Is either "Directive" or "Regulation"                                                                                                                                |
-| `CELEX`         | Unique CELEX identifier of an act ([more info](https://eur-lex.europa.eu/content/help/faq/celex-number.html))                                                        |
-| `Date_document` | Date of the document. The eur-lex.eu website does not provide an explanation of which exact date in the legislative process this represents.                         |
+| `avg_glove_polarity_scores` (Economic and Social) | LSS score. Negative values: Right; Positive values: Left |
+| `bakker_hobolt_econ` | Economic left-right classification based on [Bakker and Hobolt (2013), p. 38](https://www.dropbox.com/scl/fi/htb19lqo8g41l4hxusy34/bakker_hobolt_2013_chapter.pdf?rlkey=l9ofp62s38b73wxu4xpdk2wm0&dl=0)'s modified CMP measures. Negative values: Left; Positive values: Right |
+| `bakker_hobolt_social` | Social left-right classification based on [Bakker and Hobolt (2013), p. 38](https://www.dropbox.com/scl/fi/htb19lqo8g41l4hxusy34/bakker_hobolt_2013_chapter.pdf?rlkey=l9ofp62s38b73wxu4xpdk2wm0&dl=0)'s modified CMP measures. Negative values: Left; Positive values: Right |
+| `CELEX`         | Unique CELEX identifier of an act ([more info](https://eur-lex.europa.eu/content/help/faq/celex-number.html) (1))                                                        |
+| `cmp_left_right` | Comparative Manifesto Project left-right dimension based on [Bakker and Hobolt (2013), p. 33](https://www.dropbox.com/scl/fi/htb19lqo8g41l4hxusy34/bakker_hobolt_2013_chapter.pdf?rlkey=l9ofp62s38b73wxu4xpdk2wm0&dl=0). Negative values: Left; Positive values: Right |
+| `Date_document` | Date of the document. The eur-lex.eu website does not provide an explanation of which exact date in the legislative process this represents. (1) |
 | `eurlex_summary_clean` | Summary of directive or regulation retrieved from eur-lex.com ([example summary](https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:31989L0117&qid=1725090724730)) |
-| `RoBERT_left_right` | … |
-| `bakker_hobolt_econ` | … |
-| `bakker_hobolt_social` | … |
-| `cmp_left_right` | … |
-| `avg_glove_polarity_scores` (Economic and Social) | … |
+| `RoBERT_left_right` | Party Manifestos Project Right-Left (RILE) classification. Negative values: Left; Positive values: Right |
 
-Some descriptions provided by the [CEPS EurLex codebook](https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/0EGYWY/RVEJU9&version=2.0).
-
-
-
+(1) Source: [CEPS EurLex codebook](https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/0EGYWY/RVEJU9&version=2.0)
 
 --------
 
