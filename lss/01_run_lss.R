@@ -1,8 +1,8 @@
 
 # Import custom dictionary for seed words -----------------------
 
-# dict <- dictionary(file = here("lss", "seed_words_econ_manual.yml"))
-dict <- dictionary(file = here("lss", "seed_words_social_manual.yml"))
+dict <- dictionary(file = here("lss", "seed_words_econ_manual.yml"))
+# dict <- dictionary(file = here("lss", "seed_words_social_manual.yml"))
 seed <- as.seedwords(dict$ideology, concatenator = " ")
 
 
