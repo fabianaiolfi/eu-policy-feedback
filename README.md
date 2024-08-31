@@ -1,50 +1,40 @@
 # EU Policy Feedback
 
-## Deliverables by end of Aug 2024
+## Data Sets
 
-### Must
+[All directives and regulations](https://www.dropbox.com/scl/fi/pk1kt8adgv39880o5pq21/all_dir_reg.rds?rlkey=2zp2ugclhux2jv4gj4dtipgzo&dl=0) (N = 75,570 | .rds | 497.6MB)
 
-- [x] Collect all data; Update dataset to include all policies up to mid August 2024: `/data/data_collection/all_dir_reg.rds`
-- [x] Collect all summaries: `/data/data_collection/all_dir_reg_summaries.rds`
+| CELEX      | Date_document | act_raw_text                                                         | Act_type |
+|------------|---------------|----------------------------------------------------------------------|----------|
+| 32019L2121 | 2019-11-27    | "DIRECTIVE (EU) 2019/2121 OF THE EUROPEAN PARLIAMENT AND OF THE CO…" | Directive |
+| 32020L0262 | 2019-12-19    | "COUNCIL DIRECTIVE (EU) 2020/262\n\nof 19 December 2019\n\nlaying …" | Directive |
+| 32019L1922 | 2019-11-18    | "COMMISSION DIRECTIVE (EU) 2019/1922\n\nof 18 November 2019\n\name…" | Directive |
+| 32019L2034 | 2019-11-27    | "DIRECTIVE (EU) 2019/2034 OF THE EUROPEAN PARLIAMENT AND OF THE CO…" | Directive |
+| 32019L1995 | 2019-11-21    | "COUNCIL DIRECTIVE (EU) 2019/1995\n\nof 21 November 2019\n\namendi…" | Directive |
+| 32021L0338 | 2021-02-16    | "DIRECTIVE (EU) 2021/338 OF THE EUROPEAN PARLIAMENT AND OF THE COU…" | Directive |
 
-- [x] Complete Hix Høyland (2024) Recreation
-  - [x] Retrieve scores for both economic and social dimensions
-  - [x] Apply Hix Høyland (2024) technique on policy summaries
-  - [x] To do: Clean text appropriate for word embedding (e.g., remove frequent expressions, see below)
+[Summaries of all directives and regulations](https://www.dropbox.com/scl/fi/q2fm5su8k02353rmb5li4/all_dir_reg_summaries.rds?rlkey=q34f7y5hwf4ksrvlhvuqvoml2&dl=0) (N = 1637 | .rds | 2.6MB)
 
-### Nice to Have
-- [x] Improve LSS
-  - [x] Improve seed words to be more systematic and based on dictionaries such as [Wordscore](https://tutorials.quanteda.io/machine-learning/wordscores/) and [Wordfish](https://tutorials.quanteda.io/machine-learning/wordfish/)
-  - [x] Preprocess text (see [this paper](https://www.dropbox.com/scl/fi/u1dpvjp9bzmgbmebuqfs9/word_embeddings_for_the_analysis_of_ideological_placement_in_parliamentary_corpora.pdf?rlkey=x3uam6ph6nywag1rlggcobhe4&dl=0))
-    - [x] Subsampling (random removal of frequent words)
-    - [x] Remove digits
-    - [x] Remove words with two letters or fewer
-    - [x] Remove English stop words, including overly common procedural words
-    - [x] Limit the vocabulary to tokens with a minimum count of 50 occurrences
-  - [ ] ~~Detect collocations~~
-  - [x] Calculate both dimensions (economic and social)
+| CELEX      | eurlex_summary_clean                                                                                                                        |
+|------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| 31989L0117 | "Accounting documents of branches of foreign credit and financial institutions SUMMARY OF: Directive 89/117/EEC — obligations of branches of …" |
+| 31989L0130 | "Harmonisation of the compilation of GNP The creation of an additional own resource for the Communities, based on the gross national product …" |
+| 31989L0297 | "Motor vehicles with trailers: lateral protection for goods vehicles (until 2014) 1) OBJECTIVE To harmonize the requirements to be met by veh…" |
+| 31989L0361 | "Intra-Community trade in pure-bred breeding sheep and goats The European Union (EU) harmonises the rules applicable to the trade in pure-bre…" |
+| 31989L0384 | "Health criteria for untreated and heat-treated milk SUMMARY The European Union lays down health criteria for heat-treated milk (pasteurised, …" |
+| 31989L0391 | "Health and safety at work — general rules SUMMARY OF: Council Directive 89/391/EEC — measures to improve the safety and health of workers at…" |
 
-- [ ] ChatGPT Approach
-  - Compare policy summary, preamble (like Hix Høyland (2024)) and entire text to evaluate output
-  - Approaches
-	  - 0-shot: Query a single law and ask ChatGPT to place it on a left-right scale. Query must clearly explain economic/social left-right dimension
-	  - Compare and rank: Comapare two policy and pick the more left one. Then apply Elo ranking.
-  - In order to overcome problem that distance between laws is unclear: Somehow combine scores from other techniques in order to retrieve ideological “distance” between laws
 
-- [ ] Systematic Evaluation of all Measurements
-  - Compare results amongst themselves and with expert survey (e.g. [this expert survey](https://www.dropbox.com/scl/fi/392u06vxzhz6sqebe5mam/EU_Competencies_Index_codebook_v1.pdf?rlkey=vgbqc57dmxur7rakqpekdswy8&dl=0), data: https://www.eucompetencies.com/data/)
-  - How reliable are the summaries compared to the preamble or entire text?
+| Column Name     | Description                                                                                                                                                          |
+|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `CELEX`         | Unique CELEX identifier of an act ([more info](https://eur-lex.europa.eu/content/help/faq/celex-number.html))                                                        |
+| `Date_document` | Date of the document. The eur-lex.eu website does not provide an explanation of which exact date in the legislative process this represents.                         |
+| `act_raw_text`  | The full raw text of the act in one string. Mostly includes: title, recitals, legal articles and annex. Please note that the text of older laws is not always clean. |
+| `Act_type`      | Is either "Directive" or "Regulation"                                                                                                                                |
+| `eurlex_summary_clean`      | Summary of directive or regulation retrieved from eur-lex.com ([example summary](https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:31989L0117&qid=1725090724730)) |
 
-## General To Do
-- [ ] How to disregard / ignore laws that are *not* relevant? E.g. a law on abortion has no economic left-right ideology → One possible approach could be using a policy’s tags. Are there tags that indicate that a policy can be ignored?
-- [ ] Publish paper? Consider until end of Aug.
+Descriptions provided by the [CEPS EurLex codebook](https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/0EGYWY/RVEJU9&version=2.0).
 
---------
-
-## Documentation
-
-### Data Collection
-- Preview of all_dir_reg.rds and all_dir_reg_summaries.rds
 
 ### Recreating Hix Høyland (2024)
 Preview of `hix_hoyland_data.rds` (N = 74,734):
@@ -98,6 +88,9 @@ Preview of `glove_polarity_scores_all_dir_reg_social.rds` (N = 74,734):
 
 --------
 
+## General To Do
+- [ ] How to disregard / ignore laws that are *not* relevant? E.g. a law on abortion has no economic left-right ideology → One possible approach could be using a policy’s tags. Are there tags that indicate that a policy can be ignored?
+
 ## Data Collection 1989 – Today
 - [x] CEPS EurLex (1952 – 2019)
 - [ ] Moodley (1971 – 2022)
@@ -131,12 +124,13 @@ Preview of `glove_polarity_scores_all_dir_reg_social.rds` (N = 74,734):
 	- Policies or laws from another jurisdiction (e.g., UK), where policy author/creater and their political affiliation are known
 - Create an embedding for each EP faction and topic (e.g., left-wing and climate issues). Then label each policy with a topic. Then calculate embeddings for each policy and assign the policy to the closest faction based on the issue.
 
-## Ranking
-- Get an LLM to compare two policies with each other: Which policy is more left or more right?
-- Try out with the entire policy and also with a summary of the policy
-- Based on this, create a ranking of all policies
-- BradleyTerry algorithm
-- https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12703
+## ChatGPT Approach
+- Compare policy summary, preamble (like Hix Høyland (2024)) and entire text to evaluate output
+- Approaches
+  - 0-shot: Query a single law and ask ChatGPT to place it on a left-right scale. Query must clearly explain economic/social left-right dimension
+  - Compare and rank: Comapare two policy and pick the more left one. Then apply Elo ranking.
+  - In order to overcome problem that distance between laws is unclear: Somehow combine scores from other techniques in order to retrieve ideological “distance” between laws
+  - See also: BradleyTerry algorithm (applied [here](https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12703))
 
 ### To Do
 - [ ] Scrape summaries: Are there enough to make this work?
@@ -147,12 +141,11 @@ Preview of `glove_polarity_scores_all_dir_reg_social.rds` (N = 74,734):
 		- [ ] Increase the Number of Comparisons: More comparisons will help stabilize the ratings, reducing the impact of any particular order.
 		- [ ] Lower the K-Factor: This reduces the volatility of the ratings but can slow down the adjustment process.
 - [ ] Try running an LLM locally
-- [ ] Use ChatGPT 4o (gpt-4o-2024-08-06, see OpenAI newsletter from 240808)
+- [x] Use ChatGPT 4o mini
 
-## Recreate existing measurement techniques
-- [ ] Hix Høyland (2024)
-
-## Evaluation
+## Systematic Evaluation of all Measurements
+- [ ] Compare results amongst themselves and with expert survey (e.g. [this expert survey](https://www.dropbox.com/scl/fi/392u06vxzhz6sqebe5mam/EU_Competencies_Index_codebook_v1.pdf?rlkey=vgbqc57dmxur7rakqpekdswy8&dl=0), data: https://www.eucompetencies.com/data/)
+- [ ] How reliable are the summaries compared to the preamble or entire text?
 - [ ] Create tags / topics of each document to see if there's a correlation between topics and calculated ideology
 - [ ] Compare with existing measurments
 - [ ] Compare results with each other
