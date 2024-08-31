@@ -20,7 +20,7 @@ N = 1637 | .rds | 2.6MB
 | 31989L0130 | "Harmonisation of the compilation of GNP The creation of an additional own resource for the Communities, based on the gross national product …" |
 | 31989L0297 | "Motor vehicles with trailers: lateral protection for goods vehicles (until 2014) 1) OBJECTIVE To harmonize the requirements to be met by veh…" |
 
-### [Hix Høyland Data](https://www.dropbox.com/scl/fi/asaxyfvma4xd9o7kzpnj7/hix_hoyland_data.rds?rlkey=iwklhk49pnn8h97x8si3uujwj&dl=0)
+### [Hix Høyland data: All directives and regulations](https://www.dropbox.com/scl/fi/asaxyfvma4xd9o7kzpnj7/hix_hoyland_data.rds?rlkey=iwklhk49pnn8h97x8si3uujwj&dl=0)
 N = 74,734 | .rds | 301KB
 
 |    CELEX    | RoBERT_left_right | bakker_hobolt_econ | bakker_hobolt_social | cmp_left_right |
@@ -28,6 +28,15 @@ N = 74,734 | .rds | 301KB
 | 32019L2121  |       -4.1108739   |        -2.944439   |       -0.3364722     |    -0.3364722  |
 | 32020L0262  |        0.5108256   |         0.000000   |        0.0000000     |     0.0000000  |
 | 32019L1922  |       -1.0986123   |         0.000000   |       -2.1972246     |     0.0000000  |
+
+### [Hix Høyland data: Summaries](https://www.dropbox.com/scl/fi/wfr20zn2ex9xtbck7svhd/hix_hoyland_data_summaries.rds?rlkey=om1zp6bll7gv3b19h48gm2ru8&dl=0)
+N = 1637 | .rds | 10KB
+
+| CELEX      | RoBERT_left_right | bakker_hobolt_econ | bakker_hobolt_social | cmp_left_right |
+|------------|-------------------|-------------------|----------------------|----------------|
+| 31989L0117 | -1.6094379        | 0.000000          | 0.0000000            | 0.0000000      |
+| 31989L0130 | 0.0000000         | 0.000000          | -1.0986123           | 0.0000000      |
+| 31989L0297 | 0.0000000         | 0.000000          | -1.9459101           | 0.0000000      |
 
 **Minor differences to paper:**
 - Non-english texts were not translated into English (see p. 12)
