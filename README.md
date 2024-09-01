@@ -134,6 +134,7 @@ N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-
 		- [ ] Lower the K-Factor: This reduces the volatility of the ratings but can slow down the adjustment process.
 - [ ] Try running an LLM locally
 - [x] Use ChatGPT 4o mini
+- [ ] Potential political bias in LLMs? Try multiple prompts and models.
 
 ## Systematic Evaluation of all Measurements
 - [ ] Compare results amongst themselves and with expert survey (e.g. [this expert survey](https://www.dropbox.com/scl/fi/392u06vxzhz6sqebe5mam/EU_Competencies_Index_codebook_v1.pdf?rlkey=vgbqc57dmxur7rakqpekdswy8&dl=0), data: https://www.eucompetencies.com/data/)
