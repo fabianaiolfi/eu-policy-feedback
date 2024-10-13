@@ -6,7 +6,7 @@
 
 ## Load data -----------------------
 
-nanou_2017_rf <- readRDS(here("existing_measurements", "nanou_2017", "nanou_2017_rf.rds")) # Averaged expert measurements from extract_expert_measurements.R
+nanou_2017_lrscale3 <- readRDS(here("existing_measurements", "nanou_2017", "nanou_2017_lrscale3.rds")) # Averaged expert measurements from extract_expert_measurements.R
 all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg.rds"))
 all_dir_reg <- all_dir_reg %>% slice_sample(n = 50)
 
@@ -84,3 +84,12 @@ broad_policy_avg_df <- broad_policy_avg_df %>%
   drop_na(period) %>%
   group_by(broad_policy_area, period) %>%
   summarise(avg_lss_econ = mean(lss_econ, na.rm = T), .groups = "drop")
+
+
+## CONTINUE HERE ##
+# - normalise different scores
+# - add all calculated scores (both LSS, Hix Hoyland, etc)
+# - compare with Nanou 2017 (ie expert survey)
+
+temp_df <- broad_policy_avg_df %>% 
+  left_join(nanou_2017_lrscale3, by = c("broad_policy_area", "period"))
