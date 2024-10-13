@@ -1,23 +1,27 @@
 
 # Overall Evaluation -----------------------------------
+
 # Comparing different automated methods with expert scores
 
 
 ## Load data -----------------------
 
 nanou_2017_rf <- readRDS(here("existing_measurements", "nanou_2017", "nanou_2017_rf.rds")) # Averaged expert measurements from extract_expert_measurements.R
-ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
-ceps_eurlex <- ceps_eurlex %>% slice_sample(n = 50)
-
-
-## Merge Subject Matter and Broad Policy Area from Nanou 2017 -----------------------
+all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg.rds"))
+all_dir_reg <- all_dir_reg %>% slice_sample(n = 50)
 
 # source(here("evaluation", "policy_area_subj_matter.R")) # Run script
 policy_area_subj_matter <- readRDS(here("data", "evaluation", "policy_area_subj_matter.rds")) # Load data
 
+glove_polarity_scores_all_dir_reg_econ <- readRDS(here("data", "lss", "glove_polarity_scores_all_dir_reg_econ.rds"))
 
-## Assign a Policy Area to each Legislation -----------------------
-# Based on Subject Matter
+# Add Subject Matter to all_dir_reg
+ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
+ceps_eurlex <- ceps_eurlex %>% select(CELEX, Subject_matter)
+all_dir_reg <- all_dir_reg %>% left_join(ceps_eurlex, by = "CELEX")
+
+
+## Connect a Law's Subject Matter with the Broad Policy Area from Nanou 2017 -----------------------
 
 # Function to match subject matter terms to broad policy areas, accounting for match frequency
 match_policy_area <- function(subject_matter, lookup_df) {
@@ -47,16 +51,21 @@ match_policy_area <- function(subject_matter, lookup_df) {
   }
 }
 
-ceps_eurlex$broad_policy_area <- sapply(ceps_eurlex$Subject_matter, match_policy_area, lookup_df = policy_area_subj_matter)
+all_dir_reg$broad_policy_area <- sapply(all_dir_reg$Subject_matter, match_policy_area, lookup_df = policy_area_subj_matter)
 
-ceps_eurlex$broad_policy_area[22]
-ceps_eurlex$Subject_matter[22]
 
-#####
+## Calculate Averages per Time Period and Broad Policy Area ---------------------------------
 
-temp_df <- ceps_eurlex %>% 
-  select(CELEX, Subject_matter)
+# Create a dataframe that allows us to calculate the average score per time period and broad policy area
 
-head(temp_df)
+broad_policy_avg_df <- all_dir_reg %>% 
+  select(CELEX, Date_document, broad_policy_area) %>% 
+  mutate(year = as.numeric(format(Date_document, "%Y"))) %>% 
+  select(-Date_document) %>% 
+  drop_na(broad_policy_area) %>% 
+  separate_rows(broad_policy_area, sep = "; ") %>% 
+  left_join(glove_polarity_scores_all_dir_reg_econ, by = "CELEX")
+  # Add other scores here later
+  
 
-temp_df <- policy_area_subj_matter %>% slice_sample(n=5)
+
