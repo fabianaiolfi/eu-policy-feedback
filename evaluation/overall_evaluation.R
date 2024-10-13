@@ -5,7 +5,7 @@
 
 ## Load data -----------------------
 
-nanou_2017 <- read_dta(here("existing_measurements", "nanou_2017", "EUcompetencies_expertlevel.dta")) # https://www.eucompetencies.com/data/
+nanou_2017_rf <- readRDS(here("existing_measurements", "nanou_2017", "nanou_2017_rf.rds")) # Averaged expert measurements from extract_expert_measurements.R
 ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
 ceps_eurlex <- ceps_eurlex %>% slice_sample(n = 50)
 
@@ -49,8 +49,8 @@ match_policy_area <- function(subject_matter, lookup_df) {
 
 ceps_eurlex$broad_policy_area <- sapply(ceps_eurlex$Subject_matter, match_policy_area, lookup_df = policy_area_subj_matter)
 
-ceps_eurlex$broad_policy_area[36]
-ceps_eurlex$Subject_matter[36]
+ceps_eurlex$broad_policy_area[22]
+ceps_eurlex$Subject_matter[22]
 
 #####
 
