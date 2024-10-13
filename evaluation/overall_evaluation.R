@@ -58,14 +58,29 @@ all_dir_reg$broad_policy_area <- sapply(all_dir_reg$Subject_matter, match_policy
 
 # Create a dataframe that allows us to calculate the average score per time period and broad policy area
 
+# Preprocess data and add calculated scores
 broad_policy_avg_df <- all_dir_reg %>% 
   select(CELEX, Date_document, broad_policy_area) %>% 
   mutate(year = as.numeric(format(Date_document, "%Y"))) %>% 
   select(-Date_document) %>% 
   drop_na(broad_policy_area) %>% 
-  separate_rows(broad_policy_area, sep = "; ") %>% 
-  left_join(glove_polarity_scores_all_dir_reg_econ, by = "CELEX")
-  # Add other scores here later
-  
+  separate_rows(broad_policy_area, sep = "; ") %>% # Place each Broad Policy Area on its own row
+  # Add calculated scores
+  left_join(glove_polarity_scores_all_dir_reg_econ, by = "CELEX") %>% 
+  rename(lss_econ = avg_glove_polarity_scores)# %>% 
+  ## Add other scores here later ##
 
-
+# Calcualate averages based on time periods
+broad_policy_avg_df <- broad_policy_avg_df %>%
+  mutate(period = case_when(
+    year %in% 1989:1990 ~ "1989-1990",
+    year %in% 1991:1995 ~ "1991-1995",
+    year %in% 1996:2000 ~ "1996-2000",
+    year %in% 2001:2005 ~ "2001-2005",
+    year %in% 2006:2010 ~ "2006-2010",
+    year %in% 2011:2014 ~ "2011-2014",
+    year %in% 2014:2024 ~ "2014-2024",
+    TRUE ~ NA_character_)) %>% 
+  drop_na(period) %>%
+  group_by(broad_policy_area, period) %>%
+  summarise(avg_lss_econ = mean(lss_econ, na.rm = T), .groups = "drop")
