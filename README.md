@@ -120,7 +120,7 @@ N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-
 - Compare policy summary, preamble (like Hix Høyland (2024)) and entire text to evaluate output
 - Approaches
   - 0-shot: Query a single law and ask ChatGPT to place it on a left-right scale. Query must clearly explain economic/social left-right dimension
-  - Compare and rank: Comapare two policy and pick the more left one. Then apply Elo ranking.
+  - Compare and rank: Compare two policies and pick the more left one. Then apply Elo ranking.
   - In order to overcome problem that distance between laws is unclear: Somehow combine scores from other techniques in order to retrieve ideological “distance” between laws
   - See also: BradleyTerry algorithm (applied [here](https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12703))
 
