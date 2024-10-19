@@ -8,7 +8,7 @@
 
 nanou_2017_lrscale3 <- readRDS(here("existing_measurements", "nanou_2017", "nanou_2017_lrscale3.rds")) # Averaged expert measurements from extract_expert_measurements.R
 all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg.rds"))
-all_dir_reg <- all_dir_reg %>% slice_sample(n = 50)
+all_dir_reg <- all_dir_reg %>% slice_sample(n = 1000)
 
 # source(here("evaluation", "policy_area_subj_matter.R")) # Run script
 policy_area_subj_matter <- readRDS(here("data", "evaluation", "policy_area_subj_matter.rds")) # Load data
@@ -83,7 +83,9 @@ broad_policy_avg_df <- broad_policy_avg_df %>%
     TRUE ~ NA_character_)) %>% 
   drop_na(period) %>%
   group_by(broad_policy_area, period) %>%
-  summarise(avg_lss_econ = mean(lss_econ, na.rm = T), .groups = "drop")
+  summarise(avg_lss_econ = mean(lss_econ, na.rm = T), .groups = "drop") %>% 
+  # Perform a standardization of data (z-scoring)
+  mutate(avg_lss_econ_z_score = standardize(avg_lss_econ))
 
 
 ## CONTINUE HERE ##
