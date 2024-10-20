@@ -8,7 +8,7 @@
 
 nanou_2017_lrscale3 <- readRDS(here("existing_measurements", "nanou_2017", "nanou_2017_lrscale3.rds")) # Averaged expert measurements from extract_expert_measurements.R
 all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg.rds"))
-all_dir_reg <- all_dir_reg %>% slice_sample(n = 1000)
+# all_dir_reg <- all_dir_reg %>% slice_sample(n = 1000)
 
 # source(here("evaluation", "policy_area_subj_matter.R")) # Run script
 policy_area_subj_matter <- readRDS(here("data", "evaluation", "policy_area_subj_matter.rds")) # Load data
@@ -17,6 +17,13 @@ policy_area_subj_matter <- readRDS(here("data", "evaluation", "policy_area_subj_
 glove_polarity_scores_all_dir_reg_econ <- readRDS(here("data", "lss", "glove_polarity_scores_all_dir_reg_econ.rds"))
 glove_polarity_scores_all_dir_reg_social <- readRDS(here("data", "lss", "glove_polarity_scores_all_dir_reg_social.rds"))
 hix_hoyland_data <- readRDS(here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data.rds"))
+
+# Directive/Regulation Summaries Only (ChatGPT)
+chatgpt_preamble_0_shot <- readRDS(here("data", "chatgpt_0_shot", "chatgpt_preamble_0_shot.rds"))
+chatgpt_summary_0_shot <- readRDS(here("data", "chatgpt_0_shot", "chatgpt_summary_0_shot.rds"))
+all_dir_reg <- chatgpt_preamble_0_shot %>% 
+  select(CELEX) %>% 
+  left_join(all_dir_reg, by = "CELEX")
 
 # Add Subject Matter to all_dir_reg
 ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
@@ -44,6 +51,14 @@ hix_hoyland_data <- hix_hoyland_data %>%
   mutate(bakker_hobolt_econ_z_score = standardize(bakker_hobolt_econ)) %>% 
   mutate(bakker_hobolt_social_z_score = standardize(bakker_hobolt_social)) %>% 
   mutate(cmp_left_right_z_score = standardize(cmp_left_right))
+
+chatgpt_preamble_0_shot <- chatgpt_preamble_0_shot %>% 
+  # Perform standardization of data (z-scoring)
+  mutate(chatgpt_preamble_0_shot_z_score = standardize(chatgpt_answer))
+
+chatgpt_summary_0_shot <- chatgpt_summary_0_shot %>% 
+  # Perform standardization of data (z-scoring)
+  mutate(chatgpt_summary_0_shot_z_score = standardize(chatgpt_answer))
 
 
 ## Connect a Law's Subject Matter with the Broad Policy Area from Nanou 2017 -----------------------
@@ -93,7 +108,9 @@ broad_policy_avg_df <- all_dir_reg %>%
   # Add calculated scores
   left_join(select(glove_polarity_scores_all_dir_reg_econ, CELEX, avg_lss_econ_z_score), by = "CELEX") %>% 
   left_join(select(glove_polarity_scores_all_dir_reg_social, CELEX, avg_lss_social_z_score), by = "CELEX") %>% 
-  left_join(select(hix_hoyland_data, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX")
+  left_join(select(hix_hoyland_data, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX") %>% 
+  left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX") %>% 
+  left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX")
 
 # Calcualate averages based on time periods
 broad_policy_avg_df <- broad_policy_avg_df %>%
@@ -142,16 +159,5 @@ variance_df <- broad_policy_avg_df %>%
   select(-broad_policy_area, -period) %>% 
   summarise(across(everything(), ~ var(.x - nanou_2017_z_score, na.rm = T)))
 
-
-
-
 ## CONTINUE HERE ##
-# - normalise different scores: calcualte value BEFORE calculating average!
-# - add all calculated scores (both LSS, Hix Hoyland, etc)
-# - compare with Nanou 2017 (ie expert survey)
-
-
-
-
-
-
+# - other ways to compare expert survey and own measurements?
