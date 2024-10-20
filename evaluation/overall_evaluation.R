@@ -111,17 +111,45 @@ broad_policy_avg_df <- broad_policy_avg_df %>%
   summarize(across(contains("z_score"), ~ mean(.x, na.rm = TRUE)), .groups = "drop") %>% 
   ungroup()
 
+# Add Nanou 2017
+broad_policy_avg_df <- broad_policy_avg_df %>% 
+  left_join(select(nanou_2017_lrscale3, broad_policy_area, period, lrscale3_avg_z_score), by = c("broad_policy_area", "period")) %>% 
+  rename(nanou_2017_z_score = lrscale3_avg_z_score)
+
+
+## Examine Complete Dataframe -----------------------
+
+# Correlations
+cor_df <- broad_policy_avg_df %>% select(-broad_policy_area, -period)
+correlation_matrix <- cor(cor_df, use = "pairwise.complete.obs")
+correlation_melt <- melt(correlation_matrix) # Convert the correlation matrix into long format for ggplot2
+
+# Correlations heatmap
+ggplot(data = correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                       midpoint = 0, limit = c(-1, 1), space = "Lab", 
+                       name="Correlation") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust = 1)) +
+  coord_fixed() +
+  xlab("") + ylab("")
+
+plot(broad_policy_avg_df$bakker_hobolt_social_z_score, broad_policy_avg_df$nanou_2017_z_score)
+
+# Variance between own measurments and expert survey
+variance_df <- broad_policy_avg_df %>%
+  select(-broad_policy_area, -period) %>% 
+  summarise(across(everything(), ~ var(.x - nanou_2017_z_score, na.rm = T)))
+
+
+
 
 ## CONTINUE HERE ##
 # - normalise different scores: calcualte value BEFORE calculating average!
 # - add all calculated scores (both LSS, Hix Hoyland, etc)
 # - compare with Nanou 2017 (ie expert survey)
 
-temp_df <- broad_policy_avg_df %>% 
-  left_join(nanou_2017_lrscale3, by = c("broad_policy_area", "period"))
-
-
-plot(temp_df$avg_lss_econ_z_score_period_avg, temp_df$lrscale3_avg_z_score)
 
 
 
