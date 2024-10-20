@@ -160,4 +160,5 @@ variance_df <- broad_policy_avg_df %>%
   summarise(across(everything(), ~ var(.x - nanou_2017_z_score, na.rm = T)))
 
 ## CONTINUE HERE ##
+# - measurements based on chatgpt summaries seem to provide best variance and correlation values compared to expert surveys. examine this further! maybe also calculate measurements based on entire regulation/directive, not just summary.
 # - other ways to compare expert survey and own measurements?
