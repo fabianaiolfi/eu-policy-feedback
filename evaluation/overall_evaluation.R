@@ -34,6 +34,17 @@ glove_polarity_scores_all_dir_reg_econ <- glove_polarity_scores_all_dir_reg_econ
   # Perform standardization of data (z-scoring)
   mutate(avg_lss_econ_z_score = standardize(avg_glove_polarity_scores))
 
+glove_polarity_scores_all_dir_reg_social <- glove_polarity_scores_all_dir_reg_social %>% 
+  # Perform standardization of data (z-scoring)
+  mutate(avg_lss_social_z_score = standardize(avg_glove_polarity_scores))
+
+hix_hoyland_data <- hix_hoyland_data %>% 
+  # Perform standardization of data (z-scoring)
+  mutate(RoBERT_left_right_z_score = standardize(RoBERT_left_right)) %>% 
+  mutate(bakker_hobolt_econ_z_score = standardize(bakker_hobolt_econ)) %>% 
+  mutate(bakker_hobolt_social_z_score = standardize(bakker_hobolt_social)) %>% 
+  mutate(cmp_left_right_z_score = standardize(cmp_left_right))
+
 
 ## Connect a Law's Subject Matter with the Broad Policy Area from Nanou 2017 -----------------------
 
@@ -80,16 +91,9 @@ broad_policy_avg_df <- all_dir_reg %>%
   drop_na(broad_policy_area) %>% 
   separate_rows(broad_policy_area, sep = "; ") %>% # Place each Broad Policy Area on its own row
   # Add calculated scores
-  left_join(glove_polarity_scores_all_dir_reg_econ, by = "CELEX") %>% 
-  rename(lss_econ = avg_glove_polarity_scores) %>% 
-  left_join(glove_polarity_scores_all_dir_reg_social, by = "CELEX") %>% 
-  rename(lss_social = avg_glove_polarity_scores) %>% 
-  left_join(hix_hoyland_data, by = "CELEX") %>% 
-  rename(hix_hoyland_RoBERT_left_right = RoBERT_left_right) %>% 
-  rename(hix_hoyland_bakker_hobolt_econ = bakker_hobolt_econ) %>% 
-  rename(hix_hoyland_bakker_hobolt_social = bakker_hobolt_social) %>% 
-  rename(hix_hoyland_cmp_left_right = cmp_left_right)
-  ## Add other scores here later ##
+  left_join(select(glove_polarity_scores_all_dir_reg_econ, CELEX, avg_lss_econ_z_score), by = "CELEX") %>% 
+  left_join(select(glove_polarity_scores_all_dir_reg_social, CELEX, avg_lss_social_z_score), by = "CELEX") %>% 
+  left_join(select(hix_hoyland_data, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX")
 
 # Calcualate averages based on time periods
 broad_policy_avg_df <- broad_policy_avg_df %>%
@@ -101,10 +105,11 @@ broad_policy_avg_df <- broad_policy_avg_df %>%
     year %in% 2006:2010 ~ "2006-2010",
     year %in% 2011:2014 ~ "2011-2014",
     year %in% 2014:2024 ~ "2014-2024",
-    TRUE ~ NA_character_))# %>% 
+    TRUE ~ NA_character_)) %>% 
   drop_na(period) %>%
   group_by(broad_policy_area, period) %>%
-  summarise(avg_lss_econ = mean(lss_econ, na.rm = T), .groups = "drop")
+  summarize(across(contains("z_score"), ~ mean(.x, na.rm = TRUE)), .groups = "drop") %>% 
+  ungroup()
 
 
 ## CONTINUE HERE ##
@@ -116,7 +121,7 @@ temp_df <- broad_policy_avg_df %>%
   left_join(nanou_2017_lrscale3, by = c("broad_policy_area", "period"))
 
 
-plot(temp_df$avg_lss_econ_z_score, temp_df$lrscale3_avg_z_score)
+plot(temp_df$avg_lss_econ_z_score_period_avg, temp_df$lrscale3_avg_z_score)
 
 
 
