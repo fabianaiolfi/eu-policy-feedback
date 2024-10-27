@@ -21,7 +21,9 @@ N = 1637 | .rds | 2.6MB
 | 31989L0297 | "Motor vehicles with trailers: lateral protection for goods vehicles (until 2014) 1) OBJECTIVE To harmonize the requirements to be met by veh…" |
 
 ### [Hix Høyland method: All directives and regulations](https://www.dropbox.com/scl/fi/asaxyfvma4xd9o7kzpnj7/hix_hoyland_data.rds?rlkey=iwklhk49pnn8h97x8si3uujwj&dl=0)
-N = 74,734 | .rds | 301KB
+N = 74,734 | .rds | 301KB  
+`>0`: More right  
+`<0`: More left  
 
 |    CELEX    | RoBERT_left_right | bakker_hobolt_econ | bakker_hobolt_social | cmp_left_right |
 |-------------|-------------------|--------------------|----------------------|----------------|
@@ -31,6 +33,8 @@ N = 74,734 | .rds | 301KB
 
 ### [Hix Høyland method: Summaries](https://www.dropbox.com/scl/fi/wfr20zn2ex9xtbck7svhd/hix_hoyland_data_summaries.rds?rlkey=om1zp6bll7gv3b19h48gm2ru8&dl=0)
 N = 1637 | .rds | 10KB
+`>0`: More right  
+`<0`: More left  
 
 | CELEX      | RoBERT_left_right | bakker_hobolt_econ | bakker_hobolt_social | cmp_left_right |
 |------------|-------------------|-------------------|----------------------|----------------|
@@ -43,7 +47,9 @@ N = 1637 | .rds | 10KB
 - Did not split on the median word-length if “Adopted this directive/regulation” does not appear (see p. 12)
 
 ### [LSS method: Economic Seed Words](https://www.dropbox.com/scl/fi/xivjtmasr72vmat8mqsih/glove_polarity_scores_all_dir_reg_econ.rds?rlkey=32zmjd08rm9669iww691bd8ls&dl=0)
-N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/seed_words_econ_manual.yml)
+N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/seed_words_econ_manual.yml)  
+`>0`: More left  
+`<0`: More right  
 
 | CELEX       | avg_glove_polarity_scores |
 |-------------|---------------------------|
@@ -52,7 +58,9 @@ N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-
 | 31989L0117  | 1.01                      |
 
 ### [LSS method: Social Seed Words](https://www.dropbox.com/scl/fi/496oc0pjyk1g4zqyvzrs2/glove_polarity_scores_all_dir_reg_social.rds?rlkey=idcspqo4bun8mznzstlzxljp6&dl=0)
-N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/seed_words_social_manual.yml)
+N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/seed_words_social_manual.yml)  
+`>0`: More left  
+`<0`: More right  
 
 | CELEX       | avg_glove_polarity_scores |
 |-------------|---------------------------|
@@ -60,6 +68,23 @@ N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-
 | 31989L0100  | 0.0452                    |
 | 31989L0117  | 0.519                     |
 
+### ChatGPT Zero Shot: [Preamble](https://www.dropbox.com/scl/fi/b0xt9mc5tqhy0sicroh4b/chatgpt_preamble_0_shot.rds?rlkey=1bf3mtaqwlr1mhh4ed52scy1a&dl=0) and [Summary](https://www.dropbox.com/scl/fi/tawgrzdalylkbsuafpaja/chatgpt_summary_0_shot.rds?rlkey=0shddxnty3bv3tp780nq94l6g&dl=0)
+N = 1637 | .rds | 6KB
+System Prompt: `You are an expert in European Union policies. Answer questions and provide information based on that expertise.`
+Prompt: `I’m going to show you [a summary / the beginning of a preamble] of an EU policy. Please score the policy on a scale of 0 to 100. 0 represents economic left-wing policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights. 100 represents economic right-wing policies such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility. Please only return the score. Here’s the preamble: …`
+Model: `gpt-4o-mini-2024-07-18`
+
+| CELEX       | chatgpt_answer |
+|-------------|---------------------------|
+| 31989L0117  | 75                     |
+| 31989L0130  | 70                    |
+| 31989L0297  | 65                     |
+
+### ChatGPT Ranking
+System Prompt: `You are an expert in European Union policies. Answer questions and provide information based on that expertise.`
+Prompt for economic *left*: `I have two summaries of EU policies, and I need to determine which policy is more economically left-leaning. Please analyze the summaries based on principles commonly associated with economically left policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights. [Summary] Which policy is more economically left? Please return only '1' or '2'.`
+Prompt for economic *right* `I have two summaries of EU policies, and I need to determine which policy is more economically right-leaning. Please analyze the summaries based on principles commonly associated with economically right policies, such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility. [Summary] Which policy is more economically right? Please return only '1' or '2'.`
+_To Do_
 
 ### Column Descriptions
 
