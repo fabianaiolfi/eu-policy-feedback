@@ -32,7 +32,7 @@ N = 74,734 | .rds | 301KB
 | 32019L1922  |       -1.0986123   |         0.000000   |       -2.1972246     |     0.0000000  |
 
 ### [Hix Høyland method: Summaries](https://www.dropbox.com/scl/fi/wfr20zn2ex9xtbck7svhd/hix_hoyland_data_summaries.rds?rlkey=om1zp6bll7gv3b19h48gm2ru8&dl=0)
-N = 1637 | .rds | 10KB
+N = 1637 | .rds | 10KB  
 `>0`: More right  
 `<0`: More left  
 
@@ -70,8 +70,14 @@ N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-
 
 ### ChatGPT Zero Shot: [Preamble](https://www.dropbox.com/scl/fi/b0xt9mc5tqhy0sicroh4b/chatgpt_preamble_0_shot.rds?rlkey=1bf3mtaqwlr1mhh4ed52scy1a&dl=0) and [Summary](https://www.dropbox.com/scl/fi/tawgrzdalylkbsuafpaja/chatgpt_summary_0_shot.rds?rlkey=0shddxnty3bv3tp780nq94l6g&dl=0)
 N = 1637 | .rds | 6KB
-System Prompt: `You are an expert in European Union policies. Answer questions and provide information based on that expertise.`
-Prompt: `I’m going to show you [a summary / the beginning of a preamble] of an EU policy. Please score the policy on a scale of 0 to 100. 0 represents economic left-wing policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights. 100 represents economic right-wing policies such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility. Please only return the score. Here’s the preamble: …`
+System Prompt: 
+```
+You are an expert in European Union policies. Answer questions and provide information based on that expertise.
+```
+Prompt:
+```
+I’m going to show you [a summary / the beginning of a preamble] of an EU policy. Please score the policy on a scale of 0 to 100. 0 represents economic left-wing policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights. 100 represents economic right-wing policies such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility. Please only return the score. Here’s the preamble: …`
+```
 Model: `gpt-4o-mini-2024-07-18`
 
 | CELEX       | chatgpt_answer |
