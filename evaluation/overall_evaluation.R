@@ -33,9 +33,6 @@ ceps_eurlex <- ceps_eurlex %>% select(CELEX, Subject_matter)
 all_dir_reg <- all_dir_reg %>% left_join(ceps_eurlex, by = "CELEX")
 
 
-#### somewhere: make sure celex and corresponding broad policy area only appear once!!!!!!!!!!!
-
-
 ## Preprocess Data -----------------------
 
 nanou_2017_mpolicy_lrscale3 <- nanou_2017_mpolicy_lrscale3 %>% 
@@ -121,6 +118,7 @@ broad_policy_mpolicy_avg_df <- all_dir_reg %>%
   select(-Date_document) %>% 
   drop_na(broad_policy_area_mpolicy) %>% 
   separate_rows(broad_policy_area_mpolicy, sep = "; ") %>% # Place each Broad Policy Area on its own row
+  distinct(CELEX, broad_policy_area_mpolicy, .keep_all = T) %>% 
   # Add calculated scores
   left_join(select(glove_polarity_scores_all_dir_reg_econ, CELEX, avg_lss_econ_z_score), by = "CELEX") %>% 
   left_join(select(glove_polarity_scores_all_dir_reg_social, CELEX, avg_lss_social_z_score), by = "CELEX") %>% 
@@ -134,6 +132,7 @@ broad_policy_spolicy_avg_df <- all_dir_reg %>%
   select(-Date_document) %>% 
   drop_na(broad_policy_area_spolicy) %>% 
   separate_rows(broad_policy_area_spolicy, sep = "; ") %>% # Place each Broad Policy Area on its own row
+  distinct(CELEX, broad_policy_area_spolicy, .keep_all = T) %>% 
   # Add calculated scores
   left_join(select(glove_polarity_scores_all_dir_reg_econ, CELEX, avg_lss_econ_z_score), by = "CELEX") %>% 
   left_join(select(glove_polarity_scores_all_dir_reg_social, CELEX, avg_lss_social_z_score), by = "CELEX") %>% 
@@ -193,7 +192,8 @@ correlation_melt <- melt(correlation_matrix) # Convert the correlation matrix in
 
 # Correlation heatmap
 ggplot(correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
-  ggtitle("Correlation Heatmap") +
+  ggtitle(label = "Correlation Heatmap (mpolicy)",
+          subtitle = "Analysis covers 1637 directives and legislations, i.e., those with a summary") +
   geom_tile() +
   scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
                        midpoint = 0, limit = c(-1, 1), space = "Lab", 
@@ -202,6 +202,16 @@ ggplot(correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust = 1)) +
   coord_fixed() +
   xlab("") + ylab("")
+
+ggsave(
+  "correlation_heatmap_mpolicy.png",
+  plot = last_plot(),
+  path = here("evaluation", "results"),
+  scale = 1,
+  units = "px",
+  dpi = 300,
+  bg = "white"
+)
 
 # Correlation scatter plot
 broad_policy_long <- broad_policy_mpolicy_avg_df %>%
@@ -212,13 +222,23 @@ broad_policy_long <- broad_policy_mpolicy_avg_df %>%
 
 ggplot(broad_policy_long, aes(x = z_score_value, y = nanou_2017_mpolicy_lrscale3)) +
   ggtitle(label = "Correlation Scatter Plot",
-          subtitle = "Y Axis: Expert Evaluation\nX Axis: Calculated Measurements\nGray diagonal line serves as a reference for perfect correlation") +
+          subtitle = "Analysis covers 1637 directives and legislations, i.e., those with a summary\nY Axis: Expert Evaluation (mpolicy)\nX Axis: Calculated Measurements\nGray diagonal line serves as a reference for perfect correlation") +
   geom_point() +
   geom_smooth(method = 'lm', formula = y ~ x, se = F) +
   geom_abline(intercept = 0, slope = 1, color = "gray") +
   theme_minimal() +
   facet_wrap(~ z_score_measurement) +
   xlab("")
+
+ggsave(
+  "correlation_scatter_plot_mpolicy.png",
+  plot = last_plot(),
+  path = here("evaluation", "results"),
+  scale = 1,
+  units = "px",
+  dpi = 300,
+  bg = "white"
+)
 
 # Variance between own measurments and expert survey
 variance_df <- broad_policy_mpolicy_avg_df %>%
@@ -228,6 +248,12 @@ variance_df <- broad_policy_mpolicy_avg_df %>%
                names_to = "measurement",  # New column for the original column names
                values_to = "variance") %>% 
   arrange(variance)
+
+write.table(variance_df,
+            here("evaluation", "results", "variance_mpolicy.csv"),
+            sep = ",",
+            row.names = F)
+
 
 ## CONTINUE HERE ##
 # - evaluate all laws, not just ones with chatgpt summaries
