@@ -145,8 +145,9 @@ cor_df <- broad_policy_avg_df %>% select(-broad_policy_area, -period)
 correlation_matrix <- cor(cor_df, use = "pairwise.complete.obs")
 correlation_melt <- melt(correlation_matrix) # Convert the correlation matrix into long format for ggplot2
 
-# Correlations heatmap
+# Correlation heatmap
 ggplot(correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
+  ggtitle("Correlation Heatmap") +
   geom_tile() +
   scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
                        midpoint = 0, limit = c(-1, 1), space = "Lab", 
@@ -156,37 +157,31 @@ ggplot(correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
   coord_fixed() +
   xlab("") + ylab("")
 
-plot(broad_policy_avg_df$bakker_hobolt_social_z_score, broad_policy_avg_df$nanou_2017_z_score)
-
-ggplot(broad_policy_avg_df, aes(x = bakker_hobolt_social_z_score, y = nanou_2017_z_score)) +
-  geom_point() +
-  geom_smooth(method='lm', formula = y ~ x, se = F) +
-  geom_abline(intercept = 0, slope = 1) +
-  xlim(-3, 3) + ylim(-3, 3) +
-  theme_minimal()
-
-# Ensure nanou_2017_z_score is not affected by pivot_longer
+# Correlation scatter plot
 broad_policy_long <- broad_policy_avg_df %>%
   select(nanou_2017_z_score, contains("z_score")) %>%
   pivot_longer(cols = -nanou_2017_z_score,  # Exclude nanou_2017_z_score from pivoting
                names_to = "z_score_measurement", 
                values_to = "z_score_value")
 
-# Plot with facet_wrap for each "z_score" measurement as a different x-axis
 ggplot(broad_policy_long, aes(x = z_score_value, y = nanou_2017_z_score)) +
+  ggtitle(label = "Correlation Scatter Plot",
+          subtitle = "Y Axis: Expert Evaluation\nX Axis: Calculated Measurements\nGray diagonal line serves as a reference for perfect correlation") +
   geom_point() +
-  geom_smooth(method = 'lm', formula = y ~ x, se = FALSE) +
-  geom_abline(intercept = 0, slope = 1) +
-  xlim(-3, 3) + ylim(-3, 3) +
+  geom_smooth(method = 'lm', formula = y ~ x, se = F) +
+  geom_abline(intercept = 0, slope = 1, color = "gray") +
   theme_minimal() +
-  facet_wrap(~ z_score_measurement, scales = "free_x")
-
-
+  facet_wrap(~ z_score_measurement) +
+  xlab("")
 
 # Variance between own measurments and expert survey
 variance_df <- broad_policy_avg_df %>%
   select(-broad_policy_area, -period) %>% 
-  summarise(across(everything(), ~ var(.x - nanou_2017_z_score, na.rm = T)))
+  summarise(across(everything(), ~ var(.x - nanou_2017_z_score, na.rm = T))) %>% 
+  pivot_longer(cols = everything(),  # Select all columns to transform
+               names_to = "measurement",  # New column for the original column names
+               values_to = "variance") %>% 
+  arrange(variance)
 
 ## CONTINUE HERE ##
 # - measurements based on chatgpt summaries seem to provide best variance and correlation values compared to expert surveys. examine this further! maybe also calculate measurements based on entire regulation/directive, not just summary.
