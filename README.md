@@ -74,10 +74,10 @@ N = 1637 | .rds | 6KB
 `100`: Economic right-wing policies  
 Model: `gpt-4o-mini-2024-07-18`  
 ```
-*System Prompt*: You are an expert in European Union policies. Answer questions and provide information based on that expertise.
+System Prompt: You are an expert in European Union policies. Answer questions and provide information based on that expertise.
 ```
 ```
-*Prompt*: I’m going to show you [a summary / the beginning of a preamble] of an EU policy. Please score the policy on a scale of 0 to 100. 0 represents economic left-wing policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights. 100 represents economic right-wing policies such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility. Please only return the score. Here’s the [summary / preamble]: …
+Prompt: I’m going to show you [a summary / the beginning of a preamble] of an EU policy. Please score the policy on a scale of 0 to 100. 0 represents economic left-wing policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights. 100 represents economic right-wing policies such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility. Please only return the score. Here’s the [summary / preamble]: …
 ```
 
 | CELEX       | chatgpt_answer |
@@ -88,7 +88,7 @@ Model: `gpt-4o-mini-2024-07-18`
 
 ### ChatGPT Ranking
 ```
-*System Prompt*: You are an expert in European Union policies. Answer questions and provide information based on that expertise.
+System Prompt: You are an expert in European Union policies. Answer questions and provide information based on that expertise.
 ```
 ```
 Prompt for economic *left*: I have two summaries of EU policies, and I need to determine which policy is more economically left-leaning. Please analyze the summaries based on principles commonly associated with economically left policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights. [Summary] Which policy is more economically left? Please return only '1' or '2'.
