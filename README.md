@@ -96,7 +96,7 @@ Prompt for economic *left*: I have two summaries of EU policies, and I need to d
 ```
 Prompt for economic *right* I have two summaries of EU policies, and I need to determine which policy is more economically right-leaning. Please analyze the summaries based on principles commonly associated with economically right policies, such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility. [Summary] Which policy is more economically right? Please return only '1' or '2'.
 ```
-_To Do_
+_Tables: To Do_
 
 ### Column Descriptions
 
@@ -117,8 +117,16 @@ _To Do_
 
 --------
 
-## General To Do
+## To Do
+**General**
 - [ ] How to disregard / ignore laws that are *not* relevant? E.g. a law on abortion has no economic left-right ideology → One possible approach could be using a policy’s tags. Are there tags that indicate that a policy can be ignored?
+
+**241027**
+- [ ] Measurements based on chatgpt summaries seem to provide best variance and correlation values compared to expert surveys. examine this further! maybe also calculate measurements based on entire regulation/directive, not just summary.
+- [ ] Perform ranking with llama models over all directives/regulations that have a summary
+- [ ] Continue overall evaluation, including llama model
+- [ ] Other ways to compare own measurements with expert survey?
+
 
 ## Data Collection 1989 – Today
 - [x] CEPS EurLex (1952 – 2019)
