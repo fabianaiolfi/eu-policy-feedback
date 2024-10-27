@@ -21,11 +21,11 @@ glove_polarity_scores_all_dir_reg_social <- readRDS(here("data", "lss", "glove_p
 hix_hoyland_data <- readRDS(here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data.rds"))
 
 # Directive/Regulation Summaries Only (ChatGPT)
-chatgpt_preamble_0_shot <- readRDS(here("data", "chatgpt_0_shot", "chatgpt_preamble_0_shot.rds"))
-chatgpt_summary_0_shot <- readRDS(here("data", "chatgpt_0_shot", "chatgpt_summary_0_shot.rds"))
-all_dir_reg <- chatgpt_preamble_0_shot %>% 
-  select(CELEX) %>% 
-  left_join(all_dir_reg, by = "CELEX")
+# chatgpt_preamble_0_shot <- readRDS(here("data", "chatgpt_0_shot", "chatgpt_preamble_0_shot.rds"))
+# chatgpt_summary_0_shot <- readRDS(here("data", "chatgpt_0_shot", "chatgpt_summary_0_shot.rds"))
+# all_dir_reg <- chatgpt_preamble_0_shot %>% 
+#   select(CELEX) %>% 
+#   left_join(all_dir_reg, by = "CELEX")
 
 # Add Subject Matter to all_dir_reg
 ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
@@ -62,13 +62,13 @@ hix_hoyland_data <- hix_hoyland_data %>%
   mutate(bakker_hobolt_social_z_score = standardize(bakker_hobolt_social)) %>% 
   mutate(cmp_left_right_z_score = standardize(cmp_left_right))
 
-chatgpt_preamble_0_shot <- chatgpt_preamble_0_shot %>% 
-  # Perform standardization of data (z-scoring)
-  mutate(chatgpt_preamble_0_shot_z_score = standardize(chatgpt_answer))
-
-chatgpt_summary_0_shot <- chatgpt_summary_0_shot %>% 
-  # Perform standardization of data (z-scoring)
-  mutate(chatgpt_summary_0_shot_z_score = standardize(chatgpt_answer))
+# chatgpt_preamble_0_shot <- chatgpt_preamble_0_shot %>% 
+#   # Perform standardization of data (z-scoring)
+#   mutate(chatgpt_preamble_0_shot_z_score = standardize(chatgpt_answer))
+# 
+# chatgpt_summary_0_shot <- chatgpt_summary_0_shot %>% 
+#   # Perform standardization of data (z-scoring)
+#   mutate(chatgpt_summary_0_shot_z_score = standardize(chatgpt_answer))
 
 
 ## Connect a Law's Subject Matter with the Broad Policy Area from Nanou 2017 -----------------------
@@ -122,9 +122,9 @@ broad_policy_mpolicy_avg_df <- all_dir_reg %>%
   # Add calculated scores
   left_join(select(glove_polarity_scores_all_dir_reg_econ, CELEX, avg_lss_econ_z_score), by = "CELEX") %>% 
   left_join(select(glove_polarity_scores_all_dir_reg_social, CELEX, avg_lss_social_z_score), by = "CELEX") %>% 
-  left_join(select(hix_hoyland_data, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX") %>% 
-  left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX") %>% 
-  left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX")
+  left_join(select(hix_hoyland_data, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX")# %>% 
+  # left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX") %>% 
+  # left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX")
 
 broad_policy_spolicy_avg_df <- all_dir_reg %>% 
   select(CELEX, Date_document, broad_policy_area_spolicy) %>% 
@@ -136,9 +136,9 @@ broad_policy_spolicy_avg_df <- all_dir_reg %>%
   # Add calculated scores
   left_join(select(glove_polarity_scores_all_dir_reg_econ, CELEX, avg_lss_econ_z_score), by = "CELEX") %>% 
   left_join(select(glove_polarity_scores_all_dir_reg_social, CELEX, avg_lss_social_z_score), by = "CELEX") %>% 
-  left_join(select(hix_hoyland_data, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX") %>% 
-  left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX") %>% 
-  left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX")
+  left_join(select(hix_hoyland_data, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX")# %>% 
+  # left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX") %>% 
+  # left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX")
 
 # Calcualate averages based on time periods
 broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>%
@@ -186,14 +186,14 @@ broad_policy_spolicy_avg_df <- broad_policy_spolicy_avg_df %>%
 # Please switch manually between mpolicy and spolicy
 
 # Correlations
-cor_df <- broad_policy_mpolicy_avg_df %>% select(-broad_policy_area_mpolicy, -period)
+cor_df <- broad_policy_spolicy_avg_df %>% select(-broad_policy_area_spolicy, -period)
 correlation_matrix <- cor(cor_df, use = "pairwise.complete.obs")
 correlation_melt <- melt(correlation_matrix) # Convert the correlation matrix into long format for ggplot2
 
 # Correlation heatmap
 ggplot(correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
-  ggtitle(label = "Correlation Heatmap (mpolicy)",
-          subtitle = "Analysis covers 1637 directives and legislations, i.e., those with a summary") +
+  ggtitle(label = "Correlation Heatmap (spolicy)",
+          subtitle = "Analysis covers 75,570 directives and legislations") +
   geom_tile() +
   scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
                        midpoint = 0, limit = c(-1, 1), space = "Lab", 
@@ -204,7 +204,7 @@ ggplot(correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
   xlab("") + ylab("")
 
 ggsave(
-  "correlation_heatmap_mpolicy.png",
+  "correlation_heatmap_spolicy.png",
   plot = last_plot(),
   path = here("evaluation", "results"),
   scale = 1,
@@ -214,15 +214,15 @@ ggsave(
 )
 
 # Correlation scatter plot
-broad_policy_long <- broad_policy_mpolicy_avg_df %>%
-  select(nanou_2017_mpolicy_lrscale3, contains("z_score")) %>%
-  pivot_longer(cols = -nanou_2017_mpolicy_lrscale3,  # Exclude nanou_2017_mpolicy_lrscale3 from pivoting
+broad_policy_long <- broad_policy_spolicy_avg_df %>%
+  select(nanou_2017_spolicy_lrscale3, contains("z_score")) %>%
+  pivot_longer(cols = -nanou_2017_spolicy_lrscale3,  # Exclude nanou_2017_spolicy_lrscale3 from pivoting
                names_to = "z_score_measurement", 
                values_to = "z_score_value")
 
-ggplot(broad_policy_long, aes(x = z_score_value, y = nanou_2017_mpolicy_lrscale3)) +
+ggplot(broad_policy_long, aes(x = z_score_value, y = nanou_2017_spolicy_lrscale3)) +
   ggtitle(label = "Correlation Scatter Plot",
-          subtitle = "Analysis covers 1637 directives and legislations, i.e., those with a summary\nY Axis: Expert Evaluation (mpolicy)\nX Axis: Calculated Measurements\nGray diagonal line serves as a reference for perfect correlation") +
+          subtitle = "Analysis covers 75,570 directives and legislations\nY Axis: Expert Evaluation (spolicy)\nX Axis: Calculated Measurements\nGray diagonal line serves as a reference for perfect correlation") +
   geom_point() +
   geom_smooth(method = 'lm', formula = y ~ x, se = F) +
   geom_abline(intercept = 0, slope = 1, color = "gray") +
@@ -231,7 +231,7 @@ ggplot(broad_policy_long, aes(x = z_score_value, y = nanou_2017_mpolicy_lrscale3
   xlab("")
 
 ggsave(
-  "correlation_scatter_plot_mpolicy.png",
+  "correlation_scatter_plot_spolicy.png",
   plot = last_plot(),
   path = here("evaluation", "results"),
   scale = 1,
@@ -241,21 +241,20 @@ ggsave(
 )
 
 # Variance between own measurments and expert survey
-variance_df <- broad_policy_mpolicy_avg_df %>%
-  select(-broad_policy_area_mpolicy, -period) %>% 
-  summarise(across(everything(), ~ var(.x - nanou_2017_mpolicy_lrscale3, na.rm = T))) %>% 
+variance_df <- broad_policy_spolicy_avg_df %>%
+  select(-broad_policy_area_spolicy, -period) %>% 
+  summarise(across(everything(), ~ var(.x - nanou_2017_spolicy_lrscale3, na.rm = T))) %>% 
   pivot_longer(cols = everything(),  # Select all columns to transform
                names_to = "measurement",  # New column for the original column names
                values_to = "variance") %>% 
   arrange(variance)
 
 write.table(variance_df,
-            here("evaluation", "results", "variance_mpolicy.csv"),
+            here("evaluation", "results", "variance_spolicy.csv"),
             sep = ",",
             row.names = F)
 
 
 ## CONTINUE HERE ##
-# - evaluate all laws, not just ones with chatgpt summaries
 # - measurements based on chatgpt summaries seem to provide best variance and correlation values compared to expert surveys. examine this further! maybe also calculate measurements based on entire regulation/directive, not just summary.
-# - other ways to compare expert survey and own measurements?
+# - evaluate chatgpt ranking?
