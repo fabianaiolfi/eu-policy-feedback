@@ -36,6 +36,7 @@ library(eurlex)
 # Ranking
 # devtools::install_github("ben-aaron188/rgpt3")
 library(rgpt3) # https://github.com/ben-aaron188/rgpt3
+library(jsonlite)
 
 # Hix Hoyland 2024 LLM RoBERTa-RILE
 Sys.setenv(TOKENIZERS_PARALLELISM = "false")
