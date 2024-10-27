@@ -69,7 +69,7 @@ N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-
 | 31989L0117  | 0.519                     |
 
 ### ChatGPT Zero Shot: [Preamble](https://www.dropbox.com/scl/fi/b0xt9mc5tqhy0sicroh4b/chatgpt_preamble_0_shot.rds?rlkey=1bf3mtaqwlr1mhh4ed52scy1a&dl=0) and [Summary](https://www.dropbox.com/scl/fi/tawgrzdalylkbsuafpaja/chatgpt_summary_0_shot.rds?rlkey=0shddxnty3bv3tp780nq94l6g&dl=0)
-N = 1637 | .rds | 6KB
+N = 1637 | .rds | 6KB  
 System Prompt: 
 ```
 You are an expert in European Union policies. Answer questions and provide information based on that expertise.
