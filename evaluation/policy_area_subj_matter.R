@@ -1,4 +1,21 @@
 
+## Load Data -----------------------
+
+ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
+
+
+## Extract EuroVoc -----------------------
+
+# unique_terms <- ceps_eurlex %>%
+#   pull(EUROVOC) %>% # Pulls the Subject_matter column as a character vector
+#   str_split(";") %>% # Splits the string by semicolon
+#   unlist() %>% # Unlists all terms into a single vector
+#   str_trim() %>% # Trims leading and trailing whitespace from each term
+#   unique() # Extracts unique terms
+
+# The 4982 EuroVoc keywords are too detailed to be useful.
+
+
 ## Extract Subject Matter -----------------------
 
 unique_terms <- ceps_eurlex %>%
@@ -16,6 +33,17 @@ unique_terms <- unique_terms %>%
 
 
 ## Assign subject matter to broad policy area in Nanou 2017 (via ChatGPT) -----------------
+
+# Broad Policy Areas (EU_Competencies_Index_codebook_v1.pdf, p. 4)
+# Economic and Financial Affairs
+# Competitiveness
+# Employment, Social Policy, Health and Consumer Affairs
+# Environment
+# Agriculture and Fisheries
+# Transport, Telecommunications, Energy
+# Education, Youth and Culture
+# Justice and Home Affairs
+# Foreign and Security policy
 
 policy_area_subj_matter <- data.frame() # Set up empty dataframe
 
