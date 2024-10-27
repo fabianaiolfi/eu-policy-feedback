@@ -29,6 +29,9 @@ chatgpt_ranking_left <- chatgpt_ranking_left %>% rename(CELEX = document)
 chatgpt_ranking_right <- readRDS(here("data", "chatgpt_ranking", "ratings_df_more_right_20240712_144521.rds"))
 chatgpt_ranking_right <- chatgpt_ranking_right %>% rename(CELEX = document)
 
+llama_ranking_left <- readRDS(here("data", "chatgpt_ranking", "llama_ratings_df_more_left_20241027_225323.rds"))
+llama_ranking_left <- llama_ranking_left %>% rename(CELEX = document)
+
 all_dir_reg <- chatgpt_ranking_left %>%
   select(CELEX) %>%
   left_join(all_dir_reg, by = "CELEX")
@@ -86,6 +89,12 @@ chatgpt_ranking_right <- chatgpt_ranking_right %>%
   # Perform standardization of data (z-scoring)
   mutate(chatgpt_ranking_right_z_score = standardize(rating))
 
+llama_ranking_left <- llama_ranking_left %>%
+  # Perform standardization of data (z-scoring)
+  mutate(llama_ranking_left_z_score = standardize(rating)) %>% 
+  # Reverse scale so that it aligns with Hix Høyland method: :>0: More right; <0: More left
+  mutate(llama_ranking_left_z_score = llama_ranking_left_z_score * -1)
+
 
 ## Connect a Law's Subject Matter with the Broad Policy Area from Nanou 2017 -----------------------
 
@@ -142,7 +151,8 @@ broad_policy_mpolicy_avg_df <- all_dir_reg %>%
   left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX") %>%
   left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX") %>% 
   left_join(select(chatgpt_ranking_left, CELEX, chatgpt_ranking_left_z_score), by = "CELEX") %>% 
-  left_join(select(chatgpt_ranking_right, CELEX, chatgpt_ranking_right_z_score), by = "CELEX")
+  left_join(select(chatgpt_ranking_right, CELEX, chatgpt_ranking_right_z_score), by = "CELEX") %>% 
+  left_join(select(llama_ranking_left, CELEX, llama_ranking_left_z_score), by = "CELEX")
 
 broad_policy_spolicy_avg_df <- all_dir_reg %>% 
   select(CELEX, Date_document, broad_policy_area_spolicy) %>% 
@@ -158,7 +168,8 @@ broad_policy_spolicy_avg_df <- all_dir_reg %>%
   left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX") %>%
   left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX") %>% 
   left_join(select(chatgpt_ranking_left, CELEX, chatgpt_ranking_left_z_score), by = "CELEX") %>% 
-  left_join(select(chatgpt_ranking_right, CELEX, chatgpt_ranking_right_z_score), by = "CELEX")
+  left_join(select(chatgpt_ranking_right, CELEX, chatgpt_ranking_right_z_score), by = "CELEX") %>% 
+  left_join(select(llama_ranking_left, CELEX, llama_ranking_left_z_score), by = "CELEX")
 
 # Calcualate averages based on time periods
 broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>%
@@ -273,8 +284,3 @@ write.table(variance_df,
             here("evaluation", "results", "variance_spolicy.csv"),
             sep = ",",
             row.names = F)
-
-
-## CONTINUE HERE ##
-# - measurements based on chatgpt summaries seem to provide best variance and correlation values compared to expert surveys. examine this further! maybe also calculate measurements based on entire regulation/directive, not just summary.
-# - evaluate chatgpt ranking?

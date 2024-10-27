@@ -129,8 +129,8 @@ saveRDS(chatgpt_output, file = here("data", "ranking", file_name))
 
 # Process ChatGPT output ---------------------------------------------------------------
 
-chatgpt_output <- readRDS(file = here("data", "ranking", "chatgpt_output_df_20240712_143525.rds"))
-prompt_df <- readRDS(file = here("data", "ranking", "prompt_df_20240712_142655.rds"))
+chatgpt_output <- readRDS(file = here("data", "chatgpt_ranking", "chatgpt_output_df_20240712_143525.rds"))
+prompt_df <- readRDS(file = here("data", "chatgpt_ranking", "prompt_df_20240712_142655.rds"))
 
 # Convert output to dataframe
 temp_df <- chatgpt_output[[1]]
