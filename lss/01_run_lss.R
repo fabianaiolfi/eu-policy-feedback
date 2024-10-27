@@ -1,8 +1,8 @@
 
 # Import custom dictionary for seed words -----------------------
 
-dict <- dictionary(file = here("lss", "seed_words_econ_manual.yml"))
-# dict <- dictionary(file = here("lss", "seed_words_social_manual.yml"))
+# dict <- dictionary(file = here("lss", "seed_words_econ_manual.yml"))
+dict <- dictionary(file = here("lss", "seed_words_social_manual.yml"))
 seed <- as.seedwords(dict$ideology, concatenator = " ")
 
 
@@ -87,6 +87,7 @@ toks_sent_df <- toks_sent_df %>%
 corp_sent <- readRDS(file = "/Volumes/iPhone_Backup_2/eu-policy-feedback-data/corp_sent.rds")
 toks_sent <- readRDS(file = "/Volumes/iPhone_Backup_2/eu-policy-feedback-data/toks_sent.rds")
 dfmat_sent <- readRDS(file = "/Volumes/iPhone_Backup_2/eu-policy-feedback-data/dfmat_sent.rds")
+dfmat_sent <- readRDS(file = "/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/large_lss_files/dfmat_sent.rds")
 tokens_list <- readRDS(file = "/Volumes/iPhone_Backup_2/eu-policy-feedback-data/tokens_list.rds")
 toks_sent_df <- readRDS(file = "/Volumes/iPhone_Backup_2/eu-policy-feedback-data/toks_sent_df.rds")
 
