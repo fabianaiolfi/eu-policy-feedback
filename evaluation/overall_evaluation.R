@@ -10,7 +10,7 @@
 nanou_2017_mpolicy_lrscale3 <- readRDS(here("existing_measurements", "nanou_2017", "nanou_2017_mpolicy_lrscale3.rds"))
 nanou_2017_spolicy_lrscale3 <- readRDS(here("existing_measurements", "nanou_2017", "nanou_2017_spolicy_lrscale3.rds"))
 all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg.rds"))
-all_dir_reg <- all_dir_reg %>% slice_sample(n = 100)
+# all_dir_reg <- all_dir_reg %>% slice_sample(n = 100)
 
 policy_area_subj_matter_mpolicy <- readRDS(here("data", "evaluation", "policy_area_subj_matter_mpolicy.rds")) # eu-policy-feedback/evaluation/policy_area_subj_matter_mpolicy.R
 policy_area_subj_matter_spolicy <- readRDS(here("data", "evaluation", "policy_area_subj_matter_spolicy.rds")) # eu-policy-feedback/evaluation/policy_area_subj_matter_spolicy.R
@@ -39,6 +39,10 @@ all_dir_reg <- all_dir_reg %>% left_join(ceps_eurlex, by = "CELEX")
 ## Preprocess Data -----------------------
 
 nanou_2017_mpolicy_lrscale3 <- nanou_2017_mpolicy_lrscale3 %>% 
+  # Perform standardization of data (z-scoring)
+  mutate(lrscale3_avg_z_score = standardize(lrscale3_avg))
+
+nanou_2017_spolicy_lrscale3 <- nanou_2017_spolicy_lrscale3 %>% 
   # Perform standardization of data (z-scoring)
   mutate(lrscale3_avg_z_score = standardize(lrscale3_avg))
 
@@ -71,6 +75,8 @@ chatgpt_summary_0_shot <- chatgpt_summary_0_shot %>%
 
 
 ## Connect a Law's Subject Matter with the Broad Policy Area from Nanou 2017 -----------------------
+
+# Please switch manually between mpolicy and spolicy
 
 # Function to match subject matter terms to broad policy areas, accounting for match frequency
 match_policy_area <- function(subject_matter, lookup_df) {
@@ -109,12 +115,25 @@ all_dir_reg$broad_policy_area_spolicy <- sapply(all_dir_reg$Subject_matter, matc
 # Create a dataframe that allows us to calculate the average score per time period and broad policy area
 
 # Preprocess data and add calculated scores
-broad_policy_avg_df <- all_dir_reg %>% 
-  select(CELEX, Date_document, broad_policy_area) %>% 
+broad_policy_mpolicy_avg_df <- all_dir_reg %>% 
+  select(CELEX, Date_document, broad_policy_area_mpolicy) %>% 
   mutate(year = as.numeric(format(Date_document, "%Y"))) %>% 
   select(-Date_document) %>% 
-  drop_na(broad_policy_area) %>% 
-  separate_rows(broad_policy_area, sep = "; ") %>% # Place each Broad Policy Area on its own row
+  drop_na(broad_policy_area_mpolicy) %>% 
+  separate_rows(broad_policy_area_mpolicy, sep = "; ") %>% # Place each Broad Policy Area on its own row
+  # Add calculated scores
+  left_join(select(glove_polarity_scores_all_dir_reg_econ, CELEX, avg_lss_econ_z_score), by = "CELEX") %>% 
+  left_join(select(glove_polarity_scores_all_dir_reg_social, CELEX, avg_lss_social_z_score), by = "CELEX") %>% 
+  left_join(select(hix_hoyland_data, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX") %>% 
+  left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX") %>% 
+  left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX")
+
+broad_policy_spolicy_avg_df <- all_dir_reg %>% 
+  select(CELEX, Date_document, broad_policy_area_spolicy) %>% 
+  mutate(year = as.numeric(format(Date_document, "%Y"))) %>% 
+  select(-Date_document) %>% 
+  drop_na(broad_policy_area_spolicy) %>% 
+  separate_rows(broad_policy_area_spolicy, sep = "; ") %>% # Place each Broad Policy Area on its own row
   # Add calculated scores
   left_join(select(glove_polarity_scores_all_dir_reg_econ, CELEX, avg_lss_econ_z_score), by = "CELEX") %>% 
   left_join(select(glove_polarity_scores_all_dir_reg_social, CELEX, avg_lss_social_z_score), by = "CELEX") %>% 
@@ -123,7 +142,7 @@ broad_policy_avg_df <- all_dir_reg %>%
   left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX")
 
 # Calcualate averages based on time periods
-broad_policy_avg_df <- broad_policy_avg_df %>%
+broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>%
   mutate(period = case_when(
     year %in% 1989:1990 ~ "1989-1990",
     year %in% 1991:1995 ~ "1991-1995",
@@ -134,20 +153,41 @@ broad_policy_avg_df <- broad_policy_avg_df %>%
     year %in% 2014:2024 ~ "2014-2024",
     TRUE ~ NA_character_)) %>% 
   drop_na(period) %>%
-  group_by(broad_policy_area, period) %>%
+  group_by(broad_policy_area_mpolicy, period) %>%
+  summarize(across(contains("z_score"), ~ mean(.x, na.rm = TRUE)), .groups = "drop") %>% 
+  ungroup()
+
+broad_policy_spolicy_avg_df <- broad_policy_spolicy_avg_df %>%
+  mutate(period = case_when(
+    year %in% 1989:1990 ~ "1989-1990",
+    year %in% 1991:1995 ~ "1991-1995",
+    year %in% 1996:2000 ~ "1996-2000",
+    year %in% 2001:2005 ~ "2001-2005",
+    year %in% 2006:2010 ~ "2006-2010",
+    year %in% 2011:2014 ~ "2011-2014",
+    year %in% 2014:2024 ~ "2014-2024",
+    TRUE ~ NA_character_)) %>% 
+  drop_na(period) %>%
+  group_by(broad_policy_area_spolicy, period) %>%
   summarize(across(contains("z_score"), ~ mean(.x, na.rm = TRUE)), .groups = "drop") %>% 
   ungroup()
 
 # Add Nanou 2017
-broad_policy_avg_df <- broad_policy_avg_df %>% 
-  left_join(select(nanou_2017_lrscale3, broad_policy_area, period, lrscale3_avg_z_score), by = c("broad_policy_area", "period")) %>% 
-  rename(nanou_2017_z_score = lrscale3_avg_z_score)
+broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>% 
+  left_join(select(nanou_2017_mpolicy_lrscale3, broad_policy_area, period, lrscale3_avg_z_score), by = c("broad_policy_area_mpolicy" = "broad_policy_area", "period")) %>% 
+  rename(nanou_2017_mpolicy_lrscale3 = lrscale3_avg_z_score)
+
+broad_policy_spolicy_avg_df <- broad_policy_spolicy_avg_df %>% 
+  left_join(select(nanou_2017_spolicy_lrscale3, broad_policy_area, period, lrscale3_avg_z_score), by = c("broad_policy_area_spolicy" = "broad_policy_area", "period")) %>% 
+  rename(nanou_2017_spolicy_lrscale3 = lrscale3_avg_z_score)
 
 
 ## Examine Complete Dataframe -----------------------
 
+# Please switch manually between mpolicy and spolicy
+
 # Correlations
-cor_df <- broad_policy_avg_df %>% select(-broad_policy_area, -period)
+cor_df <- broad_policy_mpolicy_avg_df %>% select(-broad_policy_area_mpolicy, -period)
 correlation_matrix <- cor(cor_df, use = "pairwise.complete.obs")
 correlation_melt <- melt(correlation_matrix) # Convert the correlation matrix into long format for ggplot2
 
@@ -164,13 +204,13 @@ ggplot(correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
   xlab("") + ylab("")
 
 # Correlation scatter plot
-broad_policy_long <- broad_policy_avg_df %>%
-  select(nanou_2017_z_score, contains("z_score")) %>%
-  pivot_longer(cols = -nanou_2017_z_score,  # Exclude nanou_2017_z_score from pivoting
+broad_policy_long <- broad_policy_mpolicy_avg_df %>%
+  select(nanou_2017_mpolicy_lrscale3, contains("z_score")) %>%
+  pivot_longer(cols = -nanou_2017_mpolicy_lrscale3,  # Exclude nanou_2017_mpolicy_lrscale3 from pivoting
                names_to = "z_score_measurement", 
                values_to = "z_score_value")
 
-ggplot(broad_policy_long, aes(x = z_score_value, y = nanou_2017_z_score)) +
+ggplot(broad_policy_long, aes(x = z_score_value, y = nanou_2017_mpolicy_lrscale3)) +
   ggtitle(label = "Correlation Scatter Plot",
           subtitle = "Y Axis: Expert Evaluation\nX Axis: Calculated Measurements\nGray diagonal line serves as a reference for perfect correlation") +
   geom_point() +
@@ -181,9 +221,9 @@ ggplot(broad_policy_long, aes(x = z_score_value, y = nanou_2017_z_score)) +
   xlab("")
 
 # Variance between own measurments and expert survey
-variance_df <- broad_policy_avg_df %>%
-  select(-broad_policy_area, -period) %>% 
-  summarise(across(everything(), ~ var(.x - nanou_2017_z_score, na.rm = T))) %>% 
+variance_df <- broad_policy_mpolicy_avg_df %>%
+  select(-broad_policy_area_mpolicy, -period) %>% 
+  summarise(across(everything(), ~ var(.x - nanou_2017_mpolicy_lrscale3, na.rm = T))) %>% 
   pivot_longer(cols = everything(),  # Select all columns to transform
                names_to = "measurement",  # New column for the original column names
                values_to = "variance") %>% 
