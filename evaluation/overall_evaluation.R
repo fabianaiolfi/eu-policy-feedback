@@ -6,12 +6,14 @@
 
 ## Load data -----------------------
 
-nanou_2017_lrscale3 <- readRDS(here("existing_measurements", "nanou_2017", "nanou_2017_lrscale3.rds")) # Averaged expert measurements from extract_expert_measurements.R
+# Averaged expert measurements from eu-policy-feedback/existing_measurements/nanou_2017/extract_expert_measurements.R
+nanou_2017_mpolicy_lrscale3 <- readRDS(here("existing_measurements", "nanou_2017", "nanou_2017_mpolicy_lrscale3.rds"))
+nanou_2017_spolicy_lrscale3 <- readRDS(here("existing_measurements", "nanou_2017", "nanou_2017_spolicy_lrscale3.rds"))
 all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg.rds"))
-# all_dir_reg <- all_dir_reg %>% slice_sample(n = 1000)
+all_dir_reg <- all_dir_reg %>% slice_sample(n = 100)
 
-# source(here("evaluation", "policy_area_subj_matter.R")) # Run script
-policy_area_subj_matter <- readRDS(here("data", "evaluation", "policy_area_subj_matter.rds")) # Load data
+policy_area_subj_matter_mpolicy <- readRDS(here("data", "evaluation", "policy_area_subj_matter_mpolicy.rds")) # eu-policy-feedback/evaluation/policy_area_subj_matter_mpolicy.R
+policy_area_subj_matter_spolicy <- readRDS(here("data", "evaluation", "policy_area_subj_matter_spolicy.rds")) # eu-policy-feedback/evaluation/policy_area_subj_matter_spolicy.R
 
 # Import Calculated measurements
 glove_polarity_scores_all_dir_reg_econ <- readRDS(here("data", "lss", "glove_polarity_scores_all_dir_reg_econ.rds"))
@@ -31,9 +33,12 @@ ceps_eurlex <- ceps_eurlex %>% select(CELEX, Subject_matter)
 all_dir_reg <- all_dir_reg %>% left_join(ceps_eurlex, by = "CELEX")
 
 
+#### somewhere: make sure celex and corresponding broad policy area only appear once!!!!!!!!!!!
+
+
 ## Preprocess Data -----------------------
 
-nanou_2017_lrscale3 <- nanou_2017_lrscale3 %>% 
+nanou_2017_mpolicy_lrscale3 <- nanou_2017_mpolicy_lrscale3 %>% 
   # Perform standardization of data (z-scoring)
   mutate(lrscale3_avg_z_score = standardize(lrscale3_avg))
 
@@ -70,14 +75,14 @@ chatgpt_summary_0_shot <- chatgpt_summary_0_shot %>%
 # Function to match subject matter terms to broad policy areas, accounting for match frequency
 match_policy_area <- function(subject_matter, lookup_df) {
   # Initialize a named vector to store the count of matches per broad policy area
-  match_count <- setNames(rep(0, length(unique(lookup_df$broad_policy_area))), 
-                          unique(lookup_df$broad_policy_area))
+  match_count <- setNames(rep(0, length(unique(lookup_df$spolicy))), 
+                          unique(lookup_df$spolicy))
   
   # Loop through each subject matter term in the lookup table
   for (i in seq_along(lookup_df$subject_matter)) {
     if (grepl(lookup_df$subject_matter[i], subject_matter, ignore.case = TRUE)) {
       # Increment the count for the corresponding broad policy area
-      match_count[lookup_df$broad_policy_area[i]] <- match_count[lookup_df$broad_policy_area[i]] + 1
+      match_count[lookup_df$spolicy[i]] <- match_count[lookup_df$spolicy[i]] + 1
     }
   }
   
@@ -95,7 +100,8 @@ match_policy_area <- function(subject_matter, lookup_df) {
   }
 }
 
-all_dir_reg$broad_policy_area <- sapply(all_dir_reg$Subject_matter, match_policy_area, lookup_df = policy_area_subj_matter)
+all_dir_reg$broad_policy_area_mpolicy <- sapply(all_dir_reg$Subject_matter, match_policy_area, lookup_df = policy_area_subj_matter_mpolicy)
+all_dir_reg$broad_policy_area_spolicy <- sapply(all_dir_reg$Subject_matter, match_policy_area, lookup_df = policy_area_subj_matter_spolicy)
 
 
 ## Calculate Averages per Time Period and Broad Policy Area ---------------------------------
@@ -184,5 +190,6 @@ variance_df <- broad_policy_avg_df %>%
   arrange(variance)
 
 ## CONTINUE HERE ##
+# - evaluate all laws, not just ones with chatgpt summaries
 # - measurements based on chatgpt summaries seem to provide best variance and correlation values compared to expert surveys. examine this further! maybe also calculate measurements based on entire regulation/directive, not just summary.
 # - other ways to compare expert survey and own measurements?

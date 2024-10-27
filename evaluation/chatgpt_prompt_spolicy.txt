@@ -1,0 +1,171 @@
+Here are a list of terms:
+cooperation policy
+budget
+EU finance
+international security
+migration
+deterioration of the environment
+employment
+regions of EU Member States
+communications
+economic policy
+Europe
+leather and textile industries
+financial institutions and credit
+air and space transport
+European construction
+economic conditions
+economic structure
+United Nations
+mechanical engineering
+public finance and budget policy
+EU institutions and European civil service
+information and information processing
+education
+documentation
+labour market
+economic analysis
+chemistry
+information technology and data processing
+distributive trades
+business organisation
+executive power and public service
+coal and mining industries
+research and intellectual property
+regions and regional policy
+natural environment
+international affairs
+economic geography
+technology and technical regulations
+culture and religion
+energy policy
+Asia and Oceania
+oil industry
+Africa
+land transport
+labour law and labour relations
+international law
+business classification
+political framework
+electronics and electrical engineering
+management
+soft energy
+iron, steel and other metal industries
+financing and investment
+free movement of capital
+miscellaneous industries
+agri-foodstuffs
+building and public works
+wood industry
+industrial structures and policy
+construction and town planning
+politics and public safety
+environmental policy
+social protection
+health
+European organisations
+organisation of transport
+social affairs
+electrical and nuclear industries
+foodstuff
+prices
+marketing
+consumption
+trade policy
+civil law
+demography and population
+organisation of work and working conditions
+rights and freedoms
+teaching
+fisheries
+personnel management and staff remuneration
+humanities
+international trade
+means of agricultural production
+processed agricultural produce
+plant product
+tariff policy
+trade
+animal product
+European Union law
+cultivation of agricultural land
+agricultural policy
+agricultural activity
+America
+justice
+defence
+transport policy
+monetary economics
+monetary relations
+national accounts
+parliament
+organisation of teaching
+taxation
+competition
+beverages and sugar
+maritime and inland waterway transport
+criminal law
+family
+natural and applied sciences
+electoral procedure and voting
+world organisations
+food technology
+accounting
+farming systems
+forestry
+organisation of the legal system
+legal form of organisations
+overseas countries and territories
+extra-European organisations
+production
+sources and branches of the law
+agricultural structures and production
+insurance
+political geography
+non-governmental organisations
+political party
+social framework
+parliamentary proceedings
+
+Now assign the terms to topics. A term can be assigned to several topics, or to no topic at all, if none is suitable:
+Economic and Financial Affairs (general)
+Monetary Policy
+Macroeconomic Policy
+Taxation
+Competitiveness (general)
+Competition
+Industry
+Internal Market: Goods and Services
+Internal Market: Capital Flows
+Internal Market: Persons/workers
+Regional Policy
+Employment and Social Policy
+Health and Consumer Protection
+Work Conditions
+Labour-Management Relations
+Social Welfare
+Public Health
+Food Safety
+Environment (general)
+Climate Change
+Nature and Biodiversity
+Agriculture and Fisheries (general)
+Agriculture
+Maritime Affairs and Fisheries
+Transport, Telecommunications, and Energy (general)
+Transport
+Telecommunications
+Energy
+Education, Youth and Culture (general)
+Education and Research
+Cultural Policy
+Justice and Home Affairs (general)
+Justice and Property Rights
+Citizenship and Immigration
+Police and Public Order
+Foreign and Security Policy (general)
+Defense and Military Affairs
+Diplomacy
+External Trade
+Humanitarian Aid and Civil Protection
+Development Aid

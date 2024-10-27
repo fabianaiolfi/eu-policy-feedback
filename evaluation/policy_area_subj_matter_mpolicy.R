@@ -75,7 +75,7 @@ subject_matter <- c("budget",
                     "tariff policy")
 
 df <- data.frame(
-  broad_policy_area = "Economic and Financial Affairs",
+  mpolicy = "Economic and Financial Affairs",
   subject_matter = subject_matter,
   stringsAsFactors = FALSE)
 
@@ -101,10 +101,11 @@ subject_matter <- c("leather and textile industries",
                     "processed agricultural produce",
                     "plant product",
                     "animal product",
-                    "agricultural structures and production")
+                    "agricultural structures and production",
+                    "prices")
 
 df <- data.frame(
-  broad_policy_area = "Competitiveness",
+  mpolicy = "Competitiveness",
   subject_matter = subject_matter,
   stringsAsFactors = FALSE)
 
@@ -126,7 +127,7 @@ subject_matter <- c("employment",
                     "beverages and sugar")
 
 df <- data.frame(
-  broad_policy_area = "Employment, Social Policy, Health and Consumer Affairs",
+  mpolicy = "Employment, Social Policy, Health and Consumer Affairs",
   subject_matter = subject_matter,
   stringsAsFactors = FALSE)
 
@@ -141,7 +142,7 @@ subject_matter <- c("deterioration of the environment",
                     "coal and mining industries")
 
 df <- data.frame(
-  broad_policy_area = "Environment",
+  mpolicy = "Environment",
   subject_matter = subject_matter,
   stringsAsFactors = FALSE)
 
@@ -157,7 +158,7 @@ subject_matter <- c("agricultural policy",
                     "means of agricultural production")
 
 df <- data.frame(
-  broad_policy_area = "Agriculture and Fisheries",
+  mpolicy = "Agriculture and Fisheries",
   subject_matter = subject_matter,
   stringsAsFactors = FALSE)
 
@@ -178,7 +179,7 @@ subject_matter <- c("air and space transport",
                     "technology and technical regulations")
 
 df <- data.frame(
-  broad_policy_area = "Transport, Telecommunications, Energy",
+  mpolicy = "Transport, Telecommunications, Energy",
   subject_matter = subject_matter,
   stringsAsFactors = FALSE)
 
@@ -194,7 +195,7 @@ subject_matter <- c("education",
                     "natural and applied sciences")
 
 df <- data.frame(
-  broad_policy_area = "Education, Youth and Culture",
+  mpolicy = "Education, Youth and Culture",
   subject_matter = subject_matter,
   stringsAsFactors = FALSE)
 
@@ -217,7 +218,7 @@ subject_matter <- c("cooperation policy",
                     "politics and public safety")
 
 df <- data.frame(
-  broad_policy_area = "Justice and Home Affairs",
+  mpolicy = "Justice and Home Affairs",
   subject_matter = subject_matter,
   stringsAsFactors = FALSE)
 
@@ -249,7 +250,7 @@ subject_matter <- c("international affairs",
 )
 
 df <- data.frame(
-  broad_policy_area = "Foreign and Security Policy",
+  mpolicy = "Foreign and Security Policy",
   subject_matter = subject_matter,
   stringsAsFactors = FALSE)
 
@@ -258,4 +259,4 @@ policy_area_subj_matter <- policy_area_subj_matter %>%
   distinct(subject_matter, .keep_all = T) # Clean up duplicates
 
 # Save to file
-saveRDS(policy_area_subj_matter, file = here("data", "evaluation", "policy_area_subj_matter.rds"))
+saveRDS(policy_area_subj_matter, file = here("data", "evaluation", "policy_area_subj_matter_mpolicy.rds"))

@@ -1,0 +1,463 @@
+1. **Cooperation policy**
+   - Development Aid
+   - Diplomacy
+   - Foreign and Security Policy (general)
+
+2. **Budget**
+   - Economic and Financial Affairs (general)
+   - Macroeconomic Policy
+
+3. **EU finance**
+   - Economic and Financial Affairs (general)
+   - Macroeconomic Policy
+
+4. **International security**
+   - Foreign and Security Policy (general)
+   - Defense and Military Affairs
+
+5. **Migration**
+   - Citizenship and Immigration
+   - Justice and Home Affairs (general)
+
+6. **Deterioration of the environment**
+   - Environment (general)
+   - Climate Change
+   - Nature and Biodiversity
+
+7. **Employment**
+   - Employment and Social Policy
+
+8. **Regions of EU Member States**
+   - Regional Policy
+
+9. **Communications**
+   - Telecommunications
+
+10. **Economic policy**
+    - Economic and Financial Affairs (general)
+    - Macroeconomic Policy
+
+11. **Europe**
+    - *(No suitable topic assigned)*
+
+12. **Leather and textile industries**
+    - Industry
+    - Competitiveness (general)
+
+13. **Financial institutions and credit**
+    - Economic and Financial Affairs (general)
+    - Internal Market: Capital Flows
+
+14. **Air and space transport**
+    - Transport
+
+15. **European construction**
+    - *(No suitable topic assigned)*
+
+16. **Economic conditions**
+    - Economic and Financial Affairs (general)
+    - Macroeconomic Policy
+
+17. **Economic structure**
+    - Economic and Financial Affairs (general)
+    - Macroeconomic Policy
+
+18. **United Nations**
+    - Foreign and Security Policy (general)
+    - Diplomacy
+
+19. **Mechanical engineering**
+    - Industry
+    - Competitiveness (general)
+
+20. **Public finance and budget policy**
+    - Economic and Financial Affairs (general)
+    - Macroeconomic Policy
+    - Taxation
+
+21. **EU institutions and European civil service**
+    - *(No suitable topic assigned)*
+
+22. **Information and information processing**
+    - Telecommunications
+    - Education and Research
+
+23. **Education**
+    - Education and Research
+
+24. **Documentation**
+    - *(No suitable topic assigned)*
+
+25. **Labour market**
+    - Employment and Social Policy
+    - Labour-Management Relations
+
+26. **Economic analysis**
+    - Economic and Financial Affairs (general)
+    - Macroeconomic Policy
+
+27. **Chemistry**
+    - Education and Research
+    - Industry
+
+28. **Information technology and data processing**
+    - Telecommunications
+    - Education and Research
+
+29. **Distributive trades**
+    - Internal Market: Goods and Services
+
+30. **Business organisation**
+    - Competitiveness (general)
+    - Internal Market: Goods and Services
+
+31. **Executive power and public service**
+    - Justice and Home Affairs (general)
+
+32. **Coal and mining industries**
+    - Industry
+    - Energy
+
+33. **Research and intellectual property**
+    - Education and Research
+    - Competitiveness (general)
+
+34. **Regions and regional policy**
+    - Regional Policy
+
+35. **Natural environment**
+    - Environment (general)
+    - Nature and Biodiversity
+
+36. **International affairs**
+    - Foreign and Security Policy (general)
+    - Diplomacy
+
+37. **Economic geography**
+    - Regional Policy
+    - Economic and Financial Affairs (general)
+
+38. **Technology and technical regulations**
+    - Education and Research
+    - Competitiveness (general)
+
+39. **Culture and religion**
+    - Cultural Policy
+
+40. **Energy policy**
+    - Energy
+
+41. **Asia and Oceania**
+    - Foreign and Security Policy (general)
+    - Development Aid
+    - Diplomacy
+
+42. **Oil industry**
+    - Energy
+    - Industry
+
+43. **Africa**
+    - Foreign and Security Policy (general)
+    - Development Aid
+    - Diplomacy
+
+44. **Land transport**
+    - Transport
+
+45. **Labour law and labour relations**
+    - Work Conditions
+    - Labour-Management Relations
+
+46. **International law**
+    - Justice and Home Affairs (general)
+    - Justice and Property Rights
+
+47. **Business classification**
+    - *(No suitable topic assigned)*
+
+48. **Political framework**
+    - Justice and Home Affairs (general)
+    - Foreign and Security Policy (general)
+
+49. **Electronics and electrical engineering**
+    - Industry
+    - Education and Research
+
+50. **Management**
+    - Competitiveness (general)
+    - Labour-Management Relations
+
+51. **Soft energy**
+    - Energy
+    - Environment (general)
+    - Climate Change
+
+52. **Iron, steel and other metal industries**
+    - Industry
+
+53. **Financing and investment**
+    - Economic and Financial Affairs (general)
+    - Internal Market: Capital Flows
+
+54. **Free movement of capital**
+    - Internal Market: Capital Flows
+
+55. **Miscellaneous industries**
+    - Industry
+
+56. **Agri-foodstuffs**
+    - Agriculture
+    - Food Safety
+
+57. **Building and public works**
+    - Industry
+    - Transport, Telecommunications, and Energy (general)
+
+58. **Wood industry**
+    - Industry
+    - Agriculture
+
+59. **Industrial structures and policy**
+    - Industry
+    - Competitiveness (general)
+
+60. **Construction and town planning**
+    - Transport, Telecommunications, and Energy (general)
+    - Regional Policy
+
+61. **Politics and public safety**
+    - Justice and Home Affairs (general)
+    - Police and Public Order
+
+62. **Environmental policy**
+    - Environment (general)
+
+63. **Social protection**
+    - Social Welfare
+
+64. **Health**
+    - Public Health
+
+65. **European organisations**
+    - *(No suitable topic assigned)*
+
+66. **Organisation of transport**
+    - Transport
+
+67. **Social affairs**
+    - Employment and Social Policy
+    - Social Welfare
+
+68. **Electrical and nuclear industries**
+    - Energy
+    - Industry
+
+69. **Foodstuff**
+    - Agriculture
+    - Food Safety
+
+70. **Prices**
+    - Economic and Financial Affairs (general)
+    - Macroeconomic Policy
+
+71. **Marketing**
+    - Internal Market: Goods and Services
+    - Competitiveness (general)
+
+72. **Consumption**
+    - Health and Consumer Protection
+
+73. **Trade policy**
+    - External Trade
+
+74. **Civil law**
+    - Justice and Property Rights
+
+75. **Demography and population**
+    - Citizenship and Immigration
+    - Employment and Social Policy
+
+76. **Organisation of work and working conditions**
+    - Work Conditions
+    - Labour-Management Relations
+
+77. **Rights and freedoms**
+    - Justice and Property Rights
+    - Justice and Home Affairs (general)
+
+78. **Teaching**
+    - Education and Research
+
+79. **Fisheries**
+    - Maritime Affairs and Fisheries
+
+80. **Personnel management and staff remuneration**
+    - Labour-Management Relations
+    - Employment and Social Policy
+
+81. **Humanities**
+    - Education and Research
+    - Cultural Policy
+
+82. **International trade**
+    - External Trade
+
+83. **Means of agricultural production**
+    - Agriculture
+
+84. **Processed agricultural produce**
+    - Agriculture
+    - Food Safety
+
+85. **Plant product**
+    - Agriculture
+
+86. **Tariff policy**
+    - External Trade
+
+87. **Trade**
+    - External Trade
+    - Internal Market: Goods and Services
+
+88. **Animal product**
+    - Agriculture
+
+89. **European Union law**
+    - Justice and Home Affairs (general)
+    - Justice and Property Rights
+
+90. **Cultivation of agricultural land**
+    - Agriculture
+
+91. **Agricultural policy**
+    - Agriculture
+
+92. **Agricultural activity**
+    - Agriculture
+
+93. **America**
+    - Foreign and Security Policy (general)
+    - Development Aid
+    - Diplomacy
+
+94. **Justice**
+    - Justice and Home Affairs (general)
+    - Justice and Property Rights
+
+95. **Defence**
+    - Defense and Military Affairs
+
+96. **Transport policy**
+    - Transport
+
+97. **Monetary economics**
+    - Monetary Policy
+
+98. **Monetary relations**
+    - Monetary Policy
+    - Economic and Financial Affairs (general)
+
+99. **National accounts**
+    - Macroeconomic Policy
+    - Economic and Financial Affairs (general)
+
+100. **Parliament**
+     - Justice and Home Affairs (general)
+     - *(No suitable topic assigned)*
+
+101. **Organisation of teaching**
+     - Education and Research
+
+102. **Taxation**
+     - Taxation
+
+103. **Competition**
+     - Competition
+
+104. **Beverages and sugar**
+     - Agriculture
+     - Food Safety
+
+105. **Maritime and inland waterway transport**
+     - Transport
+
+106. **Criminal law**
+     - Justice and Property Rights
+     - Police and Public Order
+
+107. **Family**
+     - Social Welfare
+     - Justice and Property Rights
+
+108. **Natural and applied sciences**
+     - Education and Research
+
+109. **Electoral procedure and voting**
+     - Justice and Home Affairs (general)
+     - Citizenship and Immigration
+
+110. **World organisations**
+     - Foreign and Security Policy (general)
+     - Diplomacy
+
+111. **Food technology**
+     - Agriculture
+     - Food Safety
+
+112. **Accounting**
+     - Economic and Financial Affairs (general)
+     - Macroeconomic Policy
+
+113. **Farming systems**
+     - Agriculture
+
+114. **Forestry**
+     - Agriculture
+     - Environment (general)
+
+115. **Organisation of the legal system**
+     - Justice and Home Affairs (general)
+     - Justice and Property Rights
+
+116. **Legal form of organisations**
+     - Justice and Property Rights
+
+117. **Overseas countries and territories**
+     - Development Aid
+     - Foreign and Security Policy (general)
+     - Diplomacy
+
+118. **Extra-European organisations**
+     - Foreign and Security Policy (general)
+     - Diplomacy
+
+119. **Production**
+     - Economic and Financial Affairs (general)
+     - Industry
+
+120. **Sources and branches of the law**
+     - Justice and Property Rights
+
+121. **Agricultural structures and production**
+     - Agriculture
+
+122. **Insurance**
+     - Internal Market: Capital Flows
+     - Economic and Financial Affairs (general)
+
+123. **Political geography**
+     - Foreign and Security Policy (general)
+
+124. **Non-governmental organisations**
+     - Development Aid
+     - Humanitarian Aid and Civil Protection
+
+125. **Political party**
+     - Justice and Home Affairs (general)
+
+126. **Social framework**
+     - Employment and Social Policy
+     - Social Welfare
+
+127. **Parliamentary proceedings**
+     - Justice and Home Affairs (general)

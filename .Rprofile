@@ -9,6 +9,7 @@ library(purrr)
 library(haven)
 library(datawizard) # z-scoring
 library(reshape2) # Correlation plot heatmap
+library(stringr)
 
 # LSS
 library(LSX)
