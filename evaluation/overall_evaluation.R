@@ -8,7 +8,7 @@
 
 nanou_2017_lrscale3 <- readRDS(here("existing_measurements", "nanou_2017", "nanou_2017_lrscale3.rds")) # Averaged expert measurements from extract_expert_measurements.R
 all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg.rds"))
-all_dir_reg <- all_dir_reg %>% slice_sample(n = 1000)
+# all_dir_reg <- all_dir_reg %>% slice_sample(n = 1000)
 
 # source(here("evaluation", "policy_area_subj_matter.R")) # Run script
 policy_area_subj_matter <- readRDS(here("data", "evaluation", "policy_area_subj_matter.rds")) # Load data
@@ -38,10 +38,14 @@ nanou_2017_lrscale3 <- nanou_2017_lrscale3 %>%
   mutate(lrscale3_avg_z_score = standardize(lrscale3_avg))
 
 glove_polarity_scores_all_dir_reg_econ <- glove_polarity_scores_all_dir_reg_econ %>% 
+  # Reverse scale so that it aligns with Hix Høyland method: :>0: More right; <0: More left
+  mutate(avg_glove_polarity_scores = avg_glove_polarity_scores * -1) %>% 
   # Perform standardization of data (z-scoring)
   mutate(avg_lss_econ_z_score = standardize(avg_glove_polarity_scores))
 
 glove_polarity_scores_all_dir_reg_social <- glove_polarity_scores_all_dir_reg_social %>% 
+  # Reverse scale so that it aligns with Hix Høyland method: :>0: More right; <0: More left
+  mutate(avg_glove_polarity_scores = avg_glove_polarity_scores * -1) %>% 
   # Perform standardization of data (z-scoring)
   mutate(avg_lss_social_z_score = standardize(avg_glove_polarity_scores))
 
