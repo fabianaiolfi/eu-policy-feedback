@@ -126,6 +126,8 @@ _Tables: To Do_
 - [ ] Check subject_matter and Broad Policy Topic matching: Remove not appropriate terms and also repeat ambiguous terms
 - [ ] Measurements based on chatgpt summaries seem to provide best variance and correlation values compared to expert surveys. examine this further! maybe also calculate measurements based on entire regulation/directive, not just summary.
 - [ ] Perform ranking with llama models over all directives/regulations that have a summary
+  - [x] Economically left
+  - [ ] Economically right
 - [ ] Continue overall evaluation, including llama model
 - [ ] Other ways to compare own measurements with expert survey?
 

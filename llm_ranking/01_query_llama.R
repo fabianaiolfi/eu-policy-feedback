@@ -1,7 +1,8 @@
 
 # Load Data ---------------------------------------------------------------
 
-ceps_eurlex_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "ceps_eurlex_dir_reg_summaries_240711_04.rds"))
+# ceps_eurlex_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "ceps_eurlex_dir_reg_summaries_240711_04.rds"))
+ceps_eurlex_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "all_dir_reg_summaries.rds"))
 
 
 # Indexing ---------------------------------------------------------------
@@ -10,7 +11,7 @@ ceps_eurlex_dir_reg_summaries <- readRDS(file = here("data", "data_collection", 
 celex_index <- ceps_eurlex_dir_reg_summaries %>% 
   select(CELEX) %>% # Only select CELEX
   rename(CELEX_1 = CELEX)
-celex_index <- bind_rows(replicate(3, celex_index, simplify = F)) # Repeat same row 3 times
+celex_index <- bind_rows(replicate(5, celex_index, simplify = F)) # Repeat same row 5 times
 
 # Function to shuffle and ensure no duplicates in the same row
 create_shuffled_column <- function(df) {
