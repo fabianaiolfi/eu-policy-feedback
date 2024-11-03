@@ -1,8 +1,8 @@
 
 # Load ranked dataframes ---------------------------------------------------------------
 
-ratings_df_left <- readRDS(file = here("data", "ranking", "ratings_df_more_left_20240712_144220.rds"))
-ratings_df_right <- readRDS(file = here("data", "ranking", "ratings_df_more_right_20240712_144521.rds"))
+ratings_df_left <- readRDS(file = here("data", "llm_ranking", "ratings_df_more_left_20240712_144220.rds"))
+ratings_df_right <- readRDS(file = here("data", "llm_ranking", "ratings_df_more_right_20240712_144521.rds"))
 
 
 # Compare both lists ---------------------------------------------------------------

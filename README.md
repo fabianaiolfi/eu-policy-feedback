@@ -122,7 +122,7 @@ _Tables: To Do_
 - [ ] How to disregard / ignore laws that are *not* relevant? E.g. a law on abortion has no economic left-right ideology → One possible approach could be using a policy’s tags. Are there tags that indicate that a policy can be ignored?
 
 **241027**
-- [ ] Ranking algorithm: Is there a way to combine "most left" and "most right" lists?
+- [x] Ranking algorithm: Combine "most left" and "most right" lists
 - [ ] Check subject_matter and Broad Policy Topic matching: Remove not appropriate terms and also repeat ambiguous terms
 - [ ] Measurements based on chatgpt summaries seem to provide best variance and correlation values compared to expert surveys. examine this further! maybe also calculate measurements based on entire regulation/directive, not just summary.
 - [ ] Perform ranking with llama models over all directives/regulations that have a summary

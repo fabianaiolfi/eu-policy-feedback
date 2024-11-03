@@ -21,18 +21,18 @@ glove_polarity_scores_all_dir_reg_social <- readRDS(here("data", "lss", "glove_p
 hix_hoyland_data <- readRDS(here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data.rds"))
 
 # Directive/Regulation Summaries Only (ChatGPT)
-chatgpt_preamble_0_shot <- readRDS(here("data", "chatgpt_0_shot", "chatgpt_preamble_0_shot.rds"))
-chatgpt_summary_0_shot <- readRDS(here("data", "chatgpt_0_shot", "chatgpt_summary_0_shot.rds"))
+chatgpt_preamble_0_shot <- readRDS(here("data", "llm_0_shot", "chatgpt_preamble_0_shot.rds"))
+chatgpt_summary_0_shot <- readRDS(here("data", "llm_0_shot", "chatgpt_summary_0_shot.rds"))
 
-chatgpt_ranking_left <- readRDS(here("data", "chatgpt_ranking", "ratings_df_more_left_20240712_144220.rds"))
-chatgpt_ranking_left <- chatgpt_ranking_left %>% rename(CELEX = document)
-chatgpt_ranking_right <- readRDS(here("data", "chatgpt_ranking", "ratings_df_more_right_20240712_144521.rds"))
-chatgpt_ranking_right <- chatgpt_ranking_right %>% rename(CELEX = document)
+chatgpt_ranking_combined <- readRDS(here("data", "llm_ranking", "chatgpt_combined_rating.rds"))
+# chatgpt_ranking_left <- chatgpt_ranking_left %>% rename(CELEX = document)
+# chatgpt_ranking_right <- readRDS(here("data", "llm_ranking", "ratings_df_more_right_20240712_144521.rds"))
+# chatgpt_ranking_right <- chatgpt_ranking_right %>% rename(CELEX = document)
 
-llama_ranking_left <- readRDS(here("data", "chatgpt_ranking", "llama_ratings_df_more_left_20241027_225323.rds"))
+llama_ranking_left <- readRDS(here("data", "llm_ranking", "llama_ratings_df_more_left_20241027_225323.rds"))
 llama_ranking_left <- llama_ranking_left %>% rename(CELEX = document)
 
-all_dir_reg <- chatgpt_ranking_left %>%
+all_dir_reg <- chatgpt_ranking_combined %>%
   select(CELEX) %>%
   left_join(all_dir_reg, by = "CELEX")
 
@@ -53,13 +53,13 @@ nanou_2017_spolicy_lrscale3 <- nanou_2017_spolicy_lrscale3 %>%
   mutate(lrscale3_avg_z_score = standardize(lrscale3_avg))
 
 glove_polarity_scores_all_dir_reg_econ <- glove_polarity_scores_all_dir_reg_econ %>% 
-  # Reverse scale so that it aligns with Hix Høyland method: :>0: More right; <0: More left
+  # Reverse scale so that it aligns with Hix Høyland method: >0: More right; <0: More left
   mutate(avg_glove_polarity_scores = avg_glove_polarity_scores * -1) %>% 
   # Perform standardization of data (z-scoring)
   mutate(avg_lss_econ_z_score = standardize(avg_glove_polarity_scores))
 
 glove_polarity_scores_all_dir_reg_social <- glove_polarity_scores_all_dir_reg_social %>% 
-  # Reverse scale so that it aligns with Hix Høyland method: :>0: More right; <0: More left
+  # Reverse scale so that it aligns with Hix Høyland method: >0: More right; <0: More left
   mutate(avg_glove_polarity_scores = avg_glove_polarity_scores * -1) %>% 
   # Perform standardization of data (z-scoring)
   mutate(avg_lss_social_z_score = standardize(avg_glove_polarity_scores))
@@ -79,20 +79,20 @@ chatgpt_summary_0_shot <- chatgpt_summary_0_shot %>%
   # Perform standardization of data (z-scoring)
   mutate(chatgpt_summary_0_shot_z_score = standardize(chatgpt_answer))
 
-chatgpt_ranking_left <- chatgpt_ranking_left %>%
-  # Perform standardization of data (z-scoring)
-  mutate(chatgpt_ranking_left_z_score = standardize(rating)) %>% 
-  # Reverse scale so that it aligns with Hix Høyland method: :>0: More right; <0: More left
-  mutate(chatgpt_ranking_left_z_score = chatgpt_ranking_left_z_score * -1)
+# chatgpt_ranking_left <- chatgpt_ranking_left %>%
+#   # Perform standardization of data (z-scoring)
+#   mutate(chatgpt_ranking_left_z_score = standardize(rating)) %>% 
+#   # Reverse scale so that it aligns with Hix Høyland method: >0: More right; <0: More left
+#   mutate(chatgpt_ranking_left_z_score = chatgpt_ranking_left_z_score * -1)
 
-chatgpt_ranking_right <- chatgpt_ranking_right %>%
-  # Perform standardization of data (z-scoring)
-  mutate(chatgpt_ranking_right_z_score = standardize(rating))
+# chatgpt_ranking_right <- chatgpt_ranking_right %>%
+#   # Perform standardization of data (z-scoring)
+#   mutate(chatgpt_ranking_right_z_score = standardize(rating))
 
 llama_ranking_left <- llama_ranking_left %>%
   # Perform standardization of data (z-scoring)
   mutate(llama_ranking_left_z_score = standardize(rating)) %>% 
-  # Reverse scale so that it aligns with Hix Høyland method: :>0: More right; <0: More left
+  # Reverse scale so that it aligns with Hix Høyland method: >0: More right; <0: More left
   mutate(llama_ranking_left_z_score = llama_ranking_left_z_score * -1)
 
 
@@ -150,8 +150,7 @@ broad_policy_mpolicy_avg_df <- all_dir_reg %>%
   left_join(select(hix_hoyland_data, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX") %>% 
   left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX") %>%
   left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX") %>% 
-  left_join(select(chatgpt_ranking_left, CELEX, chatgpt_ranking_left_z_score), by = "CELEX") %>% 
-  left_join(select(chatgpt_ranking_right, CELEX, chatgpt_ranking_right_z_score), by = "CELEX") %>% 
+  left_join(select(chatgpt_ranking_combined, CELEX, llm_ranking_z_score), by = "CELEX") %>% 
   left_join(select(llama_ranking_left, CELEX, llama_ranking_left_z_score), by = "CELEX")
 
 broad_policy_spolicy_avg_df <- all_dir_reg %>% 
@@ -167,8 +166,7 @@ broad_policy_spolicy_avg_df <- all_dir_reg %>%
   left_join(select(hix_hoyland_data, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX") %>% 
   left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX") %>%
   left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX") %>% 
-  left_join(select(chatgpt_ranking_left, CELEX, chatgpt_ranking_left_z_score), by = "CELEX") %>% 
-  left_join(select(chatgpt_ranking_right, CELEX, chatgpt_ranking_right_z_score), by = "CELEX") %>% 
+  left_join(select(chatgpt_ranking_combined, CELEX, llm_ranking_z_score), by = "CELEX") %>% 
   left_join(select(llama_ranking_left, CELEX, llama_ranking_left_z_score), by = "CELEX")
 
 # Calcualate averages based on time periods
