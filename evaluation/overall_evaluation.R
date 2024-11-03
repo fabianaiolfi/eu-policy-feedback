@@ -25,12 +25,10 @@ chatgpt_preamble_0_shot <- readRDS(here("data", "llm_0_shot", "chatgpt_preamble_
 chatgpt_summary_0_shot <- readRDS(here("data", "llm_0_shot", "chatgpt_summary_0_shot.rds"))
 
 chatgpt_ranking_combined <- readRDS(here("data", "llm_ranking", "chatgpt_combined_rating.rds"))
-# chatgpt_ranking_left <- chatgpt_ranking_left %>% rename(CELEX = document)
-# chatgpt_ranking_right <- readRDS(here("data", "llm_ranking", "ratings_df_more_right_20240712_144521.rds"))
-# chatgpt_ranking_right <- chatgpt_ranking_right %>% rename(CELEX = document)
+chatgpt_ranking_combined <- chatgpt_ranking_combined %>% rename(chatgpt_ranking_z_score = llm_ranking_z_score)
 
-llama_ranking_left <- readRDS(here("data", "llm_ranking", "llama_ratings_df_more_left_20241027_225323.rds"))
-llama_ranking_left <- llama_ranking_left %>% rename(CELEX = document)
+llama_ranking_combined <- readRDS(here("data", "llm_ranking", "llama_combined_rating.rds"))
+llama_ranking_combined <- llama_ranking_combined %>% rename(llama_ranking_z_score = llm_ranking_z_score)
 
 all_dir_reg <- chatgpt_ranking_combined %>%
   select(CELEX) %>%
@@ -89,28 +87,28 @@ chatgpt_summary_0_shot <- chatgpt_summary_0_shot %>%
 #   # Perform standardization of data (z-scoring)
 #   mutate(chatgpt_ranking_right_z_score = standardize(rating))
 
-llama_ranking_left <- llama_ranking_left %>%
-  # Perform standardization of data (z-scoring)
-  mutate(llama_ranking_left_z_score = standardize(rating)) %>% 
-  # Reverse scale so that it aligns with Hix Høyland method: >0: More right; <0: More left
-  mutate(llama_ranking_left_z_score = llama_ranking_left_z_score * -1)
+# llama_ranking_left <- llama_ranking_left %>%
+#   # Perform standardization of data (z-scoring)
+#   mutate(llama_ranking_left_z_score = standardize(rating)) %>% 
+#   # Reverse scale so that it aligns with Hix Høyland method: >0: More right; <0: More left
+#   mutate(llama_ranking_left_z_score = llama_ranking_left_z_score * -1)
 
 
 ## Connect a Law's Subject Matter with the Broad Policy Area from Nanou 2017 -----------------------
 
-# Please switch manually between mpolicy and spolicy
+# Please switch manually between mpolicy (broad policy area) and spolicy (detailed policy area)
 
 # Function to match subject matter terms to broad policy areas, accounting for match frequency
 match_policy_area <- function(subject_matter, lookup_df) {
   # Initialize a named vector to store the count of matches per broad policy area
-  match_count <- setNames(rep(0, length(unique(lookup_df$spolicy))), 
-                          unique(lookup_df$spolicy))
+  match_count <- setNames(rep(0, length(unique(lookup_df$mpolicy))), 
+                          unique(lookup_df$mpolicy))
   
   # Loop through each subject matter term in the lookup table
   for (i in seq_along(lookup_df$subject_matter)) {
     if (grepl(lookup_df$subject_matter[i], subject_matter, ignore.case = TRUE)) {
       # Increment the count for the corresponding broad policy area
-      match_count[lookup_df$spolicy[i]] <- match_count[lookup_df$spolicy[i]] + 1
+      match_count[lookup_df$mpolicy[i]] <- match_count[lookup_df$mpolicy[i]] + 1
     }
   }
   
@@ -129,7 +127,7 @@ match_policy_area <- function(subject_matter, lookup_df) {
 }
 
 all_dir_reg$broad_policy_area_mpolicy <- sapply(all_dir_reg$Subject_matter, match_policy_area, lookup_df = policy_area_subj_matter_mpolicy)
-all_dir_reg$broad_policy_area_spolicy <- sapply(all_dir_reg$Subject_matter, match_policy_area, lookup_df = policy_area_subj_matter_spolicy)
+# all_dir_reg$broad_policy_area_spolicy <- sapply(all_dir_reg$Subject_matter, match_policy_area, lookup_df = policy_area_subj_matter_spolicy)
 
 
 ## Calculate Averages per Time Period and Broad Policy Area ---------------------------------
@@ -150,24 +148,24 @@ broad_policy_mpolicy_avg_df <- all_dir_reg %>%
   left_join(select(hix_hoyland_data, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX") %>% 
   left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX") %>%
   left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX") %>% 
-  left_join(select(chatgpt_ranking_combined, CELEX, llm_ranking_z_score), by = "CELEX") %>% 
-  left_join(select(llama_ranking_left, CELEX, llama_ranking_left_z_score), by = "CELEX")
+  left_join(select(chatgpt_ranking_combined, CELEX, chatgpt_ranking_z_score), by = "CELEX") %>% 
+  left_join(select(llama_ranking_combined, CELEX, llama_ranking_z_score), by = "CELEX")
 
-broad_policy_spolicy_avg_df <- all_dir_reg %>% 
-  select(CELEX, Date_document, broad_policy_area_spolicy) %>% 
-  mutate(year = as.numeric(format(Date_document, "%Y"))) %>% 
-  select(-Date_document) %>% 
-  drop_na(broad_policy_area_spolicy) %>% 
-  separate_rows(broad_policy_area_spolicy, sep = "; ") %>% # Place each Broad Policy Area on its own row
-  distinct(CELEX, broad_policy_area_spolicy, .keep_all = T) %>% 
-  # Add calculated scores
-  left_join(select(glove_polarity_scores_all_dir_reg_econ, CELEX, avg_lss_econ_z_score), by = "CELEX") %>% 
-  left_join(select(glove_polarity_scores_all_dir_reg_social, CELEX, avg_lss_social_z_score), by = "CELEX") %>% 
-  left_join(select(hix_hoyland_data, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX") %>% 
-  left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX") %>%
-  left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX") %>% 
-  left_join(select(chatgpt_ranking_combined, CELEX, llm_ranking_z_score), by = "CELEX") %>% 
-  left_join(select(llama_ranking_left, CELEX, llama_ranking_left_z_score), by = "CELEX")
+# broad_policy_spolicy_avg_df <- all_dir_reg %>% 
+#   select(CELEX, Date_document, broad_policy_area_spolicy) %>% 
+#   mutate(year = as.numeric(format(Date_document, "%Y"))) %>% 
+#   select(-Date_document) %>% 
+#   drop_na(broad_policy_area_spolicy) %>% 
+#   separate_rows(broad_policy_area_spolicy, sep = "; ") %>% # Place each Broad Policy Area on its own row
+#   distinct(CELEX, broad_policy_area_spolicy, .keep_all = T) %>% 
+#   # Add calculated scores
+#   left_join(select(glove_polarity_scores_all_dir_reg_econ, CELEX, avg_lss_econ_z_score), by = "CELEX") %>% 
+#   left_join(select(glove_polarity_scores_all_dir_reg_social, CELEX, avg_lss_social_z_score), by = "CELEX") %>% 
+#   left_join(select(hix_hoyland_data, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX") %>% 
+#   left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX") %>%
+#   left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX") %>% 
+#   left_join(select(chatgpt_ranking_combined, CELEX, llm_ranking_z_score), by = "CELEX") %>% 
+#   left_join(select(llama_ranking_left, CELEX, llama_ranking_left_z_score), by = "CELEX")
 
 # Calcualate averages based on time periods
 broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>%
@@ -185,29 +183,29 @@ broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>%
   summarize(across(contains("z_score"), ~ mean(.x, na.rm = TRUE)), .groups = "drop") %>% 
   ungroup()
 
-broad_policy_spolicy_avg_df <- broad_policy_spolicy_avg_df %>%
-  mutate(period = case_when(
-    year %in% 1989:1990 ~ "1989-1990",
-    year %in% 1991:1995 ~ "1991-1995",
-    year %in% 1996:2000 ~ "1996-2000",
-    year %in% 2001:2005 ~ "2001-2005",
-    year %in% 2006:2010 ~ "2006-2010",
-    year %in% 2011:2014 ~ "2011-2014",
-    year %in% 2014:2024 ~ "2014-2024",
-    TRUE ~ NA_character_)) %>% 
-  drop_na(period) %>%
-  group_by(broad_policy_area_spolicy, period) %>%
-  summarize(across(contains("z_score"), ~ mean(.x, na.rm = TRUE)), .groups = "drop") %>% 
-  ungroup()
+# broad_policy_spolicy_avg_df <- broad_policy_spolicy_avg_df %>%
+#   mutate(period = case_when(
+#     year %in% 1989:1990 ~ "1989-1990",
+#     year %in% 1991:1995 ~ "1991-1995",
+#     year %in% 1996:2000 ~ "1996-2000",
+#     year %in% 2001:2005 ~ "2001-2005",
+#     year %in% 2006:2010 ~ "2006-2010",
+#     year %in% 2011:2014 ~ "2011-2014",
+#     year %in% 2014:2024 ~ "2014-2024",
+#     TRUE ~ NA_character_)) %>% 
+#   drop_na(period) %>%
+#   group_by(broad_policy_area_spolicy, period) %>%
+#   summarize(across(contains("z_score"), ~ mean(.x, na.rm = TRUE)), .groups = "drop") %>% 
+#   ungroup()
 
 # Add Nanou 2017
 broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>% 
   left_join(select(nanou_2017_mpolicy_lrscale3, broad_policy_area, period, lrscale3_avg_z_score), by = c("broad_policy_area_mpolicy" = "broad_policy_area", "period")) %>% 
   rename(nanou_2017_mpolicy_lrscale3 = lrscale3_avg_z_score)
 
-broad_policy_spolicy_avg_df <- broad_policy_spolicy_avg_df %>% 
-  left_join(select(nanou_2017_spolicy_lrscale3, broad_policy_area, period, lrscale3_avg_z_score), by = c("broad_policy_area_spolicy" = "broad_policy_area", "period")) %>% 
-  rename(nanou_2017_spolicy_lrscale3 = lrscale3_avg_z_score)
+# broad_policy_spolicy_avg_df <- broad_policy_spolicy_avg_df %>% 
+#   left_join(select(nanou_2017_spolicy_lrscale3, broad_policy_area, period, lrscale3_avg_z_score), by = c("broad_policy_area_spolicy" = "broad_policy_area", "period")) %>% 
+#   rename(nanou_2017_spolicy_lrscale3 = lrscale3_avg_z_score)
 
 
 ## Examine Complete Dataframe -----------------------
@@ -215,14 +213,14 @@ broad_policy_spolicy_avg_df <- broad_policy_spolicy_avg_df %>%
 # Please switch manually between mpolicy and spolicy
 
 # Correlations
-cor_df <- broad_policy_spolicy_avg_df %>% select(-broad_policy_area_spolicy, -period)
+cor_df <- broad_policy_mpolicy_avg_df %>% select(-broad_policy_area_mpolicy, -period)
 correlation_matrix <- cor(cor_df, use = "pairwise.complete.obs")
 correlation_melt <- melt(correlation_matrix) # Convert the correlation matrix into long format for ggplot2
 
 # Correlation heatmap
 ggplot(correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
-  ggtitle(label = "Correlation Heatmap (spolicy)",
-          subtitle = "Analysis covers 75,570 directives and legislations") +
+  ggtitle(label = "Correlation Heatmap (spolicy)") + #,
+          # subtitle = "Analysis covers 75,570 directives and legislations") +
   geom_tile() +
   scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
                        midpoint = 0, limit = c(-1, 1), space = "Lab", 

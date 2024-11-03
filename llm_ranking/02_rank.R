@@ -44,8 +44,8 @@ update_elo <- function(winner, loser, ratings, K = 32) {
 # Iterate over comparisons and update ratings
 for (i in 1:nrow(ranking_df)) {
   # Adjust accordingly
-  winner <- ranking_df$more_left[i]
-  # winner <- ranking_df$more_right[i]
+  # winner <- ranking_df$more_left[i]
+  winner <- ranking_df$more_right[i]
   loser <- ifelse(ranking_df$CELEX_1[i] == winner, ranking_df$CELEX_2[i], ranking_df$CELEX_1[i])
   ratings <- update_elo(winner, loser, ratings)
 }
@@ -58,6 +58,6 @@ ratings_df <- ratings_df %>% arrange(desc(rating))
 timestamp <- Sys.time()
 formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
 # Adjust accordingly
-file_name <- paste0("llama_ratings_df_", "more_left_", formatted_timestamp, ".rds")
-# file_name <- paste0("ratings_df_", "more_right_", formatted_timestamp, ".rds")
-saveRDS(ratings_df, file = here("data", "chatgpt_ranking", file_name))
+# file_name <- paste0("llama_ratings_df_", "more_left_", formatted_timestamp, ".rds")
+file_name <- paste0("llama_ratings_df_", "more_right_", formatted_timestamp, ".rds")
+saveRDS(ratings_df, file = here("data", "llm_ranking", file_name))

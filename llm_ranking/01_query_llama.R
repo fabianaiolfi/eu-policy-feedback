@@ -68,24 +68,24 @@ prompt_df <- celex_index %>%
 
 ## Prompt for economic *right* ---------------------------------------------------------------
 
-# prompt_start <- "I have two summaries of EU policies, and I need to determine which policy is more economically right-leaning. Please analyze the summaries based on principles commonly associated with economically right policies, such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility.\n\n"
-# prompt_end <- "Which policy is more economically right? Please return only '1' or '2'."
-# 
-# prompt_df <- celex_index %>% 
-#   left_join(ceps_eurlex_dir_reg_summaries, by = c("CELEX_1" = "CELEX")) %>% 
-#   rename(policy_summary_1 = eurlex_summary_clean) %>% 
-#   left_join(ceps_eurlex_dir_reg_summaries, by = c("CELEX_2" = "CELEX")) %>% 
-#   rename(policy_summary_2 = eurlex_summary_clean) %>% 
-#   mutate(id_var = paste0(CELEX_1, "_", CELEX_2)) %>% # ID for each row
-#   mutate(prompt_role_var = "user") %>% # Set role
-#   # Put together prompt
-#   mutate(prompt_content_var = paste0(system_prompt, 
-#                                      prompt_start, 
-#                                      "Policy Summary 1:\n",
-#                                      policy_summary_1, "\n\n",
-#                                      "Policy Summary 2:\n",
-#                                      policy_summary_2, "\n\n",
-#                                      prompt_end)) %>% 
+prompt_start <- "I have two summaries of EU policies, and I need to determine which policy is more economically right-leaning. Please analyze the summaries based on principles commonly associated with economically right policies, such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility.\n\n"
+prompt_end <- "Which policy is more economically right? Please answer ONLY USING THE NUMBERS '1' or '2', NOTHING ELSE UNDER NO CIRCUMSTANCES."
+
+prompt_df <- celex_index %>%
+  left_join(ceps_eurlex_dir_reg_summaries, by = c("CELEX_1" = "CELEX")) %>%
+  rename(policy_summary_1 = eurlex_summary_clean) %>%
+  left_join(ceps_eurlex_dir_reg_summaries, by = c("CELEX_2" = "CELEX")) %>%
+  rename(policy_summary_2 = eurlex_summary_clean) %>%
+  mutate(id_var = paste0(CELEX_1, "_", CELEX_2)) %>% # ID for each row
+  mutate(prompt_role_var = "user") %>% # Set role
+  # Put together prompt
+  mutate(prompt_content_var = paste0(system_prompt,
+                                     prompt_start,
+                                     "Policy Summary 1:\n",
+                                     policy_summary_1, "\n\n",
+                                     "Policy Summary 2:\n",
+                                     policy_summary_2, "\n\n",
+                                     prompt_end)) #%>%
 #   # Count number of tokens in prompt (1 token ~= 4 chars in English, see https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them)
 #   # Check API limits: https://platform.openai.com/settings/organization/limits
 #   mutate(prompt_token_len = nchar(prompt_content_var) / 4)
@@ -137,12 +137,12 @@ for (i in 1:nrow(prompt_df)) {
 timestamp <- Sys.time()
 formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
 file_name <- paste0("llama_output_df_", formatted_timestamp, ".rds")
-saveRDS(prompt_df, file = here("data", "chatgpt_ranking", file_name))
+saveRDS(prompt_df, file = here("data", "llm_ranking", file_name))
 
 
 # Process Output ---------------------------------------------------------------
 
-prompt_df <- readRDS(file = here("data", "chatgpt_ranking", "llama_output_df_20241027_224519.rds"))
+prompt_df <- readRDS(file = here("data", "llm_ranking", "llama_output_df_20241103_144501.rds"))
 
 # prompt_df <- prompt_df %>% 
 #   select(CELEX_1, CELEX_2, response) %>% 
@@ -156,10 +156,11 @@ ranking_df <- prompt_df %>%
   mutate(response = as.numeric(gsub("\\D", "", response))) %>% 
   # mutate(chatgpt_answer = as.numeric(chatgpt_answer)) %>% 
   # Adjust accordingly
-  mutate(more_left = case_when(response == 1 ~ CELEX_1,
-                               response == 2 ~ CELEX_2))
-  # mutate(more_right = case_when(response == 1 ~ CELEX_1,
-                                # response == 2 ~ CELEX_2))
+  # mutate(more_left = case_when(response == 1 ~ CELEX_1,
+  #                              response == 2 ~ CELEX_2))
+  mutate(more_right = case_when(response == 1 ~ CELEX_1,
+                                response == 2 ~ CELEX_2)) %>% 
+  drop_na(response)
 
 
 
