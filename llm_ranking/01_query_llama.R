@@ -143,49 +143,28 @@ saveRDS(prompt_df, file = here("data", "llm_ranking", file_name))
 
 # Process Output ---------------------------------------------------------------
 
-prompt_df <- readRDS(file = here("data", "llm_ranking", "llama_output_df_20241103_144501.rds"))
-
-# prompt_df <- prompt_df %>% 
-#   select(CELEX_1, CELEX_2, response) %>% 
-#   # remove any non-digit characters from string "response" and convert to numeric
-#   mutate(response = as.numeric(gsub("\\D", "", response)))
+# Economically left-leaning
+prompt_df <- readRDS(file = here("data", "llm_ranking", "llama_output_df_20241103_204609.rds"))
 
 # Prepare dataframe for ranking
-ranking_df <- prompt_df %>% 
+ranking_df_left <- prompt_df %>% 
   select(CELEX_1, CELEX_2, response) %>% 
   # remove any non-digit characters from string "response" and convert to numeric
   mutate(response = as.numeric(gsub("\\D", "", response))) %>% 
-  # mutate(chatgpt_answer = as.numeric(chatgpt_answer)) %>% 
-  # Adjust accordingly
-  # mutate(more_left = case_when(response == 1 ~ CELEX_1,
-  #                              response == 2 ~ CELEX_2))
-  mutate(more_right = case_when(response == 1 ~ CELEX_1,
-                                response == 2 ~ CELEX_2)) %>% 
+  dplyr::filter(response <= 2) %>% #  Only keep responses '1' or '2'; Clean LLM output: Somewhat brute approach that could be optimised
+  mutate(more_left = case_when(response == 1 ~ CELEX_1,
+                               response == 2 ~ CELEX_2)) %>% 
   drop_na(response)
 
+# Economically right-leaning
+prompt_df <- readRDS(file = here("data", "llm_ranking", "llama_output_df_20241104_132306.rds"))
 
-
-# Process ChatGPT output ---------------------------------------------------------------
-
-# chatgpt_output <- readRDS(file = here("data", "ranking", "chatgpt_output_df_20240712_143525.rds"))
-# prompt_df <- readRDS(file = here("data", "ranking", "prompt_df_20240712_142655.rds"))
-# 
-# # Convert output to dataframe
-# temp_df <- chatgpt_output[[1]]
-# temp_df <- temp_df %>% 
-#   select(id, gpt_content) %>% 
-#   rename(chatgpt_answer = gpt_content) %>% 
-#   distinct(id, .keep_all = T) # This shouldn't be necessary if CELEX_1 and CELEX_2 are never identical
-# 
-# # Merge ChatGPT answer with prompt_df
-# prompt_df <- prompt_df %>% left_join(temp_df, by = c("id_var" = "id"))
-# 
-# # Prepare dataframe for ranking
-# ranking_df <- prompt_df %>% 
-#   select(CELEX_1, CELEX_2, chatgpt_answer) %>% 
-#   mutate(chatgpt_answer = as.numeric(chatgpt_answer)) %>% 
-#   # Adjust accordingly
-#   # mutate(more_left = case_when(chatgpt_answer == 1 ~ CELEX_1,
-#   #                              chatgpt_answer == 2 ~ CELEX_2))
-#   mutate(more_right = case_when(chatgpt_answer == 1 ~ CELEX_1,
-#                                chatgpt_answer == 2 ~ CELEX_2))
+# Prepare dataframe for ranking
+ranking_df_right <- prompt_df %>% 
+  select(CELEX_1, CELEX_2, response) %>% 
+  # remove any non-digit characters from string "response" and convert to numeric
+  mutate(response = as.numeric(gsub("\\D", "", response))) %>% 
+  dplyr::filter(response <= 2) %>% #  Only keep responses '1' or '2'; Clean LLM output: Somewhat brute approach that could be optimised
+  mutate(more_right = case_when(response == 1 ~ CELEX_1,
+                                response == 2 ~ CELEX_2)) %>%
+  drop_na(response)
