@@ -24,13 +24,13 @@ hix_hoyland_data <- readRDS(here("existing_measurements", "hix_hoyland_2024", "h
 chatgpt_preamble_0_shot <- readRDS(here("data", "llm_0_shot", "chatgpt_preamble_0_shot.rds"))
 chatgpt_summary_0_shot <- readRDS(here("data", "llm_0_shot", "chatgpt_summary_0_shot.rds"))
 
-chatgpt_ranking_combined <- readRDS(here("data", "llm_ranking", "chatgpt_combined_rating.rds"))
-chatgpt_ranking_combined <- chatgpt_ranking_combined %>% rename(chatgpt_ranking_z_score = llm_ranking_z_score)
+# chatgpt_ranking_combined <- readRDS(here("data", "llm_ranking", "chatgpt_combined_rating.rds"))
+# chatgpt_ranking_combined <- chatgpt_ranking_combined %>% rename(chatgpt_ranking_z_score = llm_ranking_z_score)
 
 llama_ranking_combined <- readRDS(here("data", "llm_ranking", "llama_combined_rating.rds"))
 llama_ranking_combined <- llama_ranking_combined %>% rename(llama_ranking_z_score = llm_ranking_z_score)
 
-all_dir_reg <- chatgpt_ranking_combined %>%
+all_dir_reg <- llama_ranking_combined %>%
   select(CELEX) %>%
   left_join(all_dir_reg, by = "CELEX")
 
@@ -148,7 +148,7 @@ broad_policy_mpolicy_avg_df <- all_dir_reg %>%
   left_join(select(hix_hoyland_data, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX") %>% 
   left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX") %>%
   left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX") %>% 
-  left_join(select(chatgpt_ranking_combined, CELEX, chatgpt_ranking_z_score), by = "CELEX") %>% 
+  # left_join(select(chatgpt_ranking_combined, CELEX, chatgpt_ranking_z_score), by = "CELEX") %>% 
   left_join(select(llama_ranking_combined, CELEX, llama_ranking_z_score), by = "CELEX")
 
 # broad_policy_spolicy_avg_df <- all_dir_reg %>% 
