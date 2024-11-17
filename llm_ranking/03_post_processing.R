@@ -6,10 +6,8 @@
 
 ## Load Data -------------------------
 
-# ratings_df_left <- readRDS(file = here("data", "llm_ranking", "ratings_df_more_left_20240712_144220.rds"))
-# ratings_df_right <- readRDS(file = here("data", "llm_ranking", "ratings_df_more_right_20240712_144521.rds"))
-ratings_df_left <- readRDS(file = here("data", "llm_ranking", "llama_ratings_df_more_left_20241027_225323.rds"))
-ratings_df_right <- readRDS(file = here("data", "llm_ranking", "llama_ratings_df_more_right_20241103_145833.rds"))
+ratings_df_left <- readRDS(file = here("data", "llm_ranking", "llama_ratings_df_left_20241117_103622.rds"))
+ratings_df_right <- readRDS(file = here("data", "llm_ranking", "llama_ratings_df_right_20241117_104545.rds"))
 
 
 ## Post Process -------------------------

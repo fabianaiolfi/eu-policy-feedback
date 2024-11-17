@@ -25,11 +25,6 @@ colnames(ranked_df) <- c("document", "count")
 
 # Elo Ranking ---------------------------------------------------------------
 
-# Initialize ratings
-initial_rating <- 1000
-documents <- unique(c(ranking_df$CELEX_1, ranking_df$CELEX_2))
-ratings <- setNames(rep(initial_rating, length(documents)), documents)
-
 # Elo update function
 update_elo <- function(winner, loser, ratings, K = 32) {
   expected_winner <- 1 / (1 + 10^((ratings[loser] - ratings[winner]) / 400))
@@ -41,23 +36,52 @@ update_elo <- function(winner, loser, ratings, K = 32) {
   return(ratings)
 }
 
+
+## Economically left-leaning -------------------------
+
+# Initialize ratings
+initial_rating <- 1000
+documents <- unique(c(ranking_df_left$CELEX_1, ranking_df_left$CELEX_2))
+ratings <- setNames(rep(initial_rating, length(documents)), documents)
+
 # Iterate over comparisons and update ratings
-for (i in 1:nrow(ranking_df)) {
-  # Adjust accordingly
-  # winner <- ranking_df$more_left[i]
-  winner <- ranking_df$more_right[i]
-  loser <- ifelse(ranking_df$CELEX_1[i] == winner, ranking_df$CELEX_2[i], ranking_df$CELEX_1[i])
+for (i in 1:nrow(ranking_df_left)) {
+  winner <- ranking_df_left$more_left[i]
+  loser <- ifelse(ranking_df_left$CELEX_1[i] == winner, ranking_df_left$CELEX_2[i], ranking_df_left$CELEX_1[i])
   ratings <- update_elo(winner, loser, ratings)
 }
 
 # Convert ratings to a dataframe for easier viewing
-ratings_df <- data.frame(document = names(ratings), rating = unname(ratings))
-ratings_df <- ratings_df %>% arrange(desc(rating))
+ratings_df_left <- data.frame(document = names(ratings), rating = unname(ratings))
+ratings_df_left <- ratings_df_left %>% arrange(desc(rating))
 
 # Save to file
 timestamp <- Sys.time()
 formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
-# Adjust accordingly
-# file_name <- paste0("llama_ratings_df_", "more_left_", formatted_timestamp, ".rds")
-file_name <- paste0("llama_ratings_df_", "more_right_", formatted_timestamp, ".rds")
-saveRDS(ratings_df, file = here("data", "llm_ranking", file_name))
+file_name <- paste0("llama_ratings_df_left_", formatted_timestamp, ".rds")
+saveRDS(ratings_df_left, file = here("data", "llm_ranking", file_name))
+
+
+## Economically right-leaning -------------------------
+
+# Initialize ratings
+initial_rating <- 1000
+documents <- unique(c(ranking_df_right$CELEX_1, ranking_df_right$CELEX_2))
+ratings <- setNames(rep(initial_rating, length(documents)), documents)
+
+# Iterate over comparisons and update ratings
+for (i in 1:nrow(ranking_df_right)) {
+  winner <- ranking_df_right$more_right[i]
+  loser <- ifelse(ranking_df_right$CELEX_1[i] == winner, ranking_df_right$CELEX_2[i], ranking_df_right$CELEX_1[i])
+  ratings <- update_elo(winner, loser, ratings)
+}
+
+# Convert ratings to a dataframe for easier viewing
+ratings_df_right <- data.frame(document = names(ratings), rating = unname(ratings))
+ratings_df_right <- ratings_df_right %>% arrange(desc(rating))
+
+# Save to file
+timestamp <- Sys.time()
+formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
+file_name <- paste0("llama_ratings_df_right_", formatted_timestamp, ".rds")
+saveRDS(ratings_df_right, file = here("data", "llm_ranking", file_name))

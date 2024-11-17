@@ -24,3 +24,15 @@ prompt_end <- "Which policy is more economically right? Please answer ONLY USING
 Repeat same row 5 times: 8185 rows
 
 model = "llama3.2:1b"
+
+---
+
+**llama_ratings_df_left_20241117_103622.rds**
+
+Elo-ranked economically left leaning policies based on llama_output_df_20241103_204609.rds.
+
+---
+
+**llama_ratings_df_right_20241117_104545.rds**
+
+Elo-ranked economically right leaning policies based on llama_output_df_20241104_132306.rds.
