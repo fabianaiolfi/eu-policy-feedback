@@ -87,7 +87,7 @@ saveRDS(prompt_df, file = here("data", "llm_0_shot", file_name))
 
 prompt_df <- readRDS(file = here("data", "llm_0_shot", "llama_output_df_20241117_193847.rds"))
 
-unique(prompt_df$response)
+unique(prompt_df$response) ## CONTINUE HERE ##
 
 
 
