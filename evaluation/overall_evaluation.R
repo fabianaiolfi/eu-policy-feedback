@@ -8,12 +8,12 @@
 
 # Averaged expert measurements from eu-policy-feedback/existing_measurements/nanou_2017/extract_expert_measurements.R
 nanou_2017_mpolicy_lrscale3 <- readRDS(here("existing_measurements", "nanou_2017", "nanou_2017_mpolicy_lrscale3.rds"))
-nanou_2017_spolicy_lrscale3 <- readRDS(here("existing_measurements", "nanou_2017", "nanou_2017_spolicy_lrscale3.rds"))
+# nanou_2017_spolicy_lrscale3 <- readRDS(here("existing_measurements", "nanou_2017", "nanou_2017_spolicy_lrscale3.rds"))
 all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg.rds"))
 # all_dir_reg <- all_dir_reg %>% slice_sample(n = 100)
 
 policy_area_subj_matter_mpolicy <- readRDS(here("data", "evaluation", "policy_area_subj_matter_mpolicy.rds")) # eu-policy-feedback/evaluation/policy_area_subj_matter_mpolicy.R
-policy_area_subj_matter_spolicy <- readRDS(here("data", "evaluation", "policy_area_subj_matter_spolicy.rds")) # eu-policy-feedback/evaluation/policy_area_subj_matter_spolicy.R
+# policy_area_subj_matter_spolicy <- readRDS(here("data", "evaluation", "policy_area_subj_matter_spolicy.rds")) # eu-policy-feedback/evaluation/policy_area_subj_matter_spolicy.R
 
 # Import Calculated measurements
 glove_polarity_scores_all_dir_reg_econ <- readRDS(here("data", "lss", "glove_polarity_scores_all_dir_reg_econ.rds"))
@@ -47,9 +47,9 @@ nanou_2017_mpolicy_lrscale3 <- nanou_2017_mpolicy_lrscale3 %>%
   # Perform standardization of data (z-scoring)
   mutate(lrscale3_avg_z_score = standardize(lrscale3_avg))
 
-nanou_2017_spolicy_lrscale3 <- nanou_2017_spolicy_lrscale3 %>% 
+# nanou_2017_spolicy_lrscale3 <- nanou_2017_spolicy_lrscale3 %>% 
   # Perform standardization of data (z-scoring)
-  mutate(lrscale3_avg_z_score = standardize(lrscale3_avg))
+  # mutate(lrscale3_avg_z_score = standardize(lrscale3_avg))
 
 glove_polarity_scores_all_dir_reg_econ <- glove_polarity_scores_all_dir_reg_econ %>% 
   # Reverse scale so that it aligns with Hix Høyland method: >0: More right; <0: More left
@@ -225,7 +225,7 @@ correlation_melt <- melt(correlation_matrix) # Convert the correlation matrix in
 
 # Correlation heatmap
 ggplot(correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
-  ggtitle(label = "Correlation Heatmap (spolicy)") + #,
+  ggtitle(label = "Correlation Heatmap (mpolicy)") + #,
           # subtitle = "Analysis covers 75,570 directives and legislations") +
   geom_tile() +
   scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
@@ -237,7 +237,7 @@ ggplot(correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
   xlab("") + ylab("")
 
 ggsave(
-  "correlation_heatmap_spolicy.png",
+  "correlation_heatmap_mpolicy.png",
   plot = last_plot(),
   path = here("evaluation", "results"),
   scale = 1,
@@ -264,7 +264,7 @@ ggplot(broad_policy_long, aes(x = z_score_value, y = nanou_2017_mpolicy_lrscale3
   xlab("")
 
 ggsave(
-  "correlation_scatter_plot_spolicy.png",
+  "correlation_scatter_plot_mpolicy.png",
   plot = last_plot(),
   path = here("evaluation", "results"),
   scale = 1,
@@ -283,6 +283,6 @@ variance_df <- broad_policy_mpolicy_avg_df %>%
   arrange(variance)
 
 write.table(variance_df,
-            here("evaluation", "results", "variance_spolicy.csv"),
+            here("evaluation", "results", "variance_mpolicy.csv"),
             sep = ",",
             row.names = F)
