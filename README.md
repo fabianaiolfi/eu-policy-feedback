@@ -125,12 +125,12 @@ _Tables: To Do_
 - [x] Ranking algorithm: Combine "most left" and "most right" lists
 - [ ] Check subject_matter and Broad Policy Topic matching: Remove not appropriate terms and also repeat ambiguous terms
 - [ ] Measurements based on chatgpt summaries seem to provide best variance and correlation values compared to expert surveys. examine this further! maybe also calculate measurements based on entire regulation/directive, not just summary.
-- [ ] Perform ranking with llama models over all directives/regulations that have a summary
+- [x] Perform ranking with llama models over all directives/regulations that have a summary
   - [x] Economically left
   - [x] Economically right
-- [ ] Continue 0-shot querying of policies with summaries with Llama:
-  - [ ] Clean responses
-  - [ ] Include this analysis in overall evaluation
+- [x] Continue 0-shot querying of policies with summaries with Llama:
+  - [x] Clean responses
+  - [x] Include this analysis in overall evaluation
 - [x] Continue overall evaluation, including llama model
 - [ ] Other ways to compare own measurements with expert survey?
 
@@ -184,7 +184,7 @@ _Tables: To Do_
 		- [ ] Randomize the Order: Randomly shuffle the order of comparisons multiple times and average the final ratings.
 		- [ ] Increase the Number of Comparisons: More comparisons will help stabilize the ratings, reducing the impact of any particular order.
 		- [ ] Lower the K-Factor: This reduces the volatility of the ratings but can slow down the adjustment process.
-- [ ] Try running an LLM locally
+- [x] Try running an LLM locally
 - [x] Use ChatGPT 4o mini
 - [ ] Potential political bias in LLMs? Try multiple prompts and models.
 

@@ -123,33 +123,5 @@ prompt_clean_df <- prompt_clean_df %>%
   summarise_at(vars(score),
                list(avg_score = mean))
 
-
-
-
-
-# # Process ChatGPT output ---------------------------------------------------------------
-# 
-# # chatgpt_output <- readRDS(file = here("data", "ranking", "chatgpt_output_df_20240712_143525.rds"))
-# # prompt_df <- readRDS(file = here("data", "ranking", "prompt_df_20240712_142655.rds"))
-# 
-# # Convert output to dataframe
-# temp_df <- chatgpt_output[[1]]
-# temp_df <- temp_df %>% 
-#   select(id, gpt_content) %>% 
-#   rename(chatgpt_answer = gpt_content) %>% 
-#   distinct(id, .keep_all = T) # This shouldn't be necessary if CELEX_1 and CELEX_2 are never identical
-# 
-# # Merge ChatGPT answer with prompt_df
-# prompt_df <- prompt_df %>% left_join(temp_df, by = c("CELEX" = "id"))
-# 
-# # Clean up ChatGPT answers
-# unique(prompt_df$chatgpt_answer) # Examine the output
-# 
-# prompt_df <- prompt_df %>% 
-#   # Remove any non-numeric characters from answer
-#   mutate(chatgpt_answer = str_extract(chatgpt_answer, "[0-9]+")) %>% 
-#   mutate(chatgpt_answer = as.numeric(chatgpt_answer))
-# 
-# # Save output
-# chatgpt_preamble_0_shot <- prompt_df %>% select(CELEX, chatgpt_answer)
-# saveRDS(chatgpt_preamble_0_shot, file = here("data", "chatgpt_0_shot", "chatgpt_preamble_0_shot.rds"))
+# Save output
+saveRDS(prompt_clean_df, file = here("data", "llm_0_shot", "llama_summary_0_shot.rds"))

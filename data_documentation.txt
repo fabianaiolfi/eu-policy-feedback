@@ -37,10 +37,14 @@ Elo-ranked economically left leaning policies based on llama_output_df_20241103_
 
 Elo-ranked economically right leaning policies based on llama_output_df_20241104_132306.rds. Only looks at summaries.
 
-
 ---
 
 **llama_output_df_20241117_193847.rds**
 
 0-shot llama output on scoring policy on a left-right scale between 0 and 100. Only looks at policies with summaries (n=1637). Each policy is repeated 5 times in order to calculate an average. This is done under the assumption that the LLM will provide different scores for the same policy, thus prompting the LLM several times for the same policy lets us calcualte an average score.
 
+---
+
+**llama_summary_0_shot.rds**
+
+Based on llama_output_df_20241117_193847.rds: Cleaned and averaged scores for policies with summaries (n=1445).
