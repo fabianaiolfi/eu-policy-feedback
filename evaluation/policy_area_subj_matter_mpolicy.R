@@ -50,29 +50,30 @@ policy_area_subj_matter <- data.frame() # Set up empty dataframe
 # Economic and Financial Affairs
 subject_matter <- c("budget",
                     "EU finance",
-                    "financial institutions and credit",
                     "economic policy",
                     "economic conditions",
                     "economic structure",
                     "public finance and budget policy",
-                    "economic analysis",
+                    "financial institutions and credit",
                     "financing and investment",
                     "free movement of capital",
                     "prices",
-                    "consumption",
-                    "trade policy",
-                    "trade",
                     "monetary economics",
                     "monetary relations",
                     "national accounts",
                     "taxation",
-                    "competition",
-                    "accounting",
-                    "production",
-                    "insurance",
-                    "business classification",
-                    "international trade",
-                    "tariff policy")
+                    "trade policy",
+                    "trade"
+                    # "economic analysis",
+                    # "consumption",
+                    # "competition",
+                    # "accounting",
+                    # "production",
+                    # "insurance",
+                    # "business classification",
+                    # "international trade",
+                    # "tariff policy"
+                    )
 
 df <- data.frame(
   mpolicy = "Economic and Financial Affairs",
@@ -84,25 +85,30 @@ policy_area_subj_matter <- policy_area_subj_matter %>% rbind(df) # Add to datafr
 # Competitiveness
 subject_matter <- c("leather and textile industries",
                     "mechanical engineering",
-                    "distributive trades",
                     "business organisation",
-                    "industrial structures and policy",
-                    "construction and town planning",
+                    "business classification",
                     "electronics and electrical engineering",
-                    "management",
-                    "iron, steel and other metal industries",
-                    "miscellaneous industries",
-                    "building and public works",
-                    "marketing",
-                    "wood industry",
-                    "agri-foodstuffs",
-                    "foodstuff",
-                    "food technology",
-                    "processed agricultural produce",
-                    "plant product",
-                    "animal product",
-                    "agricultural structures and production",
-                    "prices")
+                    "industrial structures and policy",
+                    "technology and technical regulations",
+                    "research and intellectual property",
+                    "distributive trades",
+                    "competition"
+                    # "construction and town planning",
+                    # "management",
+                    # "iron, steel and other metal industries",
+                    # "miscellaneous industries",
+                    # "building and public works",
+                    # "marketing",
+                    # "wood industry",
+                    # "agri-foodstuffs",
+                    # "foodstuff",
+                    # "food technology",
+                    # "processed agricultural produce",
+                    # "plant product",
+                    # "animal product",
+                    # "agricultural structures and production",
+                    # "prices"
+                    )
 
 df <- data.frame(
   mpolicy = "Competitiveness",
@@ -114,17 +120,20 @@ policy_area_subj_matter <- policy_area_subj_matter %>% rbind(df) # Add to datafr
 ### Employment, Social Policy, Health and Consumer Affairs
 subject_matter <- c("employment",
                     "labour market",
+                    "labour law and labour relations",
+                    "organisation of work and working conditions",
                     "social protection",
                     "social affairs",
-                    "health",
-                    "rights and freedoms",
-                    "demography and population",
-                    "organisation of work and working conditions",
                     "personnel management and staff remuneration",
-                    "family",
-                    "social framework",
-                    "labour law and labour relations",
-                    "beverages and sugar")
+                    "demography and population",
+                    "rights and freedoms",
+                    "consumption",
+                    "marketing",
+                    "health",
+                    "social framework"
+                    # "family",
+                    # "beverages and sugar"
+                    )
 
 df <- data.frame(
   mpolicy = "Employment, Social Policy, Health and Consumer Affairs",
@@ -137,9 +146,10 @@ policy_area_subj_matter <- policy_area_subj_matter %>% rbind(df) # Add to datafr
 subject_matter <- c("deterioration of the environment",
                     "natural environment",
                     "environmental policy",
-                    "soft energy",
-                    "chemistry",
-                    "coal and mining industries")
+                    "soft energy"
+                    #"chemistry",
+                    #"coal and mining industries"
+                    )
 
 df <- data.frame(
   mpolicy = "Environment",
@@ -149,13 +159,19 @@ df <- data.frame(
 policy_area_subj_matter <- policy_area_subj_matter %>% rbind(df) # Add to dataframe
 
 # Agriculture and Fisheries
-subject_matter <- c("agricultural policy",
-                    "agricultural activity",
+subject_matter <- c("agri-foodstuffs",
+                    "means of agricultural production",
+                    "processed agricultural produce",
+                    "plant product",
+                    "animal product",
+                    "agricultural policy",
                     "cultivation of agricultural land",
-                    "farming systems",
-                    "forestry",
                     "fisheries",
-                    "means of agricultural production")
+                    "farming systems",
+                    "agricultural activity",
+                    "agricultural structures and production",
+                    "forestry"
+                    )
 
 df <- data.frame(
   mpolicy = "Agriculture and Fisheries",
@@ -167,16 +183,17 @@ policy_area_subj_matter <- policy_area_subj_matter %>% rbind(df) # Add to datafr
 # Transport, Telecommunications, Energy
 subject_matter <- c("air and space transport",
                     "land transport",
-                    "oil industry",
-                    "organisation of transport",
-                    "energy policy",
-                    "transport policy",
                     "maritime and inland waterway transport",
-                    "electrical and nuclear industries",
-                    "information technology and data processing",
-                    "information and information processing",
-                    "communications",
-                    "technology and technical regulations")
+                    "organisation of transport",
+                    "transport policy",
+                    "energy policy",
+                    "oil industry",
+                    "electrical and nuclear industries"
+                    #"information technology and data processing",
+                    #"information and information processing",
+                    #"communications",
+                    #"technology and technical regulations"
+                    )
 
 df <- data.frame(
   mpolicy = "Transport, Telecommunications, Energy",
@@ -187,12 +204,13 @@ policy_area_subj_matter <- policy_area_subj_matter %>% rbind(df) # Add to datafr
 
 # Education, Youth and Culture
 subject_matter <- c("education",
-                    "teaching",
                     "organisation of teaching",
+                    "teaching",
                     "culture and religion",
-                    "humanities",
-                    "research and intellectual property",
-                    "natural and applied sciences")
+                    "humanities"
+                    #"research and intellectual property",
+                    #"natural and applied sciences"
+                    )
 
 df <- data.frame(
   mpolicy = "Education, Youth and Culture",
@@ -202,20 +220,21 @@ df <- data.frame(
 policy_area_subj_matter <- policy_area_subj_matter %>% rbind(df) # Add to dataframe
 
 ### Justice and Home Affairs
-subject_matter <- c("cooperation policy",
-                    "international security",
+subject_matter <- c("justice",
                     "migration",
-                    "justice",
-                    "defence",
-                    "criminal law",
                     "civil law",
+                    "criminal law",
                     "organisation of the legal system",
-                    "legal form of organisations",
-                    "electoral procedure and voting",
-                    "parliamentary proceedings",
                     "rights and freedoms",
-                    "sources and branches of the law",
-                    "politics and public safety")
+                    "electoral procedure and voting",
+                    "defence",
+                    "family"
+                    #"cooperation policy",
+                    #"legal form of organisations",
+                    #"parliamentary proceedings",
+                    #"sources and branches of the law",
+                    #"politics and public safety"
+                    )
 
 df <- data.frame(
   mpolicy = "Justice and Home Affairs",
@@ -225,29 +244,31 @@ df <- data.frame(
 policy_area_subj_matter <- policy_area_subj_matter %>% rbind(df) # Add to dataframe
 
 # Foreign and Security Policy
-subject_matter <- c("international affairs",
+subject_matter <- c(
+                    "international security",
                     "United Nations",
-                    "European construction",
-                    "European organisations",
-                    "EU institutions and European civil service",
-                    "regions of EU Member States",
-                    "regions and regional policy",
-                    "political framework",
-                    "world organisations",
-                    "extra-European organisations",
-                    "non-governmental organisations",
-                    "political geography",
-                    "political party",
                     "international law",
-                    "Asia and Oceania",
-                    "Africa",
-                    "America",
+                    "international affairs",
                     "overseas countries and territories",
-                    "European Union law",
-                    "parliament",
-                    "executive power and public service",
-                    "cooperation policy"
-)
+                    "extra-European organisations",
+                    "Africa",
+                    "Asia and Oceania",
+                    "America",
+                    "political geography",
+                    "political framework"
+                    # "European construction",
+                    # "European organisations",
+                    # "EU institutions and European civil service",
+                    # "regions of EU Member States",
+                    # "regions and regional policy",
+                    # "world organisations",
+                    # "non-governmental organisations",
+                    # "political party",
+                    # "European Union law",
+                    # "parliament",
+                    # "executive power and public service",
+                    # "cooperation policy"
+                    )
 
 df <- data.frame(
   mpolicy = "Foreign and Security Policy",

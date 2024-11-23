@@ -123,7 +123,7 @@ _Tables: To Do_
 
 **241027**
 - [x] Ranking algorithm: Combine "most left" and "most right" lists
-- [ ] Check subject_matter and Broad Policy Topic matching: Remove not appropriate terms and also repeat ambiguous terms
+- [x] Check subject_matter and Broad Policy Topic matching: Remove not appropriate terms and also repeat ambiguous terms
 - [ ] Measurements based on chatgpt summaries seem to provide best variance and correlation values compared to expert surveys. examine this further! maybe also calculate measurements based on entire regulation/directive, not just summary.
 - [x] Perform ranking with llama models over all directives/regulations that have a summary
   - [x] Economically left
