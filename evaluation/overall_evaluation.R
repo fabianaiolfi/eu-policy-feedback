@@ -25,8 +25,7 @@ chatgpt_preamble_0_shot <- readRDS(here("data", "llm_0_shot", "chatgpt_preamble_
 chatgpt_summary_0_shot <- readRDS(here("data", "llm_0_shot", "chatgpt_summary_0_shot.rds"))
 llama_summary_0_shot <- readRDS(here("data", "llm_0_shot", "llama_summary_0_shot.rds"))
 
-# chatgpt_ranking_combined <- readRDS(here("data", "llm_ranking", "chatgpt_combined_rating.rds"))
-# chatgpt_ranking_combined <- chatgpt_ranking_combined %>% rename(chatgpt_ranking_z_score = llm_ranking_z_score)
+chatgpt_ranking_combined <- readRDS(here("data", "llm_ranking", "chatgpt_combined_rating.rds"))
 
 llama_ranking_combined <- readRDS(here("data", "llm_ranking", "llama_combined_rating.rds"))
 llama_ranking_combined <- llama_ranking_combined %>% rename(llama_ranking_z_score = llm_ranking_z_score)
@@ -81,6 +80,9 @@ chatgpt_summary_0_shot <- chatgpt_summary_0_shot %>%
 llama_summary_0_shot <- llama_summary_0_shot %>%
   # Perform standardization of data (z-scoring)
   mutate(llama_summary_0_shot_z_score = standardize(avg_score))
+
+chatgpt_ranking_combined <- chatgpt_ranking_combined %>%
+  rename(chatgpt_ranking_z_score = llm_ranking_z_score)
 
 # chatgpt_ranking_left <- chatgpt_ranking_left %>%
 #   # Perform standardization of data (z-scoring)
@@ -154,7 +156,7 @@ broad_policy_mpolicy_avg_df <- all_dir_reg %>%
   left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX") %>%
   left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX") %>% 
   left_join(select(llama_summary_0_shot, CELEX, llama_summary_0_shot_z_score), by = "CELEX") %>% 
-  # left_join(select(chatgpt_ranking_combined, CELEX, chatgpt_ranking_z_score), by = "CELEX") %>% 
+  left_join(select(chatgpt_ranking_combined, CELEX, chatgpt_ranking_z_score), by = "CELEX") %>%
   left_join(select(llama_ranking_combined, CELEX, llama_ranking_z_score), by = "CELEX")
 
 # broad_policy_spolicy_avg_df <- all_dir_reg %>% 
