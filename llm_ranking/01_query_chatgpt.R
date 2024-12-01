@@ -1,7 +1,8 @@
 
 # Load Data ---------------------------------------------------------------
 
-ceps_eurlex_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "ceps_eurlex_dir_reg_summaries_240711_04.rds"))
+# ceps_eurlex_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "ceps_eurlex_dir_reg_summaries_240711_04.rds")) # Sample of 24 summaries
+ceps_eurlex_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "all_dir_reg_summaries.rds"))
 
 
 # Indexing ---------------------------------------------------------------
@@ -10,7 +11,7 @@ ceps_eurlex_dir_reg_summaries <- readRDS(file = here("data", "data_collection", 
 celex_index <- ceps_eurlex_dir_reg_summaries %>% 
   select(CELEX) %>% # Only select CELEX
   rename(CELEX_1 = CELEX)
-celex_index <- bind_rows(replicate(3, celex_index, simplify = F)) # Repeat same row 3 times
+celex_index <- bind_rows(replicate(5, celex_index, simplify = F)) # Repeat same row 3 times
 
 # Function to shuffle and ensure no duplicates in the same row
 create_shuffled_column <- function(df) {
@@ -59,11 +60,18 @@ prompt_df <- celex_index %>%
   # Check API limits: https://platform.openai.com/settings/organization/limits
   mutate(prompt_token_len = nchar(prompt_content_var) / 4)
 
+# Token limits
+sum(prompt_df$prompt_token_len) # 26'044'801 tokens
+
+# Costs gpt-4o-mini: $0.150 / 1M input tokens, $0.600 / 1M output tokens
+26044801 / 1000000 * 0.150 # $3.90 for input
+1 * 8185 / 1000000 # $0.008 for output
+
 # Save prompt_df to file to assure reproducability despite randomness in celex_index
 timestamp <- Sys.time()
 formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
 file_name <- paste0("prompt_df_", formatted_timestamp, ".rds")
-saveRDS(prompt_df, file = here("data", "ranking", file_name))
+saveRDS(prompt_df, file = here("data", "llm_ranking", file_name))
 
 
 ## Prompt for economic *right* ---------------------------------------------------------------
@@ -94,7 +102,7 @@ prompt_df <- celex_index %>%
 timestamp <- Sys.time()
 formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
 file_name <- paste0("prompt_df_", formatted_timestamp, ".rds")
-saveRDS(prompt_df, file = here("data", "ranking", file_name))
+saveRDS(prompt_df, file = here("data", "llm_ranking", file_name))
 
 
 
@@ -114,7 +122,7 @@ chatgpt_output <- rgpt(
   param_seed = project_seed, # Defined in .Rprofile
   id_var = prompt_df$id_var,
   param_output_type = "complete",
-  param_model = "gpt-4o",
+  param_model = "gpt-4o-mini",
   param_max_tokens = 5,
   param_temperature = 0,
   param_n = 1)
@@ -124,30 +132,64 @@ chatgpt_output <- rgpt(
 timestamp <- Sys.time()
 formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
 file_name <- paste0("chatgpt_output_df_", formatted_timestamp, ".rds")
-saveRDS(chatgpt_output, file = here("data", "ranking", file_name))
+saveRDS(chatgpt_output, file = here("data", "llm_ranking", file_name))
 
 
 # Process ChatGPT output ---------------------------------------------------------------
 
-chatgpt_output <- readRDS(file = here("data", "chatgpt_ranking", "chatgpt_output_df_20240712_143525.rds"))
-prompt_df <- readRDS(file = here("data", "chatgpt_ranking", "prompt_df_20240712_142655.rds"))
+# Economically left-leaning
+chatgpt_output <- readRDS(file = here("data", "llm_ranking", "chatgpt_output_df_20241201_122438.rds"))
+prompt_df <- readRDS(file = here("data", "llm_ranking", "prompt_df_20241201_104443.rds"))
 
 # Convert output to dataframe
 temp_df <- chatgpt_output[[1]]
+
+temp_df <- temp_df %>% 
+  # remove any non-digit characters from string "response" and convert to numeric
+  mutate(gpt_content = as.numeric(gsub("\\D", "", gpt_content)))
+
 temp_df <- temp_df %>% 
   select(id, gpt_content) %>% 
   rename(chatgpt_answer = gpt_content) %>% 
-  distinct(id, .keep_all = T) # This shouldn't be necessary if CELEX_1 and CELEX_2 are never identical
+  distinct(id, .keep_all = T) %>% # This shouldn't be necessary if CELEX_1 and CELEX_2 are never identical
+  dplyr::filter(chatgpt_answer != "")
 
 # Merge ChatGPT answer with prompt_df
 prompt_df <- prompt_df %>% left_join(temp_df, by = c("id_var" = "id"))
 
 # Prepare dataframe for ranking
-ranking_df <- prompt_df %>% 
+ranking_df_left <- prompt_df %>% 
   select(CELEX_1, CELEX_2, chatgpt_answer) %>% 
   mutate(chatgpt_answer = as.numeric(chatgpt_answer)) %>% 
-  # Adjust accordingly
-  # mutate(more_left = case_when(chatgpt_answer == 1 ~ CELEX_1,
-  #                              chatgpt_answer == 2 ~ CELEX_2))
+  mutate(more_left = case_when(chatgpt_answer == 1 ~ CELEX_1,
+                               chatgpt_answer == 2 ~ CELEX_2)) %>% 
+  drop_na(more_left)
+
+
+# Economically right-leaning
+chatgpt_output <- readRDS(file = here("data", "llm_ranking", "chatgpt_output_df_20241201_144429.rds"))
+prompt_df <- readRDS(file = here("data", "llm_ranking", "prompt_df_20241201_122847.rds"))
+
+# Convert output to dataframe
+temp_df <- chatgpt_output[[1]]
+
+temp_df <- temp_df %>% 
+  # remove any non-digit characters from string "response" and convert to numeric
+  mutate(gpt_content = as.numeric(gsub("\\D", "", gpt_content)))
+
+temp_df <- temp_df %>% 
+  select(id, gpt_content) %>% 
+  rename(chatgpt_answer = gpt_content) %>% 
+  distinct(id, .keep_all = T) %>% # This shouldn't be necessary if CELEX_1 and CELEX_2 are never identical
+  dplyr::filter(chatgpt_answer != "")
+
+# Merge ChatGPT answer with prompt_df
+prompt_df <- prompt_df %>% left_join(temp_df, by = c("id_var" = "id"))
+
+# Prepare dataframe for ranking
+ranking_df_right <- prompt_df %>% 
+  select(CELEX_1, CELEX_2, chatgpt_answer) %>% 
+  mutate(chatgpt_answer = as.numeric(chatgpt_answer)) %>% 
   mutate(more_right = case_when(chatgpt_answer == 1 ~ CELEX_1,
-                               chatgpt_answer == 2 ~ CELEX_2))
+                                chatgpt_answer == 2 ~ CELEX_2)) %>% 
+  drop_na(more_right)

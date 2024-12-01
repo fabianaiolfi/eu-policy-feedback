@@ -32,4 +32,4 @@ combined_rating <- ratings_df_left %>%
 
 ## Save Data -------------------------
 
-saveRDS(combined_rating, file = here("data", "llm_ranking", "llama_combined_rating.rds"))
+saveRDS(combined_rating, file = here("data", "llm_ranking", "chatgpt_combined_rating.rds"))
