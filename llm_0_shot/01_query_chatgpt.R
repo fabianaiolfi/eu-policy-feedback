@@ -7,14 +7,14 @@ all_dir_reg <- readRDS(file = here("existing_measurements", "hix_hoyland_2024", 
 
 # Create Subsets -----------------------------------------------------------
 
-# Small subset for testing
-# all_dir_reg <- all_dir_reg %>% head(10) 
+# Small subset for testing (n = 10)
+all_dir_reg <- all_dir_reg %>% head(100)
 
-# Subset of summaires
-all_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "all_dir_reg_summaries.rds"))
-all_dir_reg <- all_dir_reg_summaries %>% 
-  select(CELEX) %>% 
-  left_join(all_dir_reg, by = "CELEX")
+# Subset of directives and regulations that have summaires (n = 1637)
+# all_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "all_dir_reg_summaries.rds"))
+# all_dir_reg <- all_dir_reg_summaries %>% 
+#   select(CELEX) %>% 
+#   left_join(all_dir_reg, by = "CELEX")
 
 
 # Create Prompt Dataframe ---------------------------------------------------------------
@@ -25,7 +25,7 @@ system_prompt <- "You are an expert in European Union policies. Answer questions
 ## Create Prompt ---------------------------------------------------------------
 
 # prompt_summary <- "I’m going to show you a summary of an EU policy. Please score the policy on a scale of 0 to 100. 0 represents economic left-wing policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights. 100 represents economic right-wing policies such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility. Please only return the score. Here’s the summary:\n\n"
-prompt_preamble <- "I’m going to show you the beginning of a preamble of an EU policy. Please score the policy on a scale of 0 to 100. 0 represents economic left-wing policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights. 100 represents economic right-wing policies such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility. Please only return the score. Here’s the preamble:\n\n"
+prompt_preamble <- "I’m going to show you the beginning of a preamble of an EU policy. Please score the policy on a scale of 0 to 100. 0 represents economic left-wing policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights. 100 represents economic right-wing policies such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility. Please *only* return the score and absolutely nothing else. Here’s the preamble:\n\n"
 
 prompt_df <- all_dir_reg %>% 
   mutate(prompt_role_var = "user") %>% # Set role
@@ -56,8 +56,8 @@ chatgpt_output <- rgpt(
   param_seed = project_seed, # Defined in .Rprofile
   id_var = prompt_df$CELEX,
   param_output_type = "complete",
-  param_model = "gpt-4o-mini-2024-07-18",
-  param_max_tokens = 5,
+  param_model = "gpt-4o-mini",
+  param_max_tokens = 1, # Score between 0 and 100 only need 1 token
   param_temperature = 0,
   param_n = 1)
 
