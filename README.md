@@ -126,7 +126,8 @@ _Tables: To Do_
 - [x] Run Llama ranking with ChatGPT API: Rank all policies with summaries (n ca. 1600)
 - [ ] Use ChatGPT to rank / 0-shot all ~70k policies: 
   - [ ] Costs 0-shot: ~USD 224.00 using GPT-4o; ~USD 14.00 using GPT-4o mini
-  - [ ] Time 0-shot: ~10h @ 2 queries/second
+  - [ ] Time 0-shot: ~16h (check again with stable internet connection)
+  - [ ] Continuously write responses to external .csv file in case long query crashes
 - [ ] Include spolicy in the overall evaluation again?
 - [ ] Clean up overall evaluation
 - [x] Ranking algorithm: Combine "most left" and "most right" lists

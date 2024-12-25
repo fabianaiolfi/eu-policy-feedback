@@ -8,7 +8,7 @@ all_dir_reg <- readRDS(file = here("existing_measurements", "hix_hoyland_2024", 
 # Create Subsets -----------------------------------------------------------
 
 # Small subset for testing (n = 10)
-all_dir_reg <- all_dir_reg %>% head(100)
+all_dir_reg <- all_dir_reg %>% head(10)
 
 # Subset of directives and regulations that have summaires (n = 1637)
 # all_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "all_dir_reg_summaries.rds"))
