@@ -124,7 +124,9 @@ _Tables: To Do_
 **241123**
 - [ ] Measurements based on chatgpt summaries seem to provide best variance and correlation values compared to expert surveys. examine this further! maybe also calculate measurements based on entire regulation/directive, not just summary.
 - [x] Run Llama ranking with ChatGPT API: Rank all policies with summaries (n ca. 1600)
-- [ ] Use ChatGPT to rank all ~70k policies: Costs? Time? ~10h @ 2 queries/second
+- [ ] Use ChatGPT to rank / 0-shot all ~70k policies: 
+  - [ ] Costs 0-shot: ~USD 224.00 using GPT-4o; ~USD 14.00 using GPT-4o mini
+  - [ ] Time 0-shot: ~10h @ 2 queries/second
 - [ ] Include spolicy in the overall evaluation again?
 - [ ] Clean up overall evaluation
 - [x] Ranking algorithm: Combine "most left" and "most right" lists
