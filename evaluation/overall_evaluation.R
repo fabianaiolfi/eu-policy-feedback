@@ -12,7 +12,7 @@ nanou_2017_mpolicy_lrscale3 <- readRDS(here("existing_measurements", "nanou_2017
 all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg.rds"))
 # all_dir_reg <- all_dir_reg %>% slice_sample(n = 100)
 
-policy_area_ceps_eurlex_subj_matter_mpolicy <- readRDS(here("data", "evaluation", "policy_area_ceps_eurlex_subj_matter_mpolicy.rds")) # eu-policy-feedback/evaluation/policy_area_ceps_eurlex_subj_matter_mpolicy.R
+# policy_area_ceps_eurlex_subj_matter_mpolicy <- readRDS(here("data", "evaluation", "policy_area_ceps_eurlex_subj_matter_mpolicy.rds")) # eu-policy-feedback/evaluation/policy_area_ceps_eurlex_subj_matter_mpolicy.R
 policy_area_moodley_subj_matter_mpolicy <- readRDS(here("data", "evaluation", "policy_area_moodley_subj_matter_mpolicy.rds")) # eu-policy-feedback/evaluation/policy_area_moodley_subj_matter_mpolicy.R
 # policy_area_subj_matter_spolicy <- readRDS(here("data", "evaluation", "policy_area_subj_matter_spolicy.rds")) # eu-policy-feedback/evaluation/policy_area_subj_matter_spolicy.R
 
@@ -31,6 +31,11 @@ chatgpt_ranking_combined <- readRDS(here("data", "llm_ranking", "chatgpt_combine
 llama_ranking_combined <- readRDS(here("data", "llm_ranking", "llama_combined_rating.rds"))
 llama_ranking_combined <- llama_ranking_combined %>% rename(llama_ranking_z_score = llm_ranking_z_score)
 
+# all_dir_reg <- hix_hoyland_data %>%
+#   select(CELEX) %>%
+#   left_join(all_dir_reg, by = "CELEX")
+
+# When working with summaries only
 all_dir_reg <- llama_ranking_combined %>%
   select(CELEX) %>%
   left_join(all_dir_reg, by = "CELEX")
@@ -125,6 +130,7 @@ chatgpt_ranking_combined <- chatgpt_ranking_combined %>%
 # Please switch manually between mpolicy (broad policy area) and spolicy (detailed policy area)
 
 # Function to match subject matter terms to broad policy areas, accounting for match frequency
+# Take string and check it against every keyword in lookup_df to see if there is a match
 match_policy_area <- function(subject_matter, lookup_df) {
   # Initialize a named vector to store the count of matches per broad policy area
   match_count <- setNames(rep(0, length(unique(lookup_df$mpolicy))), 
@@ -152,7 +158,7 @@ match_policy_area <- function(subject_matter, lookup_df) {
   }
 }
 
-all_dir_reg$broad_policy_area_mpolicy <- sapply(all_dir_reg$Subject_matter, match_policy_area, lookup_df = policy_area_subj_matter_mpolicy)
+all_dir_reg$broad_policy_area_mpolicy_moodley <- sapply(all_dir_reg$subject_matter_moodley, match_policy_area, lookup_df = policy_area_moodley_subj_matter_mpolicy)
 # all_dir_reg$broad_policy_area_spolicy <- sapply(all_dir_reg$Subject_matter, match_policy_area, lookup_df = policy_area_subj_matter_spolicy)
 
 
@@ -162,12 +168,12 @@ all_dir_reg$broad_policy_area_mpolicy <- sapply(all_dir_reg$Subject_matter, matc
 
 # Preprocess data and add calculated scores
 broad_policy_mpolicy_avg_df <- all_dir_reg %>% 
-  select(CELEX, Date_document, broad_policy_area_mpolicy) %>% 
+  select(CELEX, Date_document, broad_policy_area_mpolicy_moodley) %>% 
   mutate(year = as.numeric(format(Date_document, "%Y"))) %>% 
   select(-Date_document) %>% 
-  drop_na(broad_policy_area_mpolicy) %>% 
-  separate_rows(broad_policy_area_mpolicy, sep = "; ") %>% # Place each Broad Policy Area on its own row
-  distinct(CELEX, broad_policy_area_mpolicy, .keep_all = T) %>% 
+  drop_na(broad_policy_area_mpolicy_moodley) %>% 
+  separate_rows(broad_policy_area_mpolicy_moodley, sep = "; ") %>% # Place each Broad Policy Area on its own row
+  distinct(CELEX, broad_policy_area_mpolicy_moodley, .keep_all = T) %>% 
   # Add calculated scores
   left_join(select(glove_polarity_scores_all_dir_reg_econ, CELEX, avg_lss_econ_z_score), by = "CELEX") %>% 
   left_join(select(glove_polarity_scores_all_dir_reg_social, CELEX, avg_lss_social_z_score), by = "CELEX") %>% 
@@ -206,7 +212,7 @@ broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>%
     year %in% 2014:2024 ~ "2014-2024",
     TRUE ~ NA_character_)) %>% 
   drop_na(period) %>%
-  group_by(broad_policy_area_mpolicy, period) %>%
+  group_by(broad_policy_area_mpolicy_moodley, period) %>%
   summarize(across(contains("z_score"), ~ mean(.x, na.rm = TRUE)), .groups = "drop") %>% 
   ungroup()
 
@@ -227,7 +233,7 @@ broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>%
 
 # Add Nanou 2017
 broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>% 
-  left_join(select(nanou_2017_mpolicy_lrscale3, broad_policy_area, period, lrscale3_avg_z_score), by = c("broad_policy_area_mpolicy" = "broad_policy_area", "period")) %>% 
+  left_join(select(nanou_2017_mpolicy_lrscale3, broad_policy_area, period, lrscale3_avg_z_score), by = c("broad_policy_area_mpolicy_moodley" = "broad_policy_area", "period")) %>% 
   rename(nanou_2017_mpolicy_lrscale3 = lrscale3_avg_z_score)
 
 # broad_policy_spolicy_avg_df <- broad_policy_spolicy_avg_df %>% 
@@ -240,7 +246,7 @@ broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>%
 # Please switch manually between mpolicy and spolicy
 
 # Correlations
-cor_df <- broad_policy_mpolicy_avg_df %>% select(-broad_policy_area_mpolicy, -period)
+cor_df <- broad_policy_mpolicy_avg_df %>% select(-broad_policy_area_mpolicy_moodley, -period)
 correlation_matrix <- cor(cor_df, use = "pairwise.complete.obs")
 correlation_melt <- melt(correlation_matrix) # Convert the correlation matrix into long format for ggplot2
 
@@ -267,6 +273,19 @@ ggsave(
   bg = "white"
 )
 
+# Histograms
+broad_policy_long_hist <- broad_policy_mpolicy_avg_df %>%
+  select(nanou_2017_mpolicy_lrscale3, contains("z_score")) %>%
+  mutate(nanou_2017_mpolicy_lrscale3 = as.numeric(nanou_2017_mpolicy_lrscale3)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "z_score_measurement", 
+               values_to = "z_score_value")
+
+ggplot(broad_policy_long_hist, aes(x = z_score_value)) +
+  geom_histogram() +
+  facet_wrap(~ z_score_measurement) +
+  theme_minimal()
+
 # Correlation scatter plot
 broad_policy_long <- broad_policy_mpolicy_avg_df %>%
   select(nanou_2017_mpolicy_lrscale3, contains("z_score")) %>%
@@ -284,6 +303,8 @@ ggplot(broad_policy_long, aes(x = z_score_value, y = nanou_2017_mpolicy_lrscale3
   facet_wrap(~ z_score_measurement) +
   xlab("")
 
+
+
 ggsave(
   "correlation_scatter_plot_mpolicy.png",
   plot = last_plot(),
@@ -295,8 +316,10 @@ ggsave(
 )
 
 # Variance between own measurments and expert survey
+# If the variance is low, the values in X are generally close to nanou_2017_mpolicy_lrscale3 (small differences).
+# If the variance is high, the values in X deviate significantly from nanou_2017_mpolicy_lrscale3 (large differences).
 variance_df <- broad_policy_mpolicy_avg_df %>%
-  select(-broad_policy_area_mpolicy, -period) %>% 
+  select(-broad_policy_area_mpolicy_moodley, -period) %>% 
   summarise(across(everything(), ~ var(.x - nanou_2017_mpolicy_lrscale3, na.rm = T))) %>% 
   pivot_longer(cols = everything(),  # Select all columns to transform
                names_to = "measurement",  # New column for the original column names
