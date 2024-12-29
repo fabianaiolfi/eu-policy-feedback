@@ -6,4 +6,4 @@
 # Import dataset and save as RDS
 
 # Import Metadata CSV
-moodley <- read.csv("/Volumes/iPhone_Backup_1/eu-policy-feedback-data/eu_regulations_metadata_1971_2022.csv", stringsAsFactors = FALSE)
+moodley <- read.csv(here("data", "data_collection", "eu_regulations_metadata_1971_2022.csv"), stringsAsFactors = FALSE)

@@ -144,7 +144,7 @@ _Tables: To Do_
 
 ## Data Collection 1989 – Today
 - [x] CEPS EurLex (1952 – 2019)
-- [ ] Moodley (1971 – 2022)
+- [x] Moodley (1971 – 2022) (https://zenodo.org/records/8174176)
 - [ ] Scrape summaries
 	- [Example](https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32019L0904&qid=1719922563047)
 	- [More info](https://eur-lex.europa.eu/browse/summaries.html) 

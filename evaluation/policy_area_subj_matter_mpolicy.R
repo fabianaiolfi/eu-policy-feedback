@@ -2,11 +2,12 @@
 ## Load Data -----------------------
 
 ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
+moodley <- read.csv(here("data", "data_collection", "eu_regulations_metadata_1971_2022.csv"), stringsAsFactors = F)
 
 
 ## Extract EuroVoc -----------------------
 
-# unique_terms <- ceps_eurlex %>%
+# unique_terms_ceps_eurlex <- ceps_eurlex %>%
 #   pull(EUROVOC) %>% # Pulls the Subject_matter column as a character vector
 #   str_split(";") %>% # Splits the string by semicolon
 #   unlist() %>% # Unlists all terms into a single vector
@@ -18,18 +19,35 @@ ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
 
 ## Extract Subject Matter -----------------------
 
-unique_terms <- ceps_eurlex %>%
+# CEPS Eurlex
+unique_terms_ceps_eurlex <- ceps_eurlex %>%
   pull(Subject_matter) %>% # Pulls the Subject_matter column as a character vector
   str_split(";") %>% # Splits the string by semicolon
   unlist() %>% # Unlists all terms into a single vector
   str_trim() %>% # Trims leading and trailing whitespace from each term
-  unique() # Extracts unique terms
+  unique() %>% # Extracts unique terms
+  tolower() # Lowercase
 
-unique_terms <- as.data.frame(unique_terms)
-unique_terms <- unique_terms %>% 
-  dplyr::filter(unique_terms != "") %>% 
-  dplyr::filter(unique_terms != "NA") %>% 
-  dplyr::filter(unique_terms != "character(0)")
+unique_terms_ceps_eurlex <- as.data.frame(unique_terms_ceps_eurlex)
+unique_terms_ceps_eurlex <- unique_terms_ceps_eurlex %>% 
+  dplyr::filter(unique_terms_ceps_eurlex != "") %>% 
+  dplyr::filter(unique_terms_ceps_eurlex != "NA") %>% 
+  dplyr::filter(unique_terms_ceps_eurlex != "character(0)")
+
+# Moodley
+unique_terms_moodley <- moodley %>%
+  pull(subject_matters) %>% # Pulls the Subject_matter column as a character vector
+  str_split("[|,]") %>% # Splits the string
+  unlist() %>% # Unlists all terms into a single vector
+  str_trim() %>% # Trims leading and trailing whitespace from each term
+  unique() %>% # Extracts unique terms
+  tolower() # Lowercase
+
+unique_terms_moodley <- as.data.frame(unique_terms_moodley)
+unique_terms_moodley <- unique_terms_moodley %>% 
+  dplyr::filter(unique_terms_moodley != "") %>% 
+  dplyr::filter(unique_terms_moodley != "NA") %>% 
+  dplyr::filter(unique_terms_moodley != "character(0)")
 
 
 ## Assign subject matter to broad policy area in Nanou 2017 (via ChatGPT) -----------------

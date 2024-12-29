@@ -34,10 +34,28 @@ all_dir_reg <- llama_ranking_combined %>%
   select(CELEX) %>%
   left_join(all_dir_reg, by = "CELEX")
 
-# Add Subject Matter to all_dir_reg
+## Add Subject Matter to all_dir_reg -----------------------
+
+# Import and clean CEPS Eurlex
 ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
-ceps_eurlex <- ceps_eurlex %>% select(CELEX, Subject_matter)
-all_dir_reg <- all_dir_reg %>% left_join(ceps_eurlex, by = "CELEX")
+ceps_eurlex <- ceps_eurlex %>%
+  select(CELEX, Subject_matter) %>% 
+  rename(subject_matter_ceps = Subject_matter) %>% 
+  mutate(subject_matter_ceps = gsub("  ", " ", subject_matter_ceps)) %>% 
+  mutate(subject_matter_ceps = tolower(subject_matter_ceps))
+
+# Import and clean Moodley
+moodley <- read.csv(here("data", "data_collection", "eu_regulations_metadata_1971_2022.csv"), stringsAsFactors = F)
+moodley <- moodley %>% 
+  select(celex, subject_matters) %>% 
+  rename(subject_matter_moodley = subject_matters) %>%
+  rename(CELEX = celex) %>% 
+  mutate(subject_matter_moodley = gsub(" \\| ", "; ", subject_matter_moodley)) %>%
+  mutate(subject_matter_moodley = tolower(subject_matter_moodley))
+
+all_dir_reg <- all_dir_reg %>%
+  left_join(ceps_eurlex, by = "CELEX") %>% 
+  left_join(moodley, by = "CELEX")
 
 
 ## Preprocess Data -----------------------
