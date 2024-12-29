@@ -2,7 +2,6 @@
 ## Load Data -----------------------
 
 ceps_eurlex <- readRDS(here("data", "data_collection", "ceps_eurlex.rds"))
-moodley <- read.csv(here("data", "data_collection", "eu_regulations_metadata_1971_2022.csv"), stringsAsFactors = F)
 
 
 ## Extract EuroVoc -----------------------
@@ -19,7 +18,6 @@ moodley <- read.csv(here("data", "data_collection", "eu_regulations_metadata_197
 
 ## Extract Subject Matter -----------------------
 
-# CEPS Eurlex
 unique_terms_ceps_eurlex <- ceps_eurlex %>%
   pull(Subject_matter) %>% # Pulls the Subject_matter column as a character vector
   str_split(";") %>% # Splits the string by semicolon
@@ -33,21 +31,6 @@ unique_terms_ceps_eurlex <- unique_terms_ceps_eurlex %>%
   dplyr::filter(unique_terms_ceps_eurlex != "") %>% 
   dplyr::filter(unique_terms_ceps_eurlex != "NA") %>% 
   dplyr::filter(unique_terms_ceps_eurlex != "character(0)")
-
-# Moodley
-unique_terms_moodley <- moodley %>%
-  pull(subject_matters) %>% # Pulls the Subject_matter column as a character vector
-  str_split("[|,]") %>% # Splits the string
-  unlist() %>% # Unlists all terms into a single vector
-  str_trim() %>% # Trims leading and trailing whitespace from each term
-  unique() %>% # Extracts unique terms
-  tolower() # Lowercase
-
-unique_terms_moodley <- as.data.frame(unique_terms_moodley)
-unique_terms_moodley <- unique_terms_moodley %>% 
-  dplyr::filter(unique_terms_moodley != "") %>% 
-  dplyr::filter(unique_terms_moodley != "NA") %>% 
-  dplyr::filter(unique_terms_moodley != "character(0)")
 
 
 ## Assign subject matter to broad policy area in Nanou 2017 (via ChatGPT) -----------------
@@ -298,4 +281,4 @@ policy_area_subj_matter <- policy_area_subj_matter %>%
   distinct(subject_matter, .keep_all = T) # Clean up duplicates
 
 # Save to file
-saveRDS(policy_area_subj_matter, file = here("data", "evaluation", "policy_area_subj_matter_mpolicy.rds"))
+saveRDS(policy_area_subj_matter, file = here("data", "evaluation", "policy_area_ceps_eurlex_subj_matter_mpolicy.rds"))

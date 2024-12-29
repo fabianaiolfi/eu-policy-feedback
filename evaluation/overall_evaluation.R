@@ -12,7 +12,8 @@ nanou_2017_mpolicy_lrscale3 <- readRDS(here("existing_measurements", "nanou_2017
 all_dir_reg <- readRDS(here("data", "data_collection", "all_dir_reg.rds"))
 # all_dir_reg <- all_dir_reg %>% slice_sample(n = 100)
 
-policy_area_subj_matter_mpolicy <- readRDS(here("data", "evaluation", "policy_area_subj_matter_mpolicy.rds")) # eu-policy-feedback/evaluation/policy_area_subj_matter_mpolicy.R
+policy_area_ceps_eurlex_subj_matter_mpolicy <- readRDS(here("data", "evaluation", "policy_area_ceps_eurlex_subj_matter_mpolicy.rds")) # eu-policy-feedback/evaluation/policy_area_ceps_eurlex_subj_matter_mpolicy.R
+policy_area_moodley_subj_matter_mpolicy <- readRDS(here("data", "evaluation", "policy_area_moodley_subj_matter_mpolicy.rds")) # eu-policy-feedback/evaluation/policy_area_moodley_subj_matter_mpolicy.R
 # policy_area_subj_matter_spolicy <- readRDS(here("data", "evaluation", "policy_area_subj_matter_spolicy.rds")) # eu-policy-feedback/evaluation/policy_area_subj_matter_spolicy.R
 
 # Import Calculated measurements

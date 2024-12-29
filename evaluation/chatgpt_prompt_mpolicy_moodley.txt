@@ -1,0 +1,363 @@
+You are an expert in European Union policy making.
+
+You receive the task to assign policy subject matters to broad policy areas. You go through the list of subject matters and consider if it can be assigned to one of the broad policy areas. A subject matter can be assigned to several broad policy areas. It is also possible that a subject matter doesn't fit with any broad policy areas.
+
+Return lists of policy subject matters for each broad policy area. Do NOT change the wording of either the broad policy areas or the policy subject matters when returning the lists.
+
+Here are the broad policy areas:
+- Economic and Financial Affairs
+- Competitiveness
+- Employment, Social Policy, Health and Consumer Affairs
+- Environment
+- Agriculture and Fisheries
+- Transport, Telecommunications, Energy
+- Education, Youth and Culture
+- Justice and Home Affairs
+- Foreign and Security policy
+
+Here are the policy subject matters:
+pigmeat
+information and verification
+european agricultural guidance and guarantee fund (eaggf)
+seeds and seedlings
+free circulation
+harmonisation of customs law: community transit
+customs duties: national tariff quotas
+competition
+agreements
+decisions and concerted practices
+protective measures
+commercial policy
+tobacco
+provisions governing the institutions
+flax and hemp
+customs duties: authorisation to defer application of cct
+sugar
+cereals
+assistance
+milk products
+agriculture and fisheries
+nuclear common market
+european social fund (esf)
+own resources
+financial provisions
+research and training
+agricultural structures
+investments
+external relations
+oils and fats
+state aids
+food aid
+transport
+social provisions
+fisheries policy
+conjunctural policy
+economic policy
+balance of payments
+free movement of capital
+development cooperation
+dominant position
+common customs tariff
+harmonisation of customs law: origin of goods
+overseas countries and territories
+health and safety
+french overseas departments
+free movement of workers
+steel industry
+cct: derogations
+principles
+objectives and tasks of the treaties
+forestry
+approximation of laws
+veterinary legislation
+environment
+fuels
+taxation
+cooperation
+agreements and concentrations
+customs union
+association agreement
+freedom of establishment
+technical barriers
+internal market - principles
+wine
+consumer protection
+foodstuffs
+harmonisation of customs law: warehouses
+free zones
+animal feedingstuffs
+harmonisation of customs law: inward processing
+fruit and vegetables
+textiles
+industry
+value added tax
+general provisions
+staff regulations and employment conditions - ec
+privileges and immunities
+beef and veal
+monetary measures in the field of agriculture
+non-annex ii eec treaty products
+rice
+plants and flowers
+associated african states and madagascar
+provisions under article 235 eec
+eggs and poultry
+harmonisation of customs law: value for customs purposes
+quotas - third countries
+customs duties: community tariff quotas
+preferential systems
+social security for migrant workers
+processed fruit and vegetables
+hops
+customs procedures
+provisions implementing article 95 - ecsc
+prices
+financial provisions ecsc
+levies and loans
+energy
+joint undertakings
+electronic data processing
+products of annex ii eec treaty and regulation no 827/68
+technology
+ore
+coal
+accession
+european development fund (edf)
+supply agency
+free movement of goods
+silkworms
+customs duties: suspensions
+harmonisation of customs law: various
+european free trade association (efta)
+hard coal
+budget
+general agreement on tariffs and trade (gatt)
+peas and field beans
+harmonisation of laws
+lifting and mechanical handling appliances
+accession compensatory amounts
+community transit systems
+dumping
+harmonisation of customs law: customs territory
+anti-discrimination
+loans and subsidies
+safety at work and elsewhere
+plant health legislation
+dry fodder
+products from third countries
+dissemination of information
+research and technological development
+european regional development fund (erdf)
+regional policy
+african
+caribbean and pacific states (acp)
+public health
+measuring instruments
+pressure vessels
+eur foundation improvement of living and working conditions
+cct: franchise
+quantitative restrictions and measures of equivalent effect
+potatoes
+european investment bank (eib)
+coffee
+education
+vocational training and youth
+common organisation of agricultural markets
+animal disease control
+zoonosis control
+rules of origin
+charges having an equivalent effect
+economic and monetary union
+sheepmeat and goatmeat
+annex 1 provisions of union law referred to in article 2(1)
+adjustment
+production quotas
+non-trade agreement
+cotton
+cocoa
+loans contracted by the ecsc
+scientific and technical information and documentation
+tin
+quotas between member states
+common customs tariff: temporary importation
+rabbit meat and farmed game meat
+energy efficiency
+quantitative restrictions
+integrated mediterranean programmes (imp)
+food contact material
+coordination of structural instruments
+alcohol
+telecommunications
+goods – general provisions
+fisheries and aquaculture
+ecsc unified common tariff
+accession to agreement
+tourism
+value added tax
+intellectual
+industrial and commercial property
+live animals
+germinal products and products of animal origin
+economic
+social and territorial cohesion
+freedom to provide services
+small and medium-sized enterprises
+food – hygiene
+official controls
+veterinary checks
+public procurement in the european union
+european political cooperation
+concentrations between undertakings
+cork
+state monopolies of a commercial character
+integration of the german democratic republic (gdr)
+feed – products and hygiene
+free movement of persons
+medical devices
+other
+rubber
+gas appliances
+excise
+culture
+common foreign and security policy
+trans-european networks
+european monetary institute
+citizenship of the union
+food – ingredients
+traces
+residues
+marketing standards
+security system
+cohesion fund
+justice and home affairs
+world trade organization
+footwear
+waste
+human rights
+protection of the union’s financial interests
+asylum policy
+tropical timber
+sanitary and phytosanitary – other
+general customs aspects
+economic and monetary policy
+capital of the ecb
+european central bank (ecb)
+special steels
+plant reproductive material
+steel
+euro
+minimum reserves
+monetary
+financial institutions and markets statistics
+european system of central banks
+food – other
+industrial policy
+sanctions
+customs duties: speed-up decisions
+coin issuance
+foreign reserves
+immigration and asylum policy
+construction products
+machinery
+cableways
+personal protective equipment
+plant health
+medicinal products
+judicial cooperation in civil matters
+animal identification
+protection of the euro
+gmos
+substances of human origin
+food – general
+euro banknotes production
+annex 4 provisions of union law referred to in article 9
+social policy
+right of establishment
+chemicals and related
+rules of procedure and other internal arrangements
+institutional structure and governance
+trade statistics
+procedural rules
+customs cooperation
+monetary income
+concerted practices
+motor vehicles
+including agricultural and forestry tractors
+animal welfare
+pesticides
+biocides
+agricultural structural funds
+accounting and reporting
+euro banknotes issuance
+transparency of financial relations between member states and public undertakings
+others
+european agricultural guarantee fund
+employment
+trans-european automated real-time gross settlement express transfer system (target)
+block exemption regulations
+temporary framework
+procurement
+intellectual property
+cosmetics
+toys
+general trade related aspects
+confidentiality
+international agreements
+external action by the union
+humanitarian aid
+compatibility rules
+financial assistance
+target2-securities (t2s)
+administrative cooperation
+regulations on bilateral safeguards
+area of freedom
+security and justice
+judicial cooperation in criminal matters
+police cooperation
+securities holdings statistics
+general framework
+explosives and pyrotechnic articles
+recreational craft
+space
+electrical and radio equipment
+marine equipment
+cooperation in the field of banking supervision
+oversight
+supervisory fees
+transparency
+supervisory powers and tasks
+microprudential tasks
+monetary financing prohibition
+organisational principles
+data protection matters
+pollution
+trade defence instruments
+reporting
+border checks
+exchange of information and public access to documents
+data protection
+financial and technical cooperation with third countries
+rail transport
+animal breeding
+significance assessments
+bananas
+conservation of marine biological resources
+civil protection
+plant varieties
+copyright and related rights
+general principles of community law
+excise duties
+close cooperation
+financial market stability
+monetary policy instruments
+capital requirements
+financial accounts
+ecb institutional provisions
+banking supervision
+monetary policy and operations
+auditing
+payment and settlement systems
+banknotes and coins
+means of payment and currency matters
+fundamental rights
+indirect taxation
