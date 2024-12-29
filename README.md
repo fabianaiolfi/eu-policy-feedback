@@ -184,9 +184,9 @@ _Tables: To Do_
   - See also: BradleyTerry algorithm (applied [here](https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12703))
 
 ### To Do
-- [ ] Scrape summaries: Are there enough to make this work?
+- [x] Scrape summaries: Are there enough to make this work?
 - [ ] Examine different ranking algorithms: https://stackoverflow.com/questions/3937218/comparison-based-ranking-algorithm
-- [ ] Implement Elo ranking
+- [x] Implement Elo ranking
 	- [ ] Prevent algorithm shortcomings by:
 		- [ ] Randomize the Order: Randomly shuffle the order of comparisons multiple times and average the final ratings.
 		- [ ] Increase the Number of Comparisons: More comparisons will help stabilize the ratings, reducing the impact of any particular order.
@@ -196,14 +196,22 @@ _Tables: To Do_
 - [ ] Potential political bias in LLMs? Try multiple prompts and models.
 
 ## Systematic Evaluation of all Measurements
-- [ ] Compare results amongst themselves and with expert survey (e.g. [this expert survey](https://www.dropbox.com/scl/fi/392u06vxzhz6sqebe5mam/EU_Competencies_Index_codebook_v1.pdf?rlkey=vgbqc57dmxur7rakqpekdswy8&dl=0), data: https://www.eucompetencies.com/data/)
-  - [ ] Should we be taking expert's own placement and benchmarks into account?
+- [x] Compare results amongst themselves and with expert survey (e.g. [this expert survey](https://www.dropbox.com/scl/fi/392u06vxzhz6sqebe5mam/EU_Competencies_Index_codebook_v1.pdf?rlkey=vgbqc57dmxur7rakqpekdswy8&dl=0), data: https://www.eucompetencies.com/data/)
+- [x] Normalise results between different metrics (e.g., Hix Høyland and ELO Ranking) using standardisation or z-index
 - [ ] How reliable are the summaries compared to the preamble or entire text?
 - [ ] Create tags / topics of each document to see if there's a correlation between topics and calculated ideology
-- [ ] Compare with existing measurments
-- [ ] Compare results with each other
 - [ ] Compare results with left-right tags defined by Hix Høyland (2024), p. 33
-- [ ] Normalise results between different metrics (e.g., Hix Høyland and ELO Ranking) using standardisation or z-index
+- [ ] Dig deeper: Look into broad policy areas and if certain areas align more between ground truth and calculated measurements than others
+
+Evaluation Plan: Comparing calculated measurements with Ground Truth (Nanou 2017)
+- Pearson correlation *
+- Mean Absolute Error (MAE) *
+- Root Mean Square Error (RMSE) *
+- Histogram showing (lack of) variance (Levene's Test For Equality Of Variances)
+- Adjusted MAE And RMSE With Variance Penalties *
+- Spearman's Rank Correlation *
+- Scatter plots
+- Synthesize the results of all metrics with *
 
 ## Resources
 - https://michalovadek.github.io/eurlex/
