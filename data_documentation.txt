@@ -51,7 +51,7 @@ Based on llama_output_df_20241117_193847.rds: Cleaned and averaged scores for po
 
 ---
 
-**‌chatgpt_output_df_20241201_122438.rds**
+**chatgpt_output_df_20241201_122438.rds**
 Saved prompt_df to file to assure reproducability despite randomness in celex_index: prompt_df_20241201_104443.rds
 
 Covers all 1637 directives and regulations with summaries
@@ -79,7 +79,7 @@ model = "gpt-4o-mini"
 
 ---
 
-**‌chatgpt_ratings_df_left_20241201_161249.rds**
+**chatgpt_ratings_df_left_20241201_161249.rds**
 
 ChatGPT ranking of economically left-leaning policies that have a summary.
 
@@ -93,4 +93,4 @@ ChatGPT ranking of economically right-leaning policies that have a summary.
 
 **chatgpt_combined_rating.rds**
 
-‌chatgpt_ratings_df_left_20241201_161249.rds and chatgpt_ratings_df_right_20241201_161434.rds combined
+chatgpt_ratings_df_left_20241201_161249.rds and chatgpt_ratings_df_right_20241201_161434.rds combined
