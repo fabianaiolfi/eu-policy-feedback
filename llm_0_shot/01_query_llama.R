@@ -7,17 +7,20 @@ all_dir_reg <- readRDS(file = here("existing_measurements", "hix_hoyland_2024", 
 # Create sample for testing
 # all_dir_reg <- all_dir_reg %>% slice_sample(n = 100) # 2min 28sec -> 150 / 100 * 75567 / 60 / 60 -> 31h for all
 # all_dir_reg <- all_dir_reg %>% slice_sample(n = 200) # 6min 35sec 
-all_dir_reg <- all_dir_reg %>% slice_sample(n = 30) # 150 with token len 1: 4min 49sec
+# all_dir_reg <- all_dir_reg %>% slice_sample(n = 30) # 150 with token len 1: 4min 49sec | 2min 17s -> 19h
+
+# Create sample due to time constraints: This should take about 10h
+all_dir_reg <- all_dir_reg %>% slice_sample(n = 36000)
 
 
 # Pre-process data -----------------------------------------------------------
 
-all_dir_reg <- all_dir_reg %>%
-  # head(5) %>% # Subset for testing
-  uncount(5) # Repeat rows
-
-# Shuffle rows
-all_dir_reg <- slice(all_dir_reg, sample(1:n()))
+# all_dir_reg <- all_dir_reg %>%
+#   # head(5) %>% # Subset for testing
+#   uncount(5) # Repeat rows
+# 
+# # Shuffle rows
+# all_dir_reg <- slice(all_dir_reg, sample(1:n()))
 
 
 # Create Prompt Dataframe ---------------------------------------------------------------
