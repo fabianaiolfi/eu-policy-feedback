@@ -36,14 +36,17 @@ rsconnect/
 lss_cache/
 *.rds
 *.rda
+
 # Custom Ignores
 data/
+archive/
 report.html
 02_evaluation.html
 access_key.txt
 manifesto_apikey.txt
 *.pdf
 sandbox.R
+
 # Specific CSV files
 **/hix_hoyland_2024/*.csv
 lss/*.csv
