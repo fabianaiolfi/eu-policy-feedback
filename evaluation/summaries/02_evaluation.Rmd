@@ -13,6 +13,7 @@ library(corrplot)
 library(reshape2)
 library(Metrics)
 library(kableExtra)
+library(car)
 ```
 
 ```{r, include=FALSE}
@@ -31,6 +32,13 @@ broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>%
   rename("Llama 0-Shot" = llama_summary_0_shot_z_score) %>% 
   rename("Llama Ranking" = llama_ranking_z_score) %>% 
   rename("Nanou 2017 (Ground Truth)" = nanou_2017_mpolicy_lrscale3)
+
+# Define the ground truth column
+ground_truth <- broad_policy_mpolicy_avg_df$`Nanou 2017 (Ground Truth)`
+
+# Select all columns to compare (excluding the ground truth column)
+columns_to_compare <- broad_policy_mpolicy_avg_df %>% 
+  select(-`Nanou 2017 (Ground Truth)`, -broad_policy_area_mpolicy_moodley, -period)
 ```
 
 ## Pearson Correlation *
@@ -59,13 +67,6 @@ ggplot(pearson_correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
 ## Mean Absolute Error and Root Mean Square Error *
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-
-# Define the ground truth column
-ground_truth <- broad_policy_mpolicy_avg_df$`Nanou 2017 (Ground Truth)`
-
-# Select all columns to compare (excluding the ground truth column)
-columns_to_compare <- broad_policy_mpolicy_avg_df %>% 
-  select(-`Nanou 2017 (Ground Truth)`, -broad_policy_area_mpolicy_moodley, -period)
 
 # Calculate MAE for each column
 mae_results <- sapply(columns_to_compare, function(column) {
@@ -101,6 +102,8 @@ errors_table %>%
 
 ## Variance
 
+### Distribution of Z-Scores (Histograms)
+
 ```{r echo=FALSE, fig.height=5, fig.width=8, message=FALSE, warning=FALSE}
 
 variance_hist <- broad_policy_mpolicy_avg_df %>%
@@ -116,11 +119,85 @@ ggplot(variance_hist, aes(x = z_score_value)) +
   theme_minimal()
 ```
 
+### Distribution of Z-Scores (Box Plots)
+
+```{r echo=FALSE, fig.height=5, fig.width=8, message=FALSE, warning=FALSE}
+
+variance_data <- broad_policy_mpolicy_avg_df %>%
+  select(-broad_policy_area_mpolicy_moodley, -period) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "measurement", 
+               values_to = "value") %>% 
+  group_by(measurement)
+
+ggplot(variance_data) +
+  geom_boxplot(aes(x = measurement, y = value)) +
+  ylab("Z-Score") + xlab("") +
+  coord_flip() +
+  theme_minimal()
+```
+
+### Levene’s Test for Equality of Variances
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+# Prepare a dataframe to hold the results
+levene_results <- lapply(names(columns_to_compare), function(col_name) {
+  # Combine ground truth and the column into a dataframe
+  temp_data <- data.frame(
+    value = c(ground_truth, columns_to_compare[[col_name]]),
+    measurement = rep(c("Ground Truth", col_name), each = length(ground_truth))
+  )
+  
+  # Perform Levene's Test
+  test_result <- leveneTest(value ~ measurement, data = temp_data)
+  
+  # Extract the relevant statistics
+  data.frame(
+    Column = col_name,
+    F_Value = test_result$`F value`[1],
+    P_Value = round(test_result$`Pr(>F)`[1], 2)
+  )
+})
+
+# Combine results into a single dataframe
+levene_results_df <- do.call(rbind, levene_results)
+
+levene_results_table <- levene_results_df %>% 
+  select(-F_Value) %>% 
+  arrange(desc(P_Value)) %>% 
+  rename(" " = Column) %>% 
+  rename("p-value" = P_Value)
+
+levene_results_table %>%
+  kbl() %>%
+  kable_styling()
+```
+
+> If the p-value from the test is less than our chosen significance level, we can reject the null hypothesis and conclude that we have enough evidence to state that the variance among the groups is not equal.
 
 
 
-- Histogram showing (lack of) variance (Levene's Test For Equality Of Variances)
-- Adjusted MAE And RMSE With Variance Penalties *
+## Adjusted MAE And RMSE With Variance Penalties *
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - Spearman's Rank Correlation *
 - Scatter plots
 - Synthesize the results of all metrics with *
