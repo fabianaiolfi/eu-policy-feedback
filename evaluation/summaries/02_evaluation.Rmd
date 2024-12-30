@@ -176,16 +176,47 @@ levene_results_table %>%
 
 > If the p-value from the test is less than our chosen significance level, we can reject the null hypothesis and conclude that we have enough evidence to state that the variance among the groups is not equal.
 
-
-
 ## Adjusted MAE And RMSE With Variance Penalties *
+> Calculate MAE and RMSE while penalizing scores for their lack of variance, we can adjust the metrics by multiplying them by the inverse of the variance ratio. The variance ratio can be defined as the ratio of the variance of the ground truth to the variance of the other column.
+> Measurements with a high spread (variance) are less penalized and are effectively "rewarded."
+> Measurements with a low spread (variance) are penalized more heavily.
 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 
+# Function to calculate penalized MAE and RMSE
+calculate_penalized_metrics <- function(column, ground_truth) {
+  # Calculate variance ratio
+  variance_ratio <- var(column, na.rm = TRUE) / var(ground_truth, na.rm = TRUE)
 
+  # Avoid division by zero or very small variance
+  if (is.na(variance_ratio) || variance_ratio == Inf) variance_ratio <- 1
+  
+  # Calculate MAE
+  mae <- mean(abs(column - ground_truth), na.rm = TRUE)
+  
+  # Calculate RMSE
+  rmse <- sqrt(mean((column - ground_truth)^2, na.rm = TRUE))
+  
+  # Penalize by multiplying by the inverse of the variance ratio
+  penalized_mae <- round(mae / variance_ratio, 2)
+  penalized_rmse <- round(rmse / variance_ratio, 2)
+  
+  return(c(Penalized_MAE = penalized_mae, Penalized_RMSE = penalized_rmse))
+}
 
+# Apply the function to all columns and store the results
+penalized_results <- t(sapply(columns_to_compare, calculate_penalized_metrics, ground_truth = ground_truth))
 
+penalized_results_df <- as.data.frame(penalized_results)
+penalized_results_df <- penalized_results_df %>% 
+  arrange(Penalized_MAE) %>% 
+  rename("Penalised MAE" = Penalized_MAE) %>% 
+  rename("Penalised RMSE" = Penalized_RMSE)
 
-
+penalized_results_df %>%
+  kbl() %>%
+  kable_styling()
+```
 
 
 
