@@ -15,10 +15,9 @@ nanou_2017_mpolicy_lrscale3 <- readRDS(here("existing_measurements", "nanou_2017
 policy_area_moodley_subj_matter_mpolicy <- readRDS(here("data", "evaluation", "policy_area_moodley_subj_matter_mpolicy.rds")) # eu-policy-feedback/evaluation/policy_area_moodley_subj_matter_mpolicy.R
 
 # Import Calculated measurements
-glove_polarity_scores_all_dir_reg_econ <- readRDS(here("data", "lss", "glove_polarity_scores_all_dir_reg_econ.rds"))
-glove_polarity_scores_all_dir_reg_social <- readRDS(here("data", "lss", "glove_polarity_scores_all_dir_reg_social.rds"))
-hix_hoyland_data <- readRDS(here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data.rds"))
-chatgpt_preamble_0_shot <- readRDS(here("data", "llm_0_shot", "chatgpt_preamble_0_shot.rds"))
+glove_polarity_scores_summaries_econ <- readRDS(here("data", "lss", "glove_polarity_scores_summaries_econ.rds"))
+glove_polarity_scores_summaries_social <- readRDS(here("data", "lss", "glove_polarity_scores_summaries_social.rds"))
+hix_hoyland_data_summaries <- readRDS(here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data_summaries.rds"))
 chatgpt_summary_0_shot <- readRDS(here("data", "llm_0_shot", "chatgpt_summary_0_shot.rds"))
 chatgpt_ranking_combined <- readRDS(here("data", "llm_ranking", "chatgpt_combined_rating.rds"))
 llama_summary_0_shot <- readRDS(here("data", "llm_0_shot", "llama_summary_0_shot.rds"))
@@ -50,24 +49,21 @@ all_dir_reg <- all_dir_reg %>% left_join(moodley, by = "CELEX")
 nanou_2017_mpolicy_lrscale3 <- nanou_2017_mpolicy_lrscale3 %>% 
   mutate(lrscale3_avg_z_score = standardize(lrscale3_avg))
 
-glove_polarity_scores_all_dir_reg_econ <- glove_polarity_scores_all_dir_reg_econ %>% 
+glove_polarity_scores_summaries_econ <- glove_polarity_scores_summaries_econ %>% 
   # Reverse scale so that it aligns with Hix Høyland method: >0: More right; <0: More left
   mutate(avg_glove_polarity_scores = avg_glove_polarity_scores * -1) %>% 
   mutate(avg_lss_econ_z_score = standardize(avg_glove_polarity_scores))
 
-glove_polarity_scores_all_dir_reg_social <- glove_polarity_scores_all_dir_reg_social %>% 
+glove_polarity_scores_summaries_social <- glove_polarity_scores_summaries_social %>% 
   # Reverse scale so that it aligns with Hix Høyland method: >0: More right; <0: More left
   mutate(avg_glove_polarity_scores = avg_glove_polarity_scores * -1) %>% 
   mutate(avg_lss_social_z_score = standardize(avg_glove_polarity_scores))
 
-hix_hoyland_data <- hix_hoyland_data %>% 
+hix_hoyland_data_summaries <- hix_hoyland_data_summaries %>% 
   mutate(RoBERT_left_right_z_score = standardize(RoBERT_left_right)) %>% 
   mutate(bakker_hobolt_econ_z_score = standardize(bakker_hobolt_econ)) %>% 
   mutate(bakker_hobolt_social_z_score = standardize(bakker_hobolt_social)) %>% 
   mutate(cmp_left_right_z_score = standardize(cmp_left_right))
-
-chatgpt_preamble_0_shot <- chatgpt_preamble_0_shot %>%
-  mutate(chatgpt_preamble_0_shot_z_score = standardize(chatgpt_answer))
 
 chatgpt_summary_0_shot <- chatgpt_summary_0_shot %>%
   mutate(chatgpt_summary_0_shot_z_score = standardize(chatgpt_answer))
@@ -132,10 +128,9 @@ broad_policy_mpolicy_avg_df <- all_dir_reg %>%
   separate_rows(broad_policy_area_mpolicy_moodley, sep = "; ") %>% # Place each Broad Policy Area on its own row
   distinct(CELEX, broad_policy_area_mpolicy_moodley, .keep_all = T) %>% 
   # Add calculated scores
-  left_join(select(glove_polarity_scores_all_dir_reg_econ, CELEX, avg_lss_econ_z_score), by = "CELEX") %>% 
-  left_join(select(glove_polarity_scores_all_dir_reg_social, CELEX, avg_lss_social_z_score), by = "CELEX") %>% 
-  left_join(select(hix_hoyland_data, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX") %>% 
-  left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX") %>%
+  left_join(select(glove_polarity_scores_summaries_econ, CELEX, avg_lss_econ_z_score), by = "CELEX") %>% 
+  left_join(select(glove_polarity_scores_summaries_social, CELEX, avg_lss_social_z_score), by = "CELEX") %>% 
+  left_join(select(hix_hoyland_data_summaries, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX") %>% 
   left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX") %>% 
   left_join(select(llama_summary_0_shot, CELEX, llama_summary_0_shot_z_score), by = "CELEX") %>% 
   left_join(select(chatgpt_ranking_combined, CELEX, chatgpt_ranking_z_score), by = "CELEX") %>%
@@ -163,4 +158,4 @@ broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>%
   rename(nanou_2017_mpolicy_lrscale3 = lrscale3_avg_z_score)
 
 # Save to file
-saveRDS(broad_policy_mpolicy_avg_df, file = here("data", "evaluation", "broad_policy_mpolicy_avg_df.rds"))
+saveRDS(broad_policy_mpolicy_avg_df, file = here("data", "evaluation", "broad_policy_mpolicy_avg_df_summaries.rds"))

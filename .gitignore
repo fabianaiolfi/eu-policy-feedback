@@ -39,6 +39,7 @@ lss_cache/
 # Custom Ignores
 data/
 report.html
+02_evaluation.html
 access_key.txt
 manifesto_apikey.txt
 *.pdf
