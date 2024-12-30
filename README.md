@@ -128,8 +128,8 @@ _Tables: To Do_
   - [ ] Costs 0-shot: ~USD 224.00 using GPT-4o; ~USD 14.00 using GPT-4o mini
   - [ ] Time 0-shot: ~16h (check again with stable internet connection)
   - [ ] Continuously write responses to external .csv file in case long query crashes
-- [ ] Include spolicy in the overall evaluation again?
 - [ ] Clean up overall evaluation
+- [ ] Include spolicy in the overall evaluation again
 - [x] Ranking algorithm: Combine "most left" and "most right" lists
 - [x] Check subject_matter and Broad Policy Topic matching: Remove not appropriate terms and also repeat ambiguous terms
 - [x] Perform ranking with llama models over all directives/regulations that have a summary
