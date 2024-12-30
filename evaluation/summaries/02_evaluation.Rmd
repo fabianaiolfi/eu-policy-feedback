@@ -44,6 +44,7 @@ columns_to_compare <- broad_policy_mpolicy_avg_df %>%
 ## Pearson Correlation *
 
 ```{r echo=FALSE, fig.height=8, fig.width=8, message=FALSE, warning=FALSE}
+
 pearson_correlation <- broad_policy_mpolicy_avg_df %>% 
   select(-broad_policy_area_mpolicy_moodley, -period)
 
@@ -51,6 +52,29 @@ pearson_correlation <- cor(pearson_correlation, use = "pairwise.complete.obs")
 pearson_correlation_melt <- melt(pearson_correlation) # Convert the correlation matrix into long format for ggplot2
 
 ggplot(pearson_correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile() +
+  geom_text(aes(label = round(value, 2)), size = 3) +
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                       midpoint = 0, limit = c(-1, 1), space = "Lab", 
+                       name="Correlation") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust = 1)) +
+  coord_fixed() +
+  xlab("") + ylab("") +
+  theme(legend.position="none")
+```
+
+## Spearman's Rank Correlation *
+
+```{r echo=FALSE, fig.height=8, fig.width=8, message=FALSE, warning=FALSE}
+
+spearman_correlation <- broad_policy_mpolicy_avg_df %>% 
+  select(-broad_policy_area_mpolicy_moodley, -period)
+
+spearman_correlation <- cor(spearman_correlation, method = "spearman")
+spearman_correlation_melt <- melt(spearman_correlation) # Convert the correlation matrix into long format for ggplot2
+
+ggplot(spearman_correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
   geom_tile() +
   geom_text(aes(label = round(value, 2)), size = 3) +
   scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
@@ -223,12 +247,5 @@ penalized_results_df %>%
 
 
 
-
-
-
-
-
-
-- Spearman's Rank Correlation *
 - Scatter plots
 - Synthesize the results of all metrics with *
