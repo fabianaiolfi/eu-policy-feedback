@@ -11,11 +11,14 @@ library(tidyverse)
 library(here)
 library(corrplot)
 library(reshape2)
+library(Metrics)
+library(kableExtra)
 ```
 
 ```{r, include=FALSE}
 broad_policy_mpolicy_avg_df <- readRDS(here("data", "evaluation", "broad_policy_mpolicy_avg_df_summaries.rds"))
 broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>% 
+  drop_na() %>% 
   mutate(nanou_2017_mpolicy_lrscale3 = as.numeric(nanou_2017_mpolicy_lrscale3)) %>% 
   rename("LSS Economy" = avg_lss_econ_z_score) %>% 
   rename("LSS Social" = avg_lss_social_z_score) %>% 
@@ -53,14 +56,69 @@ ggplot(pearson_correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
 ```
 
 
+## Mean Absolute Error and Root Mean Square Error *
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+# Define the ground truth column
+ground_truth <- broad_policy_mpolicy_avg_df$`Nanou 2017 (Ground Truth)`
+
+# Select all columns to compare (excluding the ground truth column)
+columns_to_compare <- broad_policy_mpolicy_avg_df %>% 
+  select(-`Nanou 2017 (Ground Truth)`, -broad_policy_area_mpolicy_moodley, -period)
+
+# Calculate MAE for each column
+mae_results <- sapply(columns_to_compare, function(column) {
+  mean(abs(column - ground_truth), na.rm = TRUE) # Handle NA values if present
+})
+
+mae_results_df <- data.frame(
+  Column = names(mae_results),
+  MAE = round(mae_results, 2)
+)
+
+# Calculate RMSE for each column
+rmse_results <- sapply(columns_to_compare, function(column) {
+  sqrt(mean((column - ground_truth)^2, na.rm = TRUE)) # Handle NA values if present
+})
+
+rmse_results_df <- data.frame(
+  Column = names(rmse_results),
+  RMSE = round(rmse_results, 2)
+)
+
+errors_table <- mae_results_df %>% 
+  left_join(rmse_results_df, by = "Column") %>% 
+  arrange(MAE) %>% 
+  rename("Mean Absolute Error" = MAE) %>% 
+  rename("Root Mean Square Error" = RMSE) %>% 
+  rename(" " = Column)
+  
+errors_table %>%
+  kbl() %>%
+  kable_styling()
+```
+
+## Variance
+
+```{r echo=FALSE, fig.height=5, fig.width=8, message=FALSE, warning=FALSE}
+
+variance_hist <- broad_policy_mpolicy_avg_df %>%
+  select(-broad_policy_area_mpolicy_moodley, -period) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "z_score_measurement", 
+               values_to = "z_score_value")
+
+ggplot(variance_hist, aes(x = z_score_value)) +
+  geom_histogram() +
+  facet_wrap(~ z_score_measurement) +
+  xlab("Z-Score") + ylab("Count") +
+  theme_minimal()
+```
 
 
 
 
-
-
-- Mean Absolute Error (MAE) *
-- Root Mean Square Error (RMSE) *
 - Histogram showing (lack of) variance (Levene's Test For Equality Of Variances)
 - Adjusted MAE And RMSE With Variance Penalties *
 - Spearman's Rank Correlation *
