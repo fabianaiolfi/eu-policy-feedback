@@ -20,10 +20,20 @@ library(car)
 ```
 
 ```{r, include=FALSE}
-broad_policy_mpolicy_avg_df <- readRDS(here("data", "evaluation", "broad_policy_mpolicy_avg_df_summaries.rds"))
+broad_policy_mpolicy_avg_df <- readRDS(here("data", "evaluation", "broad_policy_mpolicy_avg_df_summaries_raw_results.rds"))
 broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>% 
   drop_na() %>% 
-  mutate(nanou_2017_mpolicy_lrscale3 = as.numeric(nanou_2017_mpolicy_lrscale3)) %>% 
+  mutate_at(c('avg_lss_econ_z_score',
+              'avg_lss_social_z_score',
+              'RoBERT_left_right_z_score',
+              'bakker_hobolt_econ_z_score',
+              'bakker_hobolt_social_z_score',
+              'cmp_left_right_z_score',
+              'chatgpt_summary_0_shot_z_score',
+              'llama_summary_0_shot_z_score',
+              'chatgpt_ranking_z_score',
+              'llama_ranking_z_score'
+              ), as.numeric) %>% 
   rename("LSS Economy" = avg_lss_econ_z_score) %>% 
   rename("LSS Social" = avg_lss_social_z_score) %>% 
   rename("RoBERT Left Right" = RoBERT_left_right_z_score) %>% 
@@ -33,236 +43,24 @@ broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>%
   rename("ChatGPT 0-Shot" = chatgpt_summary_0_shot_z_score) %>% 
   rename("ChatGPT Ranking" = chatgpt_ranking_z_score) %>% 
   rename("Llama 0-Shot" = llama_summary_0_shot_z_score) %>% 
-  rename("Llama Ranking" = llama_ranking_z_score) %>% 
-  rename("Nanou 2017 (Ground Truth)" = nanou_2017_mpolicy_lrscale3)
-
-# Define the ground truth column
-ground_truth <- broad_policy_mpolicy_avg_df$`Nanou 2017 (Ground Truth)`
-
-# Select all columns to compare (excluding the ground truth column)
-columns_to_compare <- broad_policy_mpolicy_avg_df %>% 
-  select(-`Nanou 2017 (Ground Truth)`, -broad_policy_area_mpolicy_moodley, -period)
+  rename("Llama Ranking" = llama_ranking_z_score)
 ```
 
-## Pearson Correlation
+## Topics
 
 ```{r echo=FALSE, fig.height=8, fig.width=8, message=FALSE, warning=FALSE}
-
-pearson_correlation <- broad_policy_mpolicy_avg_df %>% 
-  select(-broad_policy_area_mpolicy_moodley, -period)
-
-pearson_correlation <- cor(pearson_correlation, use = "pairwise.complete.obs")
-pearson_correlation_melt <- melt(pearson_correlation) # Convert the correlation matrix into long format for ggplot2
-
-ggplot(pearson_correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
-  geom_tile() +
-  geom_text(aes(label = round(value, 2)), size = 3) +
-  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
-                       midpoint = 0, limit = c(-1, 1), space = "Lab", 
-                       name="Correlation") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust = 1)) +
-  coord_fixed() +
-  xlab("") + ylab("") +
-  theme(legend.position="none")
-```
-
-## Spearman's Rank Correlation
-
-```{r echo=FALSE, fig.height=8, fig.width=8, message=FALSE, warning=FALSE}
-
-spearman_correlation <- broad_policy_mpolicy_avg_df %>% 
-  select(-broad_policy_area_mpolicy_moodley, -period)
-
-spearman_correlation <- cor(spearman_correlation, method = "spearman")
-spearman_correlation_melt <- melt(spearman_correlation) # Convert the correlation matrix into long format for ggplot2
-
-ggplot(spearman_correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
-  geom_tile() +
-  geom_text(aes(label = round(value, 2)), size = 3) +
-  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
-                       midpoint = 0, limit = c(-1, 1), space = "Lab", 
-                       name="Correlation") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust = 1)) +
-  coord_fixed() +
-  xlab("") + ylab("") +
-  theme(legend.position="none")
-```
-
-
-## Mean Absolute Error and Root Mean Square Error
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-
-# Calculate MAE for each column
-mae_results <- sapply(columns_to_compare, function(column) {
-  mean(abs(column - ground_truth), na.rm = TRUE) # Handle NA values if present
-})
-
-mae_results_df <- data.frame(
-  Column = names(mae_results),
-  MAE = round(mae_results, 2)
-)
-
-# Calculate RMSE for each column
-rmse_results <- sapply(columns_to_compare, function(column) {
-  sqrt(mean((column - ground_truth)^2, na.rm = TRUE)) # Handle NA values if present
-})
-
-rmse_results_df <- data.frame(
-  Column = names(rmse_results),
-  RMSE = round(rmse_results, 2)
-)
-
-errors_table <- mae_results_df %>% 
-  left_join(rmse_results_df, by = "Column") %>% 
-  arrange(MAE) %>% 
-  rename("Mean Absolute Error" = MAE) %>% 
-  rename("Root Mean Square Error" = RMSE) %>% 
-  rename(" " = Column)
-  
-errors_table %>%
-  kbl() %>%
-  kable_styling()
-```
-
-## Variance
-
-### Distribution of Z-Scores (Histograms)
-
-```{r echo=FALSE, fig.height=5, fig.width=8, message=FALSE, warning=FALSE}
-
-variance_hist <- broad_policy_mpolicy_avg_df %>%
-  select(-broad_policy_area_mpolicy_moodley, -period) %>% 
-  pivot_longer(cols = everything(),
+boxplot_data <- broad_policy_mpolicy_avg_df %>% 
+  select(-CELEX, -year) %>% 
+  pivot_longer(cols = -broad_policy_area_mpolicy_moodley,
                names_to = "z_score_measurement", 
-               values_to = "z_score_value")
+               values_to = "z_score_value") %>% 
+  dplyr::filter(
+      z_score_measurement == "Bakker Hobolt Social" |
+      z_score_measurement == "Llama 0-Shot" |
+      z_score_measurement == "Llama Ranking"
+      )
 
-ggplot(variance_hist, aes(x = z_score_value)) +
-  geom_histogram() +
-  facet_wrap(~ z_score_measurement) +
-  xlab("Z-Score") + ylab("Count") +
-  theme_minimal()
+ggplot(boxplot_data) +
+  geom_boxplot(aes(y = z_score_value, x = broad_policy_area_mpolicy_moodley, fill = z_score_measurement)) +
+  coord_flip() + theme_minimal() + xlab("") + ylab("Z-Score")
 ```
-
-### Distribution of Z-Scores (Box Plots)
-
-```{r echo=FALSE, fig.height=5, fig.width=8, message=FALSE, warning=FALSE}
-
-variance_data <- broad_policy_mpolicy_avg_df %>%
-  select(-broad_policy_area_mpolicy_moodley, -period) %>% 
-  pivot_longer(cols = everything(),
-               names_to = "measurement", 
-               values_to = "value") %>% 
-  group_by(measurement)
-
-ggplot(variance_data) +
-  geom_boxplot(aes(x = measurement, y = value)) +
-  ylab("Z-Score") + xlab("") +
-  coord_flip() +
-  theme_minimal()
-```
-
-### Levene’s Test for Equality of Variances
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-
-# Prepare a dataframe to hold the results
-levene_results <- lapply(names(columns_to_compare), function(col_name) {
-  # Combine ground truth and the column into a dataframe
-  temp_data <- data.frame(
-    value = c(ground_truth, columns_to_compare[[col_name]]),
-    measurement = rep(c("Ground Truth", col_name), each = length(ground_truth))
-  )
-  
-  # Perform Levene's Test
-  test_result <- leveneTest(value ~ measurement, data = temp_data)
-  
-  # Extract the relevant statistics
-  data.frame(
-    Column = col_name,
-    F_Value = test_result$`F value`[1],
-    P_Value = round(test_result$`Pr(>F)`[1], 2)
-  )
-})
-
-# Combine results into a single dataframe
-levene_results_df <- do.call(rbind, levene_results)
-
-levene_results_table <- levene_results_df %>% 
-  select(-F_Value) %>% 
-  arrange(desc(P_Value)) %>% 
-  rename(" " = Column) %>% 
-  rename("p-value" = P_Value)
-
-levene_results_table %>%
-  kbl() %>%
-  kable_styling()
-```
-
-> If the p-value from the test is less than our chosen significance level, we can reject the null hypothesis and conclude that we have enough evidence to state that the variance among the groups is not equal.
-
-## Adjusted MAE And RMSE With Variance Penalties
-> Calculate MAE and RMSE while penalizing scores for their lack of variance, we can adjust the metrics by multiplying them by the inverse of the variance ratio. The variance ratio can be defined as the ratio of the variance of the ground truth to the variance of the other column.
-> Measurements with a high spread (variance) are less penalized and are effectively "rewarded."
-> Measurements with a low spread (variance) are penalized more heavily.
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-
-# Function to calculate penalized MAE and RMSE
-calculate_penalized_metrics <- function(column, ground_truth) {
-  # Calculate variance ratio
-  variance_ratio <- var(column, na.rm = TRUE) / var(ground_truth, na.rm = TRUE)
-
-  # Avoid division by zero or very small variance
-  if (is.na(variance_ratio) || variance_ratio == Inf) variance_ratio <- 1
-  
-  # Calculate MAE
-  mae <- mean(abs(column - ground_truth), na.rm = TRUE)
-  
-  # Calculate RMSE
-  rmse <- sqrt(mean((column - ground_truth)^2, na.rm = TRUE))
-  
-  # Penalize by multiplying by the inverse of the variance ratio
-  penalized_mae <- round(mae / variance_ratio, 2)
-  penalized_rmse <- round(rmse / variance_ratio, 2)
-  
-  return(c(Penalized_MAE = penalized_mae, Penalized_RMSE = penalized_rmse))
-}
-
-# Apply the function to all columns and store the results
-penalized_results <- t(sapply(columns_to_compare, calculate_penalized_metrics, ground_truth = ground_truth))
-
-penalized_results_df <- as.data.frame(penalized_results)
-penalized_results_df <- penalized_results_df %>% 
-  arrange(Penalized_MAE) %>% 
-  rename("Penalised MAE" = Penalized_MAE) %>% 
-  rename("Penalised RMSE" = Penalized_RMSE)
-
-penalized_results_df %>%
-  kbl() %>%
-  kable_styling()
-```
-
-
-## Correlation Scatter Plots
-
-```{r echo=FALSE, fig.height=9, fig.width=9, message=FALSE, warning=FALSE}
-
-scatter_plot_data <- broad_policy_mpolicy_avg_df %>%
-  select(-broad_policy_area_mpolicy_moodley, -period) %>% 
-  pivot_longer(cols = -`Nanou 2017 (Ground Truth)`,
-               names_to = "measurement", 
-               values_to = "value")
-
-ggplot(scatter_plot_data, aes(x = value, y = `Nanou 2017 (Ground Truth)`)) +
-  geom_point() +
-  geom_smooth(method = 'lm', formula = y ~ x, se = F) +
-  geom_abline(intercept = 0, slope = 1, color = "gray") +
-  theme_minimal() +
-  facet_wrap(~ measurement) +
-  xlim(-2, 2) +
-  xlab("")
-```
-
