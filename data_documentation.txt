@@ -94,3 +94,9 @@ ChatGPT ranking of economically right-leaning policies that have a summary.
 **chatgpt_combined_rating.rds**
 
 chatgpt_ratings_df_left_20241201_161249.rds and chatgpt_ratings_df_right_20241201_161434.rds combined
+
+---
+
+**llama_output_df_20241231_054228.rds**
+
+Llama ranking of 0-shot policy scoring of preamble. N=36000, couldn't do all policies due to time constraints. Inference took about 6.5h.

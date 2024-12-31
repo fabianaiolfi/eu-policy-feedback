@@ -96,42 +96,17 @@ saveRDS(prompt_df, file = here("data", "llm_0_shot", file_name))
 # Process Llama output ---------------------------------------------------------------
 
 # Load Llama output
-prompt_df <- readRDS(file = here("data", "llm_0_shot", "llama_output_df_20241117_193847.rds"))
+prompt_df <- readRDS(file = here("data", "llm_0_shot", "llama_output_df_20241231_054228.rds"))
 
 prompt_clean_df <- prompt_df %>% 
-  select(-eurlex_summary_clean, -prompt_role_var, -prompt_content_var) %>% 
+  select(-preamble, -prompt_role_var, -prompt_content_var) %>% 
   # Check for non-numeric output
   mutate(numeric = str_detect(response, "^\\s*\\d+\\s*$")) %>%
-  # dplyr::filter(numeric == T) %>% 
-  # distinct(CELEX, .keep_all = T) # We loose 409 documents
-  # Remove very long responses
-  mutate(string_len = nchar(response)) %>%
-  dplyr::filter(string_len < 2000) %>% 
-  # Truncate response assuming that score is within first 100 characters
-  mutate(response_truncated = substr(response, start = 1, stop = 100)) %>% 
-  select(-response, -string_len)
-
-# Extract first 1, 2 or 3 digit number from truncated response if numeric is FALSE
-prompt_clean_df <- prompt_clean_df %>%
-  mutate(
-    extracted_number = if_else(
-      !numeric,
-      as.numeric(str_extract(response_truncated, "\\b\\d{1,3}\\b")),
-      NA_real_
-    )
-  )
-
-# Calculate average score for each document
-prompt_clean_df <- prompt_clean_df %>% 
-  mutate(score = case_when(numeric == T ~ as.numeric(response_truncated),
-                           numeric == F ~ extracted_number)) %>% 
-  dplyr::filter(is.na(score) == F) %>% 
-  dplyr::filter(score <= 100) %>% 
-  # distinct(CELEX, .keep_all = T) # We loose 192 documents
-  select(CELEX, score) %>% 
-  group_by(CELEX) %>% 
-  summarise_at(vars(score),
-               list(avg_score = mean))
+  dplyr::filter(numeric == T) %>%
+  select(-numeric) %>% 
+  mutate(response = as.numeric(response)) %>% 
+  dplyr::filter(response <= 100) %>%
+  drop_na(CELEX)
 
 # Save output
-saveRDS(prompt_clean_df, file = here("data", "llm_0_shot", "llama_summary_0_shot.rds"))
+saveRDS(prompt_clean_df, file = here("data", "llm_0_shot", "llama_preamble_0_shot.rds"))
