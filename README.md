@@ -128,7 +128,7 @@ _Tables: To Do_
   - [ ] Costs 0-shot: ~USD 224.00 using GPT-4o; ~USD 14.00 using GPT-4o mini
   - [ ] Time 0-shot: ~16h (check again with stable internet connection)
   - [ ] Continuously write responses to external .csv file in case long query crashes
-- [ ] Clean up overall evaluation
+- [x] Clean up overall evaluation
 - [ ] Include spolicy in the overall evaluation again
 - [x] Ranking algorithm: Combine "most left" and "most right" lists
 - [x] Check subject_matter and Broad Policy Topic matching: Remove not appropriate terms and also repeat ambiguous terms
@@ -139,7 +139,7 @@ _Tables: To Do_
   - [x] Clean responses
   - [x] Include this analysis in overall evaluation
 - [x] Continue overall evaluation, including llama model
-- [ ] Other ways to compare own measurements with expert survey?
+- [x] Other ways to compare own measurements with expert survey?
 
 
 ## Data Collection 1989 – Today
@@ -202,16 +202,6 @@ _Tables: To Do_
 - [ ] Create tags / topics of each document to see if there's a correlation between topics and calculated ideology
 - [ ] Compare results with left-right tags defined by Hix Høyland (2024), p. 33
 - [ ] Dig deeper: Look into broad policy areas and if certain areas align more between ground truth and calculated measurements than others
-
-Evaluation Plan: Comparing calculated measurements with Ground Truth (Nanou 2017)
-- Pearson correlation *
-- Mean Absolute Error (MAE) *
-- Root Mean Square Error (RMSE) *
-- Histogram showing (lack of) variance (Levene's Test For Equality Of Variances)
-- Adjusted MAE And RMSE With Variance Penalties *
-- Spearman's Rank Correlation *
-- Scatter plots
-- Synthesize the results of all metrics with *
 
 ## Resources
 - https://michalovadek.github.io/eurlex/
