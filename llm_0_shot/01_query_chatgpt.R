@@ -8,7 +8,7 @@ all_dir_reg <- readRDS(file = here("existing_measurements", "hix_hoyland_2024", 
 # Create Subsets -----------------------------------------------------------
 
 # Small subset for testing (n = 10)
-all_dir_reg <- all_dir_reg %>% head(10)
+all_dir_reg <- all_dir_reg %>% head(500)
 
 # Subset of directives and regulations that have summaires (n = 1637)
 # all_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "all_dir_reg_summaries.rds"))
@@ -37,36 +37,54 @@ prompt_df <- all_dir_reg %>%
                                      # Preamble -----
                                      prompt_preamble,
                                      preamble 
-                                     )) %>% 
+                                     ))# %>% 
   # Count number of tokens in prompt (1 token ~= 4 chars in English, see https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them)
   # Check API limits: https://platform.openai.com/settings/organization/limits
-  mutate(prompt_token_len = nchar(prompt_content_var) / 4)
+  # mutate(prompt_token_len = nchar(prompt_content_var) / 4)
 
 
 # Query ChatGPT ---------------------------------------------------------------
 
 # https://github.com/ben-aaron188/rgpt3?tab=readme-ov-file#getting-started
-# Setup and test ChatGPT API
 rgpt_authenticate("access_key.txt")
-# rgpt_test_completion(verbose = T)
 
-chatgpt_output <- rgpt(
-  prompt_role_var = prompt_df$prompt_role_var,
-  prompt_content_var = prompt_df$prompt_content_var,
-  param_seed = project_seed, # Defined in .Rprofile
-  id_var = prompt_df$CELEX,
-  param_output_type = "complete",
-  param_model = "gpt-4o-mini",
-  param_max_tokens = 1, # Score between 0 and 100 only need 1 token
-  param_temperature = 0,
-  param_n = 1)
-
-# Save output to file
-# Get and format the current timestamp to prevent overwriting files when saving RData locally
+# Initialize the output file
 timestamp <- Sys.time()
 formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
-file_name <- paste0("chatgpt_output_df_", formatted_timestamp, ".rds")
-saveRDS(chatgpt_output, file = here("data", "chatgpt_0_shot", file_name))
+file_name <- paste0("chatgpt_output_", formatted_timestamp, ".csv")
+output_file <- paste0("/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/", file_name)
+
+# Write the header of the CSV file (if the file doesn't exist)
+if (!file.exists(output_file)) {
+  write.csv(data.frame(CELEX = character(), GPT_Output = character()), 
+            file = output_file, row.names = FALSE)
+}
+
+# Process each prompt and append the result
+for (i in seq_len(nrow(prompt_df))) {
+  # Query the ChatGPT API
+  chatgpt_output <- rgpt(
+    prompt_role_var = prompt_df$prompt_role_var[i],
+    prompt_content_var = prompt_df$prompt_content_var[i],
+    param_seed = project_seed, 
+    id_var = prompt_df$CELEX[i],
+    param_output_type = "complete",
+    param_model = "gpt-4o-mini",
+    param_max_tokens = 1, 
+    param_temperature = 0,
+    param_n = 1
+  )
+  
+  # Extract the CELEX and GPT output
+  temp_df <- chatgpt_output[[1]]
+  result_row <- data.frame(CELEX = prompt_df$CELEX[i], GPT_Output = temp_df$gpt_content)
+  
+  # Append the result to the CSV file
+  write.table(result_row, file = output_file, append = TRUE, 
+              sep = ",", col.names = FALSE, row.names = FALSE)
+  
+  message(i, " of ", nrow(prompt_df))
+}
 
 
 # Process ChatGPT output ---------------------------------------------------------------
