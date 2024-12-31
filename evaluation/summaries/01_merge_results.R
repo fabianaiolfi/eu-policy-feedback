@@ -37,7 +37,8 @@ moodley <- moodley %>%
   rename(subject_matter_moodley = subject_matters) %>%
   rename(CELEX = celex) %>% 
   mutate(subject_matter_moodley = gsub(" \\| ", "; ", subject_matter_moodley)) %>%
-  mutate(subject_matter_moodley = tolower(subject_matter_moodley))
+  mutate(subject_matter_moodley = tolower(subject_matter_moodley)) %>% 
+  distinct(CELEX, .keep_all = T)
 
 all_dir_reg <- all_dir_reg %>% left_join(moodley, by = "CELEX")
 
@@ -135,6 +136,9 @@ broad_policy_mpolicy_avg_df <- all_dir_reg %>%
   left_join(select(llama_summary_0_shot, CELEX, llama_summary_0_shot_z_score), by = "CELEX") %>% 
   left_join(select(chatgpt_ranking_combined, CELEX, chatgpt_ranking_z_score), by = "CELEX") %>%
   left_join(select(llama_ranking_combined, CELEX, llama_ranking_z_score), by = "CELEX")
+
+# Save raw results to file for evaluation
+saveRDS(broad_policy_mpolicy_avg_df, file = here("data", "evaluation", "broad_policy_mpolicy_avg_df_summaries_raw_results.rds"))
 
 # Calcualate averages based on time periods
 broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>%
