@@ -124,6 +124,9 @@ broad_policy_mpolicy_avg_df <- all_dir_reg %>%
   left_join(select(llama_preamble_0_shot, CELEX, llama_preamble_0_shot_z_score), by = "CELEX") %>% 
   left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX")
 
+# Save raw results to file for evaluation
+saveRDS(broad_policy_mpolicy_avg_df, file = here("data", "evaluation", "broad_policy_mpolicy_avg_df_raw_results.rds"))
+
 # Calcualate averages based on time periods
 broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>%
   mutate(period = case_when(
