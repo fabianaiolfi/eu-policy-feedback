@@ -122,7 +122,6 @@ _Tables: To Do_
 - [ ] How to disregard / ignore laws that are *not* relevant? E.g. a law on abortion has no economic left-right ideology → One possible approach could be using a policy’s tags. Are there tags that indicate that a policy can be ignored?
 
 **241123**
-- [ ] Measurements based on chatgpt summaries seem to provide best variance and correlation values compared to expert surveys. examine this further! maybe also calculate measurements based on entire regulation/directive, not just summary.
 - [x] Run Llama ranking with ChatGPT API: Rank all policies with summaries (n ca. 1600)
 - [ ] Use ChatGPT to rank / 0-shot all ~70k policies: 
   - [ ] Costs 0-shot: ~USD 224.00 using GPT-4o; ~USD 14.00 using GPT-4o mini
