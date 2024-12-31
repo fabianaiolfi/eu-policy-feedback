@@ -31,7 +31,8 @@ broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>%
   rename("Bakker Hobolt Social" = bakker_hobolt_social_z_score) %>% 
   rename("CMP Left Right" = cmp_left_right_z_score) %>% 
   rename("Nanou 2017 (Ground Truth)" = nanou_2017_mpolicy_lrscale3) %>% 
-  rename("Llama 0-Shot" = llama_preamble_0_shot_z_score)
+  rename("Llama 0-Shot" = llama_preamble_0_shot_z_score) %>% 
+  rename("ChatGPT 0-Shot" = chatgpt_preamble_0_shot_z_score)
 
 # Define the ground truth column
 ground_truth <- broad_policy_mpolicy_avg_df$`Nanou 2017 (Ground Truth)`

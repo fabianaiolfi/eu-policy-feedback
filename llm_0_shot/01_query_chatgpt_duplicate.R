@@ -1,14 +1,19 @@
+library(tidyverse)
+library(dplyr)
+library(here)
+library(rgpt3) # https://github.com/ben-aaron188/rgpt3
+project_seed <- 123
 
 # Load Data ---------------------------------------------------------------
 
 # all_dir_reg <- readRDS(file = here("data", "data_collection", "all_dir_reg_summaries.rds")) # Summaries
-all_dir_reg <- readRDS(file = here("existing_measurements", "hix_hoyland_2024", "all_dir_reg_preamble.rds")) # Preamble
+all_dir_reg <- readRDS(file = "/Users/aiolf1/Documents/GitHub/eu-policy-feedback/existing_measurements/hix_hoyland_2024/all_dir_reg_preamble.rds") # Preamble
 all_dir_reg <- all_dir_reg %>% drop_na(CELEX)
 
 # Create Subsets -----------------------------------------------------------
 
 # Subset
-all_dir_reg <- all_dir_reg %>% head(nrow(all_dir_reg)/2) # Split to run in 2 different scripts
+all_dir_reg <- all_dir_reg %>% tail(nrow(all_dir_reg)/2)
 
 # Subset of directives and regulations that have summaires (n = 1637)
 # all_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "all_dir_reg_summaries.rds"))
@@ -46,7 +51,7 @@ prompt_df <- all_dir_reg %>%
 # Query ChatGPT ---------------------------------------------------------------
 
 # https://github.com/ben-aaron188/rgpt3?tab=readme-ov-file#getting-started
-rgpt_authenticate("access_key.txt")
+rgpt_authenticate("/Users/aiolf1/Documents/GitHub/eu-policy-feedback/access_key.txt")
 
 # Initialize the output file
 timestamp <- Sys.time()
@@ -93,29 +98,23 @@ for (i in seq_len(nrow(prompt_df))) {
 # prompt_df <- readRDS(file = here("data", "ranking", "prompt_df_20240712_142655.rds"))
 
 # Convert output to dataframe
-# temp_df <- chatgpt_output[[1]]
-# temp_df <- temp_df %>% 
-#   select(id, gpt_content) %>% 
-#   rename(chatgpt_answer = gpt_content) %>% 
-#   distinct(id, .keep_all = T) # This shouldn't be necessary if CELEX_1 and CELEX_2 are never identical
-
+temp_df <- chatgpt_output[[1]]
+temp_df <- temp_df %>% 
+  select(id, gpt_content) %>% 
+  rename(chatgpt_answer = gpt_content) %>% 
+  distinct(id, .keep_all = T) # This shouldn't be necessary if CELEX_1 and CELEX_2 are never identical
 
 # Merge ChatGPT answer with prompt_df
-# prompt_df <- prompt_df %>% left_join(temp_df, by = c("CELEX" = "id"))
-
-chatgpt_output_1 <- read.csv("/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/chatgpt_output_20241231_102913.csv")
-chatgpt_output_2 <- read.csv("/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/chatgpt_output_20241231_102941.csv")
-
-chatgpt_output <- rbind(chatgpt_output_1, chatgpt_output_2)
+prompt_df <- prompt_df %>% left_join(temp_df, by = c("CELEX" = "id"))
 
 # Clean up ChatGPT answers
-unique(chatgpt_output$GPT_Output) # Examine the output
+unique(prompt_df$chatgpt_answer) # Examine the output
 
-# prompt_df <- prompt_df %>% 
-#   # Remove any non-numeric characters from answer
-#   mutate(chatgpt_answer = str_extract(chatgpt_answer, "[0-9]+")) %>% 
-#   mutate(chatgpt_answer = as.numeric(chatgpt_answer))
+prompt_df <- prompt_df %>% 
+  # Remove any non-numeric characters from answer
+  mutate(chatgpt_answer = str_extract(chatgpt_answer, "[0-9]+")) %>% 
+  mutate(chatgpt_answer = as.numeric(chatgpt_answer))
 
 # Save output
-# chatgpt_preamble_0_shot <- prompt_df %>% select(CELEX, chatgpt_answer)
-saveRDS(chatgpt_output, file = here("data", "llm_0_shot", "chatgpt_preamble_0_shot.rds"))
+chatgpt_preamble_0_shot <- prompt_df %>% select(CELEX, chatgpt_answer)
+saveRDS(chatgpt_preamble_0_shot, file = here("data", "chatgpt_0_shot", "chatgpt_preamble_0_shot.rds"))

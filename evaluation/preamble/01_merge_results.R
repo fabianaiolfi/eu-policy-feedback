@@ -20,6 +20,7 @@ glove_polarity_scores_preamble_social <- readRDS(here("data", "lss", "glove_pola
 hix_hoyland_data <- readRDS(here("existing_measurements", "hix_hoyland_2024", "hix_hoyland_data.rds"))
 hix_hoyland_data <- hix_hoyland_data %>% distinct(CELEX, .keep_all = T) # Remove duplicate
 llama_preamble_0_shot <- readRDS(here("data", "llm_0_shot", "llama_preamble_0_shot.rds"))
+chatgpt_preamble_0_shot <- readRDS(here("data", "llm_0_shot", "chatgpt_preamble_0_shot.rds"))
 
 
 ## Add Subject Matter to all_dir_reg -----------------------
@@ -31,7 +32,8 @@ moodley <- moodley %>%
   rename(subject_matter_moodley = subject_matters) %>%
   rename(CELEX = celex) %>% 
   mutate(subject_matter_moodley = gsub(" \\| ", "; ", subject_matter_moodley)) %>%
-  mutate(subject_matter_moodley = tolower(subject_matter_moodley))
+  mutate(subject_matter_moodley = tolower(subject_matter_moodley)) %>% 
+  distinct(CELEX, .keep_all = T)
 
 all_dir_reg <- all_dir_reg %>% left_join(moodley, by = "CELEX")
 
@@ -61,6 +63,9 @@ hix_hoyland_data <- hix_hoyland_data %>%
 
 llama_preamble_0_shot <- llama_preamble_0_shot %>%
   mutate(llama_preamble_0_shot_z_score = standardize(response))
+
+chatgpt_preamble_0_shot <- chatgpt_preamble_0_shot %>%
+  mutate(chatgpt_preamble_0_shot_z_score = standardize(GPT_Output))
 
 
 ## Connect a Law's Subject Matter with the Broad Policy Area from Nanou 2017 -----------------------
@@ -116,7 +121,8 @@ broad_policy_mpolicy_avg_df <- all_dir_reg %>%
   left_join(select(glove_polarity_scores_preamble_econ, CELEX, avg_lss_econ_z_score), by = "CELEX") %>% 
   left_join(select(glove_polarity_scores_preamble_social, CELEX, avg_lss_social_z_score), by = "CELEX") %>% 
   left_join(select(hix_hoyland_data, CELEX, RoBERT_left_right_z_score, bakker_hobolt_econ_z_score, bakker_hobolt_social_z_score, cmp_left_right_z_score), by = "CELEX") %>% 
-  left_join(select(llama_preamble_0_shot, CELEX, llama_preamble_0_shot_z_score), by = "CELEX")
+  left_join(select(llama_preamble_0_shot, CELEX, llama_preamble_0_shot_z_score), by = "CELEX") %>% 
+  left_join(select(chatgpt_preamble_0_shot, CELEX, chatgpt_preamble_0_shot_z_score), by = "CELEX")
 
 # Calcualate averages based on time periods
 broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>%
