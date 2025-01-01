@@ -4,7 +4,7 @@
 # ceps_eurlex_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "ceps_eurlex_dir_reg_summaries_240711_04.rds")) # Sample of 24 summaries
 # ceps_eurlex_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "all_dir_reg_summaries.rds"))
 all_dir_reg <- readRDS(file = here("existing_measurements", "hix_hoyland_2024", "all_dir_reg_preamble.rds")) # Preamble
-all_dir_reg <- all_dir_reg %>% drop_na(CELEX)
+all_dir_reg <- all_dir_reg %>% drop_na(CELEX) %>% distinct(CELEX, .keep_all = T)
 
 
 # Indexing ---------------------------------------------------------------
@@ -64,11 +64,11 @@ prompt_df <- celex_index %>%
   mutate(prompt_token_len = nchar(prompt_content_var) / 4)
 
 # Token limits
-sum(prompt_df$prompt_token_len) # 792'325'983 tokens
+sum(prompt_df$prompt_token_len) # 792'303'084 tokens @ 5 repetitions; 475'381'850 @ 3 reps
 
 # Costs gpt-4o-mini: $0.150 / 1M input tokens, $0.600 / 1M output tokens
-792325983 / 1000000 * 0.150 # $3.90 for input
-1 * 373670 / 1000000 # $0.008 for output
+475381850 / 1000000 * 0.150 # $119 for input @ 5 repetitions; $71 @ 3 reps
+1 * 373665 / 1000000 # $0.37 for output
 
 # Save prompt_df to file to assure reproducability despite randomness in celex_index
 timestamp <- Sys.time()
