@@ -7,8 +7,8 @@ all_dir_reg <- all_dir_reg %>% drop_na(CELEX)
 
 # Create Subsets -----------------------------------------------------------
 
-# Subset
-all_dir_reg <- all_dir_reg %>% head(nrow(all_dir_reg)/2) # Split to run in 2 different scripts
+# Subset: 
+all_dir_reg <- all_dir_reg %>% tail(nrow(all_dir_reg) - 1250) # Remove policies done in chatgpt_output_20241231_170956.csv
 
 # Subset of directives and regulations that have summaires (n = 1637)
 # all_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "all_dir_reg_summaries.rds"))
@@ -60,29 +60,49 @@ if (!file.exists(output_file)) {
             file = output_file, row.names = FALSE)
 }
 
-# Process each prompt and append the result
+# Loop through each row in prompt_df
 for (i in seq_len(nrow(prompt_df))) {
-  # Query the ChatGPT API
-  chatgpt_output <- rgpt(
-    prompt_role_var = prompt_df$prompt_role_var[i],
-    prompt_content_var = prompt_df$prompt_content_var[i],
-    param_seed = project_seed, 
-    id_var = prompt_df$CELEX[i],
-    param_output_type = "complete",
-    param_model = "gpt-4o-mini",
-    param_max_tokens = 1, 
-    param_temperature = 0,
-    param_n = 1
-  )
+  # Start with a flag to track if the row was processed successfully
+  success <- FALSE
   
-  # Extract the CELEX and GPT output
-  temp_df <- chatgpt_output[[1]]
-  result_row <- data.frame(CELEX = prompt_df$CELEX[i], GPT_Output = temp_df$gpt_content)
-  
-  # Append the result to the CSV file
-  write.table(result_row, file = output_file, append = TRUE, 
-              sep = ",", col.names = FALSE, row.names = FALSE)
-  
+  # Attempt to process the row
+  while (!success) {
+    # Query the API
+    chatgpt_output <- try(
+      rgpt(
+        prompt_role_var = prompt_df$prompt_role_var[i],
+        prompt_content_var = prompt_df$prompt_content_var[i],
+        param_seed = project_seed, 
+        id_var = prompt_df$CELEX[i],
+        param_output_type = "complete",
+        param_model = "gpt-4o-mini",
+        param_max_tokens = 1, 
+        param_temperature = 0,
+        param_n = 1
+      ), silent = TRUE
+    )
+    
+    # Check if the API call succeeded
+    if (inherits(chatgpt_output, "try-error")) {
+      message(sprintf("Error querying API for row %d: %s", 
+                      i, as.character(chatgpt_output)))
+      success <- TRUE # Skip this row and continue
+    } else {
+      # Extract the response safely
+      temp_df <- try(chatgpt_output[[1]], silent = TRUE)
+      
+      if (inherits(temp_df, "try-error") || is.null(temp_df$gpt_content) || length(temp_df$gpt_content) == 0) {
+        message(sprintf("Invalid response for row %d. Skipping.", i))
+        success <- TRUE # Skip this row and continue
+      } else {
+        # Write the valid result to the output file
+        result_row <- data.frame(CELEX = prompt_df$CELEX[i], GPT_Output = temp_df$gpt_content)
+        write.table(result_row, file = output_file, append = TRUE, 
+                    sep = ",", col.names = FALSE, row.names = FALSE)
+        success <- TRUE
+      }
+    }
+  }
   message(i, " of ", nrow(prompt_df))
 }
 
@@ -103,8 +123,8 @@ for (i in seq_len(nrow(prompt_df))) {
 # Merge ChatGPT answer with prompt_df
 # prompt_df <- prompt_df %>% left_join(temp_df, by = c("CELEX" = "id"))
 
-chatgpt_output_1 <- read.csv("/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/chatgpt_output_20241231_102913.csv")
-chatgpt_output_2 <- read.csv("/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/chatgpt_output_20241231_102941.csv")
+chatgpt_output_1 <- read.csv(here("data", "llm_0_shot", "chatgpt_output_20241231_170956.csv"))
+chatgpt_output_2 <- read.csv(here("data", "llm_0_shot", "chatgpt_output_20241231_183631.csv"))
 
 chatgpt_output <- rbind(chatgpt_output_1, chatgpt_output_2)
 
