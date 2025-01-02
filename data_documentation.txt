@@ -106,3 +106,9 @@ Llama output of 0-shot policy scoring of preamble. N=36000, couldn't do all poli
 **chatgpt_output_20241231_170956.csv and chatgpt_output_20241231_183631.csv** 
 
 ChatGPT output of 0-shot policy scoring of preamble. All directives and regulations (N=74733). Inference took about 10h, cost about $11.30.
+
+---
+
+**prompt_df_llama_ranking_preamble_20250102_105624.rds**
+
+Llama prompt dataframe for ranking for all dir regs; prompt for economic left, 5 repetitions; 01_query_llama_preamble.R

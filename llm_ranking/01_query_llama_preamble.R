@@ -58,6 +58,12 @@ prompt_df <- celex_index %>%
                                      preamble_2, "\n\n",
                                      prompt_end))
 
+# Save prompt_df to file to assure reproducability despite randomness in celex_index
+timestamp <- Sys.time()
+formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
+file_name <- paste0("prompt_df_llama_ranking_preamble_", formatted_timestamp, ".rds")
+saveRDS(prompt_df, file = here("data", "llm_ranking", file_name))
+
 
 ## Prompt for economic *right* ---------------------------------------------------------------
 
