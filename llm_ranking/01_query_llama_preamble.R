@@ -3,6 +3,7 @@
 
 all_dir_reg <- readRDS(file = here("existing_measurements", "hix_hoyland_2024", "all_dir_reg_preamble.rds")) # Preamble
 all_dir_reg <- all_dir_reg %>% drop_na(CELEX) %>% distinct(CELEX, .keep_all = T)
+all_dir_reg <- all_dir_reg %>% slice_sample(n = 100)
 
 
 # Indexing ---------------------------------------------------------------
@@ -33,14 +34,33 @@ celex_index <- create_shuffled_column(celex_index)
 
 # Create Prompt Dataframe ---------------------------------------------------------------
 
-system_prompt <- "You are an expert in European Union policies. Answer questions and provide information based on that expertise.\n\n"
+# system_prompt <- "You are an expert in European Union policies. Answer questions and provide information based on that expertise.\n\n" # Ollama
+#system_prompt <-"You are an expert in European Union policies. Answer questions and provide information based on that expertise.\n\n" # Colab + Hugging Face
+system_prompt <-"You are an expert in European Union policies. Based on the following context, analyze which policy is more economically left-leaning and return only '1' or '2'. Do not include any explanation or additional text.\n\n" # Colab + Hugging Face
+
 
 
 ## Prompt for economic *left* ---------------------------------------------------------------
 
-prompt_start <- "I’m going to show you two EU policies, and I need to determine which policy is more economically left-leaning. Please analyze the beginning of the policies' preamble based on principles commonly associated with economically left policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights.\n\n"
+# prompt_start <- "I’m going to show you two EU policies, and I need to determine which policy is more economically left-leaning. Please analyze the beginning of the policies' preamble based on principles commonly associated with economically left policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights.\n\n" # Ollama
+#prompt_start <- "Context: I’m going to show you 2 EU policies, and I need to determine which policy is more economically left-leaning. Please analyze the beginning of the policies' preamble based on principles commonly associated with economically left policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights.\n\n" # Colab + Hugging Face
+prompt_start <- "You are an expert in European Union policies. I’m going to show you 2 EU policies, and I need to determine which policy is more economically left-leaning. Please analyze the beginning of the policies' preamble based on principles commonly associated with economically left policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights. Based on these principles, analyze which policy is more economically left-leaning and return only '1' or '2'. Do not include any explanation or additional text.\n\n" # Colab + Hugging Face
 
-prompt_end <- "Which policy is more economically left? Please answer ONLY '1' or '2', NOTHING ELSE UNDER NO CIRCUMSTANCES."
+prompt_example <- "Example:
+
+EU Policy 1:
+[Preamble]
+
+EU Policy 2:
+[Preamble]
+
+Q: Which policy is more economically left? Answer with '1' or '2' based on the principles provided. Ensure your analysis is impartial and considers both policies equally.
+A: 2\n
+Now answer the question below:\n\n"
+
+# prompt_end <- "Which policy is more economically left? Please answer ONLY '1' or '2', NOTHING ELSE UNDER NO CIRCUMSTANCES." # Ollama
+#prompt_end <- "Q: Which policy is more economically left? Please answer ONLY '1' or '2', NOTHING ELSE UNDER NO CIRCUMSTANCES.\n\nA:" # Colab + Hugging Face
+prompt_end <- "Q: Which policy is more economically left? Answer with '1' or '2' based on the principles provided. Ensure your analysis is impartial and considers both policies equally.\nA:" # Colab + Hugging Face
 
 prompt_df <- celex_index %>% 
   left_join(all_dir_reg, by = c("CELEX_1" = "CELEX")) %>% 
@@ -50,11 +70,14 @@ prompt_df <- celex_index %>%
   mutate(id_var = paste0(CELEX_1, "_", CELEX_2)) %>% # ID for each row
   mutate(prompt_role_var = "user") %>% # Set role
   # Put together prompt
-  mutate(prompt_content_var = paste0(system_prompt, 
+  mutate(prompt_content_var = paste0(#system_prompt, 
                                      prompt_start, 
-                                     "Preamble 1:\n",
+                                     prompt_example,
+                                     # "Preamble 1:\n", # Ollama
+                                     "EU Policy 1:\n", # Colab + Hugging Face
                                      preamble_1, "\n\n",
-                                     "Preamble 2:\n",
+                                     # "Preamble 2:\n", # Ollama
+                                     "EU Policy 2:\n", # Colab + Hugging Face
                                      preamble_2, "\n\n",
                                      prompt_end))
 
@@ -63,6 +86,12 @@ timestamp <- Sys.time()
 formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
 file_name <- paste0("prompt_df_llama_ranking_preamble_", formatted_timestamp, ".rds")
 saveRDS(prompt_df, file = here("data", "llm_ranking", file_name))
+
+# Export for Google Colab
+prompt_df_export <- prompt_df %>% 
+  select(id_var, prompt_content_var)
+
+write.csv(prompt_df_export, here("data", "llm_ranking", "prompt_df_export.csv"), row.names = F)
 
 
 ## Prompt for economic *right* ---------------------------------------------------------------
@@ -154,14 +183,17 @@ for (i in 1:nrow(prompt_df)) {
 # Process Output ---------------------------------------------------------------
 
 # Economically left-leaning
-prompt_df <- readRDS(file = here("data", "llm_ranking", "llama_output_df_20241103_204609.rds"))
+# prompt_df <- readRDS(file = here("data", "llm_ranking", "llama_output_df_20241103_204609.rds"))
+prompt_df <- read.csv(file = here("data", "llm_ranking", "llama_output_df_20250101_192050.csv"))
 
 # Prepare dataframe for ranking
 ranking_df_left <- prompt_df %>% 
-  select(CELEX_1, CELEX_2, response) %>% 
+  # select(CELEX_1, CELEX_2, response) %>% 
   # remove any non-digit characters from string "response" and convert to numeric
-  mutate(response = as.numeric(gsub("\\D", "", response))) %>% 
-  dplyr::filter(response <= 2) %>% #  Only keep responses '1' or '2'; Clean LLM output: Somewhat brute approach that could be optimised
+  mutate(GPT_Output = as.numeric(gsub("\\D", "", GPT_Output))) %>% 
+  dplyr::filter(is.na(GPT_Output) != T) %>% 
+  dplyr::filter(GPT_Output != Inf) %>% 
+  # dplyr::filter(response <= 2) %>% #  Only keep responses '1' or '2'; Clean LLM output: Somewhat brute approach that could be optimised
   mutate(more_left = case_when(response == 1 ~ CELEX_1,
                                response == 2 ~ CELEX_2)) %>% 
   drop_na(response)

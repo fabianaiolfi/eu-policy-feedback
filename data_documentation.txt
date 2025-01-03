@@ -111,4 +111,11 @@ ChatGPT output of 0-shot policy scoring of preamble. All directives and regulati
 
 **prompt_df_llama_ranking_preamble_20250102_105624.rds**
 
-Llama prompt dataframe for ranking for all dir regs; prompt for economic left, 5 repetitions; 01_query_llama_preamble.R
+Llama prompt dataframe for ranking for all dir regs; prompt for economic left, 5 repetitions; 01_query_llama_preamble.R; only saved in `data_backup` on Dropbox.
+
+---
+
+**llama_output_df_20250101_192050.csv**
+
+Llama ranking output for all dir regs of first 23'759 lines of prompt_df_llama_ranking_preamble_20250102_105624.rds (ca. 8% in 12h)
+
