@@ -11,7 +11,7 @@ ceps_eurlex_dir_reg_summaries <- readRDS(file = here("data", "data_collection", 
 celex_index <- ceps_eurlex_dir_reg_summaries %>% 
   select(CELEX) %>% # Only select CELEX
   rename(CELEX_1 = CELEX)
-celex_index <- bind_rows(replicate(5, celex_index, simplify = F)) # Repeat same row 5 times
+celex_index <- bind_rows(replicate(3, celex_index, simplify = F)) # Repeat same row 3 times
 
 # Function to shuffle and ensure no duplicates in the same row
 create_shuffled_column <- function(df) {
@@ -111,10 +111,11 @@ for (i in 1:nrow(prompt_df)) {
   data <- list(
     model = "llama3.2:1b",
     prompt = prompt_df$prompt_content_var[i],
-    stream = F
-    # options = list(
-    #   seed = project_seed # Reference project_seed directly without quotes
-    # )
+    stream = F,
+    options = list(
+      seed = project_seed, # Reference project_seed directly without quotes
+      num_predict = 1
+    )
   )
   
   # Convert the data to JSON format
