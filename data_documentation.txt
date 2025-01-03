@@ -81,13 +81,13 @@ model = "gpt-4o-mini"
 
 **chatgpt_ratings_df_left_20241201_161249.rds**
 
-ChatGPT ranking of economically left-leaning policies that have a summary.
+ChatGPT ranking of economically left-leaning policies that have a summary. (5 repetitions?)
 
 ---
 
 **chatgpt_ratings_df_right_20241201_161434.rds**
 
-ChatGPT ranking of economically right-leaning policies that have a summary.
+ChatGPT ranking of economically right-leaning policies that have a summary. (5 repetitions?)
 
 ---
 
