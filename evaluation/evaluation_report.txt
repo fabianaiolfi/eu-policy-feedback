@@ -1,15 +1,41 @@
 # Evaluation Report
 
-## Data
-- Preambles and summaries of directives and regulations between 1989 and 2024
+## Data: Preambles and summaries of directives and regulations between 1989 and 2024
+
+- Two sources of natural language data were used in the analysis.
+- The first source is a policy’s preamble. This is suggested by Hix Hoyland [SOURCE], who use the preamble text but cut it off when “Adopted this directive/regulation” appears (p. 12). 
+- The preambles were collected using the [CEPS EurLex dataset](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/0EGYWY), which contains around 70k directives and regulations from 1989 to 2019. Policies post-2019 up to August 2024 were collected using the [eurlex](https://michalovadek.github.io/eurlex/) R package. This leads to a total of 74,734 policies.
+- The second source is a policy’s summary. EUR-Lex provides a summary for some directives and regulations (see [this example](https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32019L0904&qid=1719922563047)). Summaries are provided on a case-by-case basis, as described [here](https://eur-lex.europa.eu/browse/summaries.html). 1637 summaries were scraped from [eur-lex.europa.eu](https://eur-lex.europa.eu/homepage.html) using [this script](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/data_collection/eurlex_summaries.R).
 
 ## Methods
-- Existing Methods
-	- Hix Hoyland
-	- LSS
-- LLM Methods
-	- 0-Shot
-	- Ranking
+- Existing methods were implemented and then compared with two novel methods using large language models (LLMs).
+- The LLMs methods use two models: OpenAI’s ChatGPT 4o mini, using the OpenAI API, and Meta’s Llama 3.2, using Ollama locally
+
+### Existing Methods
+- Hix Hoyland [SOURCE, p. 12] classify 100-word text segments into left, right and neutral. They then use a method described by Lowe et al (2011) [SOURCE] to turn the number of occurences into a score.
+
+1. RoBERT Left Right
+- [RoBERT classifier](https://huggingface.co/niksmer/RoBERTa-RILE) trained on the corpus of party manifestos
+
+2. Bakker Hobolt Econ and Social
+- Uses a fine-tuned [ManiBERT classifier](https://huggingface.co/niksmer/ManiBERT) to identify the Comparative Manifesto Project (CMP) policy-issue codes
+- Then combined with Bakker-Hobolt’s modified CMP measures (Table 2.4., p. 38) [SOURCE] 
+
+3. CMP Left Right
+- Uses a fine-tuned [ManiBERT classifier](https://huggingface.co/niksmer/ManiBERT) to identify the Comparative Manifesto Project (CMP) policy-issue codes
+- Then combined with CMP left-right dimension (Table 2.2., p. 33) [SOURCE]
+
+- Latent Semantic Scaling (LSS)
+LSS is a method for measuring the semantic similarity between documents and a set of seed words. In our case, each directive or regulation is a document and the seed words convey “typical” left-right terms. The semantic similarity between documents and seed words is calculated using word embeddings provided by [GloVe](https://nlp.stanford.edu/projects/glove/). To keep computation efficient, I use the smallest pre-trained word vectors model available (6B tokens, 400K vocab, 50 dimensions).
+- [Economic seed words](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/seed_words_econ_manual.yml)
+- [Social seed words](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/seed_words_social_manual.yml)
+
+### LLM Methods
+- 0-Shot
+
+
+
+- Ranking
 
 ## Evaluation
 - Comparison with Nanou 2017
