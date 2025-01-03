@@ -1,0 +1,20 @@
+# Evaluation Report
+
+## Data
+- Preambles and summaries of directives and regulations between 1989 and 2024
+
+## Methods
+- Existing Methods
+	- Hix Hoyland
+	- LSS
+- LLM Methods
+	- 0-Shot
+	- Ranking
+
+## Evaluation
+- Comparison with Nanou 2017
+	- 1989 to 2014
+
+## Results
+- Preambles
+- Summaries
