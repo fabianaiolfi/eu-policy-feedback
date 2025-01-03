@@ -44,13 +44,18 @@ You are an expert in European Union policies. Answer questions and provide infor
 ```
 
 Ranking
-- This method pits two policies against each other. Two random policies are picked and shown to the LLM. The LLM then has to decide which policy is more economically left (or right), depending on a set of criteria. The “winning” policy is then flagged. Repeating this method enough times, i.e., recording many “winning” and “losing” policies, allows to implement the [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system) in order to calcualte a score for each policy. Economically left “winning” policies are thus more left than policies that are economically left “losing”.
+- This method pits two policies against each other. Two random policies are picked and shown to the LLM. The LLM then has to decide which policy is more economically left (or right), depending on a set of criteria. The “winning” policy is then flagged. Repeating this method enough times, i.e., recording many “winning” and “losing” policies, allows to implement the [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system) in order to calcualte a score for each policy. Economically left “winning” policies receive a higher “left” score than policies that are economically left “losing”.
 
 ## Evaluation
 - Comparison with Nanou 2017
 	- 1989 to 2014
-- All results are normalised using z-score
+
+- I compare the calcualted policy scores with a dataset provided by Nanou 2017 [SOURCE], which is the closest to a ground truth that’s possible in this context.
+- Nanou 2017 provide policy scores for 5-year periods for nine broad policy areas
+- In order to make the calculated scores comparable with Nanou 2017 [SOURCE], I normalise all results using z-score, assign each directive and regulation to a broad policy area based on [these criteria](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/evaluation/policy_area_moodley_subj_matter_mpolicy.R), and calcualte the average for each time period and policy area.
 
 ## Results
-- Preambles
+- I separate the 
+
 - Summaries
+- Preambles
