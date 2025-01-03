@@ -119,3 +119,8 @@ Llama prompt dataframe for ranking for all dir regs; prompt for economic left, 5
 
 Llama ranking output for all dir regs of first 23'759 lines of prompt_df_llama_ranking_preamble_20250102_105624.rds (ca. 8% in 12h)
 
+---
+
+**llama_output_df_20250103_125024.rds**
+
+Llama ranking prompting of summaries, econ left, 3 repetitions
