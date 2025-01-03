@@ -124,3 +124,10 @@ Llama ranking output for all dir regs of first 23'759 lines of prompt_df_llama_r
 **llama_output_df_20250103_125024.rds**
 
 Llama ranking prompting of summaries, econ left, 3 repetitions
+
+
+---
+
+**llama_output_df_20250103_173755.rds**
+
+Llama ranking prompting of summaries, econ right, 3 repetitions
