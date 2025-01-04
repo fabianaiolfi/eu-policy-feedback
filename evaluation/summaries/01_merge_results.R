@@ -22,6 +22,7 @@ chatgpt_summary_0_shot <- readRDS(here("data", "llm_0_shot", "chatgpt_summary_0_
 chatgpt_ranking_combined <- readRDS(here("data", "llm_ranking", "chatgpt_combined_rating.rds"))
 llama_summary_0_shot <- readRDS(here("data", "llm_0_shot", "llama_summary_0_shot.rds"))
 llama_ranking_combined <- readRDS(here("data", "llm_ranking", "llama_combined_rating.rds"))
+llama_ranking_combined_3_reps <- readRDS(here("data", "llm_ranking", "llama_combined_rating_3_reps.rds"))
 
 all_dir_reg <- llama_ranking_combined %>%
   select(CELEX) %>%
@@ -77,6 +78,9 @@ chatgpt_ranking_combined <- chatgpt_ranking_combined %>%
 
 llama_ranking_combined <- llama_ranking_combined %>%
   rename(llama_ranking_z_score = llm_ranking_z_score)
+
+llama_ranking_combined_3_reps <- llama_ranking_combined_3_reps %>%
+  rename(llama_ranking_z_score_3_reps = llm_ranking_z_score)
 
 
 ## Connect a Law's Subject Matter with the Broad Policy Area from Nanou 2017 -----------------------
@@ -135,7 +139,8 @@ broad_policy_mpolicy_avg_df <- all_dir_reg %>%
   left_join(select(chatgpt_summary_0_shot, CELEX, chatgpt_summary_0_shot_z_score), by = "CELEX") %>% 
   left_join(select(llama_summary_0_shot, CELEX, llama_summary_0_shot_z_score), by = "CELEX") %>% 
   left_join(select(chatgpt_ranking_combined, CELEX, chatgpt_ranking_z_score), by = "CELEX") %>%
-  left_join(select(llama_ranking_combined, CELEX, llama_ranking_z_score), by = "CELEX")
+  left_join(select(llama_ranking_combined, CELEX, llama_ranking_z_score), by = "CELEX") %>% 
+  left_join(select(llama_ranking_combined_3_reps, CELEX, llama_ranking_z_score_3_reps), by = "CELEX")
 
 # Save raw results to file for evaluation
 saveRDS(broad_policy_mpolicy_avg_df, file = here("data", "evaluation", "broad_policy_mpolicy_avg_df_summaries_raw_results.rds"))

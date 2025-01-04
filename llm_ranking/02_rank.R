@@ -58,7 +58,7 @@ ratings_df_left <- ratings_df_left %>% arrange(desc(rating))
 # Save to file
 timestamp <- Sys.time()
 formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
-file_name <- paste0("chatgpt_ratings_df_left_", formatted_timestamp, ".rds")
+file_name <- paste0("llama_ratings_df_left_3_rep", formatted_timestamp, ".rds")
 saveRDS(ratings_df_left, file = here("data", "llm_ranking", file_name))
 
 
@@ -83,5 +83,5 @@ ratings_df_right <- ratings_df_right %>% arrange(desc(rating))
 # Save to file
 timestamp <- Sys.time()
 formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
-file_name <- paste0("chatgpt_ratings_df_right_", formatted_timestamp, ".rds")
+file_name <- paste0("llama_ratings_df_right_3_rep", formatted_timestamp, ".rds")
 saveRDS(ratings_df_right, file = here("data", "llm_ranking", file_name))

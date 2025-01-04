@@ -6,8 +6,8 @@
 
 ## Load Data -------------------------
 
-ratings_df_left <- readRDS(file = here("data", "llm_ranking", "llama_ratings_df_left_20241117_103622.rds"))
-ratings_df_right <- readRDS(file = here("data", "llm_ranking", "llama_ratings_df_right_20241117_104545.rds"))
+ratings_df_left <- readRDS(file = here("data", "llm_ranking", "llama_ratings_df_left_3_rep20250104_105112.rds"))
+ratings_df_right <- readRDS(file = here("data", "llm_ranking", "llama_ratings_df_right_3_rep20250104_105147.rds"))
 
 
 ## Post Process -------------------------
@@ -32,4 +32,4 @@ combined_rating <- ratings_df_left %>%
 
 ## Save Data -------------------------
 
-saveRDS(combined_rating, file = here("data", "llm_ranking", "chatgpt_combined_rating.rds"))
+saveRDS(combined_rating, file = here("data", "llm_ranking", "llama_combined_rating_3_reps.rds"))

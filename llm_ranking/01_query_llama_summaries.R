@@ -145,7 +145,7 @@ saveRDS(prompt_df, file = here("data", "llm_ranking", file_name))
 # Process Output ---------------------------------------------------------------
 
 # Economically left-leaning
-prompt_df <- readRDS(file = here("data", "llm_ranking", "llama_output_df_20241103_204609.rds"))
+prompt_df <- readRDS(file = here("data", "llm_ranking", "llama_output_df_20250103_125024.rds"))
 
 # Prepare dataframe for ranking
 ranking_df_left <- prompt_df %>% 
@@ -158,7 +158,7 @@ ranking_df_left <- prompt_df %>%
   drop_na(response)
 
 # Economically right-leaning
-prompt_df <- readRDS(file = here("data", "llm_ranking", "llama_output_df_20241104_132306.rds"))
+prompt_df <- readRDS(file = here("data", "llm_ranking", "llama_output_df_20250103_173755.rds"))
 
 # Prepare dataframe for ranking
 ranking_df_right <- prompt_df %>% 

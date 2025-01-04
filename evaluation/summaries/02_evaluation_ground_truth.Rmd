@@ -34,6 +34,7 @@ broad_policy_mpolicy_avg_df <- broad_policy_mpolicy_avg_df %>%
   rename("ChatGPT Ranking" = chatgpt_ranking_z_score) %>% 
   rename("Llama 0-Shot" = llama_summary_0_shot_z_score) %>% 
   rename("Llama Ranking" = llama_ranking_z_score) %>% 
+  rename("Llama Ranking (3 reps)" = llama_ranking_z_score_3_reps) %>% 
   rename("Nanou 2017 (Ground Truth)" = nanou_2017_mpolicy_lrscale3)
 
 # Define the ground truth column
