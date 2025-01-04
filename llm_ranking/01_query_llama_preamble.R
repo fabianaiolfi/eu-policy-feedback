@@ -34,33 +34,33 @@ celex_index <- create_shuffled_column(celex_index)
 
 # Create Prompt Dataframe ---------------------------------------------------------------
 
-# system_prompt <- "You are an expert in European Union policies. Answer questions and provide information based on that expertise.\n\n" # Ollama
-#system_prompt <-"You are an expert in European Union policies. Answer questions and provide information based on that expertise.\n\n" # Colab + Hugging Face
-system_prompt <-"You are an expert in European Union policies. Based on the following context, analyze which policy is more economically left-leaning and return only '1' or '2'. Do not include any explanation or additional text.\n\n" # Colab + Hugging Face
+system_prompt <- "You are an expert in European Union policies. Answer questions and provide information based on that expertise.\n\n" # Ollama
+# system_prompt <-"You are an expert in European Union policies. Answer questions and provide information based on that expertise.\n\n" # Colab + Hugging Face
+# system_prompt <-"You are an expert in European Union policies. Based on the following context, analyze which policy is more economically left-leaning and return only '1' or '2'. Do not include any explanation or additional text.\n\n" # Colab + Hugging Face
 
 
 
 ## Prompt for economic *left* ---------------------------------------------------------------
 
-# prompt_start <- "I’m going to show you two EU policies, and I need to determine which policy is more economically left-leaning. Please analyze the beginning of the policies' preamble based on principles commonly associated with economically left policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights.\n\n" # Ollama
+prompt_start <- "I’m going to show you two EU policies, and I need to determine which policy is more economically left-leaning. Please analyze the beginning of the policies' preamble based on principles commonly associated with economically left policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights.\n\n" # Ollama
 #prompt_start <- "Context: I’m going to show you 2 EU policies, and I need to determine which policy is more economically left-leaning. Please analyze the beginning of the policies' preamble based on principles commonly associated with economically left policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights.\n\n" # Colab + Hugging Face
-prompt_start <- "You are an expert in European Union policies. I’m going to show you 2 EU policies, and I need to determine which policy is more economically left-leaning. Please analyze the beginning of the policies' preamble based on principles commonly associated with economically left policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights. Based on these principles, analyze which policy is more economically left-leaning and return only '1' or '2'. Do not include any explanation or additional text.\n\n" # Colab + Hugging Face
+# prompt_start <- "You are an expert in European Union policies. I’m going to show you 2 EU policies, and I need to determine which policy is more economically left-leaning. Please analyze the beginning of the policies' preamble based on principles commonly associated with economically left policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights. Based on these principles, analyze which policy is more economically left-leaning and return only '1' or '2'. Do not include any explanation or additional text.\n\n" # Colab + Hugging Face
 
-prompt_example <- "Example:
+# prompt_example <- "Example:
 
-EU Policy 1:
-[Preamble]
+# EU Policy 1:
+# [Preamble]
 
-EU Policy 2:
-[Preamble]
+# EU Policy 2:
+# [Preamble]
 
-Q: Which policy is more economically left? Answer with '1' or '2' based on the principles provided. Ensure your analysis is impartial and considers both policies equally.
-A: 2\n
-Now answer the question below:\n\n"
+# Q: Which policy is more economically left? Answer with '1' or '2' based on the principles provided. Ensure your analysis is impartial and considers both policies equally.
+# A: 2\n
+# Now answer the question below:\n\n"
 
-# prompt_end <- "Which policy is more economically left? Please answer ONLY '1' or '2', NOTHING ELSE UNDER NO CIRCUMSTANCES." # Ollama
-#prompt_end <- "Q: Which policy is more economically left? Please answer ONLY '1' or '2', NOTHING ELSE UNDER NO CIRCUMSTANCES.\n\nA:" # Colab + Hugging Face
-prompt_end <- "Q: Which policy is more economically left? Answer with '1' or '2' based on the principles provided. Ensure your analysis is impartial and considers both policies equally.\nA:" # Colab + Hugging Face
+prompt_end <- "Which policy is more economically left? Please answer ONLY '1' or '2', NOTHING ELSE UNDER NO CIRCUMSTANCES." # Ollama
+# prompt_end <- "Q: Which policy is more economically left? Please answer ONLY '1' or '2', NOTHING ELSE UNDER NO CIRCUMSTANCES.\n\nA:" # Colab + Hugging Face
+# prompt_end <- "Q: Which policy is more economically left? Answer with '1' or '2' based on the principles provided. Ensure your analysis is impartial and considers both policies equally.\nA:" # Colab + Hugging Face
 
 prompt_df <- celex_index %>% 
   left_join(all_dir_reg, by = c("CELEX_1" = "CELEX")) %>% 
@@ -70,14 +70,14 @@ prompt_df <- celex_index %>%
   mutate(id_var = paste0(CELEX_1, "_", CELEX_2)) %>% # ID for each row
   mutate(prompt_role_var = "user") %>% # Set role
   # Put together prompt
-  mutate(prompt_content_var = paste0(#system_prompt, 
+  mutate(prompt_content_var = paste0(system_prompt, 
                                      prompt_start, 
-                                     prompt_example,
-                                     # "Preamble 1:\n", # Ollama
-                                     "EU Policy 1:\n", # Colab + Hugging Face
+                                     # prompt_example,
+                                     "Preamble 1:\n", # Ollama
+                                     # "EU Policy 1:\n", # Colab + Hugging Face
                                      preamble_1, "\n\n",
-                                     # "Preamble 2:\n", # Ollama
-                                     "EU Policy 2:\n", # Colab + Hugging Face
+                                     "Preamble 2:\n", # Ollama
+                                     # "EU Policy 2:\n", # Colab + Hugging Face
                                      preamble_2, "\n\n",
                                      prompt_end))
 
