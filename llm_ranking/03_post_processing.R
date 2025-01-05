@@ -6,8 +6,8 @@
 
 ## Load Data -------------------------
 
-ratings_df_left <- readRDS(file = here("data", "llm_ranking", "deepseek_ratings_df_left_20250105_005846.rds"))
-ratings_df_right <- readRDS(file = here("data", "llm_ranking", "deepseek_ratings_df_right_20250105_005918.rds"))
+ratings_df_left <- readRDS(file = here("data", "llm_ranking", "deepseek_ratings_df_social_left_20250105_142731.rds"))
+ratings_df_right <- readRDS(file = here("data", "llm_ranking", "deepseek_ratings_df_social_right_20250105_143227.rds"))
 
 
 ## Post Process -------------------------
@@ -32,4 +32,4 @@ combined_rating <- ratings_df_left %>%
 
 ## Save Data -------------------------
 
-saveRDS(combined_rating, file = here("data", "llm_ranking", "deepseek_combined_rating_summaries.rds"))
+saveRDS(combined_rating, file = here("data", "llm_ranking", "deepseek_combined_social_ranking_summaries.rds"))

@@ -25,19 +25,20 @@ broad_policy_mpolicy_avg_df_summaries <- readRDS(here("data", "evaluation", "bro
 broad_policy_mpolicy_avg_df_summaries <- broad_policy_mpolicy_avg_df_summaries %>% 
   drop_na() %>% 
   mutate(nanou_2017_mpolicy_lrscale3 = as.numeric(nanou_2017_mpolicy_lrscale3)) %>% 
-  rename("LSS: Economy" = avg_lss_econ_z_score) %>% 
+  rename("LSS: Economic" = avg_lss_econ_z_score) %>% 
   rename("LSS: Social" = avg_lss_social_z_score) %>% 
   rename("Hix & Høyland: RoBERT Left Right" = RoBERT_left_right_z_score) %>% 
-  rename("Hix & Høyland: Bakker Hobolt Economy" = bakker_hobolt_econ_z_score) %>% 
+  rename("Hix & Høyland: Bakker Hobolt Economic" = bakker_hobolt_econ_z_score) %>% 
   rename("Hix & Høyland: Bakker Hobolt Social" = bakker_hobolt_social_z_score) %>% 
   rename("Hix & Høyland: CMP Left Right" = cmp_left_right_z_score) %>% 
-  rename("LLM: ChatGPT 0-Shot" = chatgpt_summary_0_shot_z_score) %>% 
-  rename("LLM: ChatGPT Ranking" = chatgpt_ranking_z_score) %>% 
-  rename("LLM: Llama 0-Shot" = llama_summary_0_shot_z_score) %>% 
-  rename("LLM: Llama Ranking" = llama_ranking_z_score) %>% 
-  rename("LLM: Deepseek Economy 0-Shot" = deepseek_econ_0_shot_z_score) %>% 
+  rename("LLM: ChatGPT Economic 0-Shot" = chatgpt_summary_0_shot_z_score) %>% 
+  rename("LLM: ChatGPT Economic Ranking" = chatgpt_ranking_z_score) %>% 
+  rename("LLM: Llama Economic 0-Shot" = llama_summary_0_shot_z_score) %>% 
+  rename("LLM: Llama Economic Ranking" = llama_ranking_z_score) %>% 
+  rename("LLM: Deepseek Economic 0-Shot" = deepseek_econ_0_shot_z_score) %>% 
   rename("LLM: Deepseek Social 0-Shot" = deepseek_social_0_shot_z_score) %>% 
-  rename("LLM: Deepseek Ranking" = deepseek_ranking_z_score) %>% 
+  rename("LLM: Deepseek Economic Ranking" = deepseek_econ_ranking_z_score) %>% 
+  rename("LLM: Deepseek Social Ranking" = deepseek_social_ranking_z_score) %>% 
   rename("Ground Truth: Nanou et al." = nanou_2017_mpolicy_lrscale3)
 
 # Define the ground truth column
@@ -60,8 +61,8 @@ broad_policy_mpolicy_avg_df_preamble <- broad_policy_mpolicy_avg_df_preamble %>%
   rename("Hix & Høyland: Bakker Hobolt Economy" = bakker_hobolt_econ_z_score) %>% 
   rename("Hix & Høyland: Bakker Hobolt Social" = bakker_hobolt_social_z_score) %>% 
   rename("Hix & Høyland: CMP Left Right" = cmp_left_right_z_score) %>% 
-  rename("LLM: Llama 0-Shot" = llama_preamble_0_shot_z_score) %>% 
-  rename("LLM: ChatGPT 0-Shot" = chatgpt_preamble_0_shot_z_score) %>% 
+  rename("LLM: Llama Economic 0-Shot" = llama_preamble_0_shot_z_score) %>% 
+  rename("LLM: ChatGPT Economic 0-Shot" = chatgpt_preamble_0_shot_z_score) %>% 
   rename("Ground Truth: Nanou et al." = nanou_2017_mpolicy_lrscale3)
 
 # Define the ground truth column
@@ -171,6 +172,31 @@ Policy Summary 2
 Which policy is more economically right? Please answer ONLY USING THE NUMBERS '1' or '2', NOTHING ELSE UNDER NO CIRCUMSTANCES.
 ```
 
+##### Prompt for Social Left (Summaries)
+```
+I have two summaries of EU policies, and I need to determine which policy is more socially progressive. Please analyze the summaries based on principles commonly associated with socially progressive policies, such as support for LGBTQ+ rights, gender equality, racial justice, reproductive rights, inclusive social policies, expansive immigration policies, criminal justice reform, environmental justice, secularism in governance, and multiculturalism.
+
+Policy Summary 1
+…
+
+Policy Summary 2
+…
+
+Which policy is more socially left? Please return only '1' or '2'.
+```
+
+##### Prompt for Social Right (Summaries)
+```
+I have two summaries of EU policies, and I need to determine which policy is more economically right-leaning. Please analyze the summaries based on principles commonly associated with economically right policies, such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility.
+
+Policy Summary 1
+…
+
+Policy Summary 2
+…
+
+Which policy is more socially right? Please return only '1' or '2'.
+```
 
 ##### Prompt for Economic Left (Preambles)
 ```
@@ -238,7 +264,7 @@ pearson_correlation_melt <- melt(pearson_correlation) # Convert the correlation 
 
 ggplot(pearson_correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
   geom_tile() +
-  geom_text(aes(label = round(value, 2)), size = 3) +
+  geom_text(aes(label = round(value, 2)), size = 2) +
   scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
                        midpoint = 0, limit = c(-1, 1), space = "Lab", 
                        name="Correlation") +
@@ -286,7 +312,7 @@ ggplot(scatter_plot_data, aes(x = value, y = `Ground Truth: Nanou et al.`)) +
   geom_smooth(method = 'lm', formula = y ~ x, se = F) +
   geom_abline(intercept = 0, slope = 1, color = "gray") +
   theme_minimal() +
-  facet_wrap(~ measurement, nrow = 3) +
+  facet_wrap(~ measurement, ncol = 3) +
   xlim(-2, 2) +
   xlab("")
 ```
@@ -304,7 +330,7 @@ ggplot(scatter_plot_data, aes(x = value, y = `Ground Truth: Nanou et al.`)) +
   geom_smooth(method = 'lm', formula = y ~ x, se = F) +
   geom_abline(intercept = 0, slope = 1, color = "gray") +
   theme_minimal() +
-  facet_wrap(~ measurement, nrow = 3) +
+  facet_wrap(~ measurement, ncol = 3) +
   xlim(-2, 2) +
   xlab("")
 ```

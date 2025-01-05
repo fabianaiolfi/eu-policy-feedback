@@ -41,6 +41,11 @@ system_prompt <- "You are an expert in European Union policies. Answer questions
 prompt_start <- "I have two summaries of EU policies, and I need to determine which policy is more economically left-leaning. Please analyze the summaries based on principles commonly associated with economically left policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights.\n\n"
 prompt_end <- "Which policy is more economically left? Please return only '1' or '2'."
 
+## Prompt for social *left* ---------------------------------------------------------------
+
+prompt_start <- "I have two summaries of EU policies, and I need to determine which policy is more socially progressive. Please analyze the summaries based on principles commonly associated with socially progressive policies, such as support for LGBTQ+ rights, gender equality, racial justice, reproductive rights, inclusive social policies, expansive immigration policies, criminal justice reform, environmental justice, secularism in governance, and multiculturalism.\n\n"
+prompt_end <- "Which policy is more socially left? Please return only '1' or '2'."
+
 prompt_df <- celex_index %>% 
   left_join(ceps_eurlex_dir_reg_summaries, by = c("CELEX_1" = "CELEX")) %>% 
   rename(policy_summary_1 = eurlex_summary_clean) %>% 
@@ -71,7 +76,7 @@ sum(prompt_df$prompt_token_len) # 26'044'801 tokens
 prompt_df_export <- prompt_df %>% 
   select(id_var, prompt_content_var)
 
-write.csv(prompt_df_export, here("data", "llm_ranking", "prompt_df_ranking_export_left_summaries.csv"), row.names = F)
+write.csv(prompt_df_export, here("data", "llm_ranking", "prompt_df_ranking_export_social_left_summaries.csv"), row.names = F)
 
 # Save prompt_df to file to assure reproducability despite randomness in celex_index
 timestamp <- Sys.time()
@@ -84,6 +89,12 @@ saveRDS(prompt_df, file = here("data", "llm_ranking", file_name))
 
 prompt_start <- "I have two summaries of EU policies, and I need to determine which policy is more economically right-leaning. Please analyze the summaries based on principles commonly associated with economically right policies, such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility.\n\n"
 prompt_end <- "Which policy is more economically right? Please return only '1' or '2'."
+
+
+## Prompt for social *right* ---------------------------------------------------------------
+
+prompt_start <- "I have two summaries of EU policies, and I need to determine which policy is more socially conservative. Please analyze the summaries based on principles commonly associated with socially conservative policies, such as emphasis on traditional family values, opposition to same-sex marriage, restrictions on reproductive rights, stricter immigration controls, prioritization of national identity, opposition to multiculturalism, support for tough-on-crime policies, environmental skepticism, and the promotion of religion in public life.\n\n"
+prompt_end <- "Which policy is more socially right? Please return only '1' or '2'."
 
 prompt_df <- celex_index %>% 
   left_join(ceps_eurlex_dir_reg_summaries, by = c("CELEX_1" = "CELEX")) %>% 
@@ -108,7 +119,7 @@ prompt_df <- celex_index %>%
 prompt_df_export <- prompt_df %>% 
   select(id_var, prompt_content_var)
 
-write.csv(prompt_df_export, here("data", "llm_ranking", "prompt_df_ranking_export_right_summaries.csv"), row.names = F)
+write.csv(prompt_df_export, here("data", "llm_ranking", "prompt_df_ranking_export_social_right_summaries.csv"), row.names = F)
 
 # Save prompt_df to file to assure reproducability despite randomness in celex_index
 timestamp <- Sys.time()
@@ -222,8 +233,32 @@ ranking_df_left <- deepseek_output %>%
                                output == 2 ~ CELEX_2)) %>% 
   drop_na(output)
 
+# Socially left-leaning
+deepseek_output <- read.csv(file = here("data", "llm_ranking", "deepseek_output_ranking_social_left_summaries.csv"))
+
+ranking_df_left <- deepseek_output %>% 
+  separate(id_var, into = c("CELEX_1", "CELEX_2"), sep = "_") %>% 
+  # remove any non-digit characters from string "response" and convert to numeric
+  mutate(output = as.numeric(gsub("\\D", "", output))) %>% 
+  dplyr::filter(output <= 2) %>% #  Only keep responses '1' or '2'; Clean LLM output: Somewhat brute approach that could be optimised
+  mutate(more_left = case_when(output == 1 ~ CELEX_1,
+                               output == 2 ~ CELEX_2)) %>% 
+  drop_na(output)
+
 # Economically right-leaning
 deepseek_output <- read.csv(file = here("data", "llm_ranking", "deepseek_output_0_shot_right_summaries.csv"))
+
+ranking_df_right <- deepseek_output %>% 
+  separate(id_var, into = c("CELEX_1", "CELEX_2"), sep = "_") %>% 
+  # remove any non-digit characters from string "response" and convert to numeric
+  mutate(output = as.numeric(gsub("\\D", "", output))) %>% 
+  dplyr::filter(output <= 2) %>% #  Only keep responses '1' or '2'; Clean LLM output: Somewhat brute approach that could be optimised
+  mutate(more_right = case_when(output == 1 ~ CELEX_1,
+                               output == 2 ~ CELEX_2)) %>% 
+  drop_na(output)
+
+# Socially right-leaning
+deepseek_output <- read.csv(file = here("data", "llm_ranking", "deepseek_output_ranking_social_right_summaries.csv"))
 
 ranking_df_right <- deepseek_output %>% 
   separate(id_var, into = c("CELEX_1", "CELEX_2"), sep = "_") %>% 

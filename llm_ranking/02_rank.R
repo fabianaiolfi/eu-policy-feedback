@@ -62,6 +62,31 @@ file_name <- paste0("deepseek_ratings_df_left_", formatted_timestamp, ".rds")
 saveRDS(ratings_df_left, file = here("data", "llm_ranking", file_name))
 
 
+## Socially left-leaning -------------------------
+
+# Initialize ratings
+initial_rating <- 1000
+documents <- unique(c(ranking_df_left$CELEX_1, ranking_df_left$CELEX_2))
+ratings <- setNames(rep(initial_rating, length(documents)), documents)
+
+# Iterate over comparisons and update ratings
+for (i in 1:nrow(ranking_df_left)) {
+  winner <- ranking_df_left$more_left[i]
+  loser <- ifelse(ranking_df_left$CELEX_1[i] == winner, ranking_df_left$CELEX_2[i], ranking_df_left$CELEX_1[i])
+  ratings <- update_elo(winner, loser, ratings)
+}
+
+# Convert ratings to a dataframe for easier viewing
+ratings_df_left <- data.frame(document = names(ratings), rating = unname(ratings))
+ratings_df_left <- ratings_df_left %>% arrange(desc(rating))
+
+# Save to file
+timestamp <- Sys.time()
+formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
+file_name <- paste0("deepseek_ratings_df_social_left_", formatted_timestamp, ".rds")
+saveRDS(ratings_df_left, file = here("data", "llm_ranking", file_name))
+
+
 ## Economically right-leaning -------------------------
 
 # Initialize ratings
@@ -84,4 +109,29 @@ ratings_df_right <- ratings_df_right %>% arrange(desc(rating))
 timestamp <- Sys.time()
 formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
 file_name <- paste0("deepseek_ratings_df_right_", formatted_timestamp, ".rds")
+saveRDS(ratings_df_right, file = here("data", "llm_ranking", file_name))
+
+
+## Socially right-leaning -------------------------
+
+# Initialize ratings
+initial_rating <- 1000
+documents <- unique(c(ranking_df_right$CELEX_1, ranking_df_right$CELEX_2))
+ratings <- setNames(rep(initial_rating, length(documents)), documents)
+
+# Iterate over comparisons and update ratings
+for (i in 1:nrow(ranking_df_right)) {
+  winner <- ranking_df_right$more_right[i]
+  loser <- ifelse(ranking_df_right$CELEX_1[i] == winner, ranking_df_right$CELEX_2[i], ranking_df_right$CELEX_1[i])
+  ratings <- update_elo(winner, loser, ratings)
+}
+
+# Convert ratings to a dataframe for easier viewing
+ratings_df_right <- data.frame(document = names(ratings), rating = unname(ratings))
+ratings_df_right <- ratings_df_right %>% arrange(desc(rating))
+
+# Save to file
+timestamp <- Sys.time()
+formatted_timestamp <- format(timestamp, "%Y%m%d_%H%M%S")
+file_name <- paste0("deepseek_ratings_df_social_right_", formatted_timestamp, ".rds")
 saveRDS(ratings_df_right, file = here("data", "llm_ranking", file_name))
