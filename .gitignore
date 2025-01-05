@@ -46,6 +46,7 @@ manifesto_apikey.txt
 *.pdf
 sandbox.R
 access_key_deepseek.txt
+evaluation_report.html
 # Specific CSV files
 **/hix_hoyland_2024/*.csv
 lss/*.csv
