@@ -1,4 +1,76 @@
-# Evaluation Report
+---
+title: "Political Ideology of EU Directives and Regulations: Evaluation and Comparison with Ground Truth"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(corrplot)
+library(reshape2)
+library(Metrics)
+library(kableExtra)
+library(car)
+```
+
+```{r, include=FALSE}
+# Summaries
+broad_policy_mpolicy_avg_df_summaries <- readRDS(here("data", "evaluation", "broad_policy_mpolicy_avg_df_summaries.rds"))
+broad_policy_mpolicy_avg_df_summaries <- broad_policy_mpolicy_avg_df_summaries %>% 
+  drop_na() %>% 
+  mutate(nanou_2017_mpolicy_lrscale3 = as.numeric(nanou_2017_mpolicy_lrscale3)) %>% 
+  rename("LSS: Economy" = avg_lss_econ_z_score) %>% 
+  rename("LSS: Social" = avg_lss_social_z_score) %>% 
+  rename("Hix & Høyland: RoBERT Left Right" = RoBERT_left_right_z_score) %>% 
+  rename("Hix & Høyland: Bakker Hobolt Economy" = bakker_hobolt_econ_z_score) %>% 
+  rename("Hix & Høyland: Bakker Hobolt Social" = bakker_hobolt_social_z_score) %>% 
+  rename("Hix & Høyland: CMP Left Right" = cmp_left_right_z_score) %>% 
+  rename("LLM: ChatGPT 0-Shot" = chatgpt_summary_0_shot_z_score) %>% 
+  rename("LLM: ChatGPT Ranking" = chatgpt_ranking_z_score) %>% 
+  rename("LLM: Llama 0-Shot" = llama_summary_0_shot_z_score) %>% 
+  rename("LLM: Llama Ranking" = llama_ranking_z_score) %>% 
+  rename("LLM: Deepseek Economy 0-Shot" = deepseek_econ_0_shot_z_score) %>% 
+  rename("LLM: Deepseek Social 0-Shot" = deepseek_social_0_shot_z_score) %>% 
+  rename("LLM: Deepseek Ranking" = deepseek_ranking_z_score) %>% 
+  rename("Ground Truth: Nanou et al." = nanou_2017_mpolicy_lrscale3)
+
+# Define the ground truth column
+ground_truth_summaries <- broad_policy_mpolicy_avg_df_summaries$`Ground Truth: Nanou et al.`
+
+# Select all columns to compare (excluding the ground truth column)
+columns_to_compare_summaries <- broad_policy_mpolicy_avg_df_summaries %>% 
+  select(-`Ground Truth: Nanou et al.`, -broad_policy_area_mpolicy_moodley, -period)
+```
+
+```{r, include=FALSE}
+# Preamble
+broad_policy_mpolicy_avg_df_preamble <- readRDS(here("data", "evaluation", "broad_policy_mpolicy_avg_df_preamble.rds"))
+broad_policy_mpolicy_avg_df_preamble <- broad_policy_mpolicy_avg_df_preamble %>% 
+  drop_na() %>% 
+  mutate(nanou_2017_mpolicy_lrscale3 = as.numeric(nanou_2017_mpolicy_lrscale3)) %>% 
+  rename("LSS: Economy" = avg_lss_econ_z_score) %>% 
+  rename("LSS: Social" = avg_lss_social_z_score) %>% 
+  rename("Hix & Høyland: RoBERT Left Right" = RoBERT_left_right_z_score) %>% 
+  rename("Hix & Høyland: Bakker Hobolt Economy" = bakker_hobolt_econ_z_score) %>% 
+  rename("Hix & Høyland: Bakker Hobolt Social" = bakker_hobolt_social_z_score) %>% 
+  rename("Hix & Høyland: CMP Left Right" = cmp_left_right_z_score) %>% 
+  rename("LLM: Llama 0-Shot" = llama_preamble_0_shot_z_score) %>% 
+  rename("LLM: ChatGPT 0-Shot" = chatgpt_preamble_0_shot_z_score) %>% 
+  rename("Ground Truth: Nanou et al." = nanou_2017_mpolicy_lrscale3)
+
+# Define the ground truth column
+ground_truth_preamble <- broad_policy_mpolicy_avg_df_preamble$`Ground Truth: Nanou et al.`
+
+# Select all columns to compare (excluding the ground truth column)
+columns_to_compare_preamble <- broad_policy_mpolicy_avg_df_preamble %>% 
+  select(-`Ground Truth: Nanou et al.`, -broad_policy_area_mpolicy_moodley, -period)
+```
 
 This report explains how the political ideology of EU directives and regulations was calculated and assessed. It compares the results to a ground truth dataset.
 
@@ -67,7 +139,7 @@ I’m going to show you a summary of an EU policy. Please score the policy on a 
 #### Ranking
 This method compares two policies. Two random policies are presented to the LLM, which decides which policy is more economically left (or right) based on set criteria. The “winning” policy is flagged. Repeating this process many times and recording “winning” and “losing” policies enables the use of the [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system) to calculate a score for each policy. Economically left “winning” policies receive a higher “left” score than economically left “losing” policies.
 
-Prompt for Economic Left (Summaries)
+##### Prompt for Economic Left (Summaries)
 ```
 You are an expert in European Union policies. Answer questions and provide information based on that expertise.
 
@@ -82,7 +154,7 @@ Policy Summary 2
 Which policy is more economically left? Please answer ONLY '1' or '2', NOTHING ELSE UNDER NO CIRCUMSTANCES.
 ```
 
-Prompt for Economic Right (Summaries)
+##### Prompt for Economic Right (Summaries)
 ```
 You are an expert in European Union policies. Answer questions and provide information based on that expertise.
 
@@ -98,7 +170,7 @@ Which policy is more economically right? Please answer ONLY USING THE NUMBERS '1
 ```
 
 
-Prompt for Economic Left (Preambles)
+##### Prompt for Economic Left (Preambles)
 ```
 You are an expert in European Union policies. Answer questions and provide information based on that expertise.
 
@@ -113,7 +185,7 @@ Preamble 2
 Which policy is more economically left? Please answer ONLY '1' or '2', NOTHING ELSE UNDER NO CIRCUMSTANCES.
 ```
 
-Prompt for Economic Right (Preambles)
+##### Prompt for Economic Right (Preambles)
 ```
 You are an expert in European Union policies. Answer questions and provide information based on that expertise.
 
@@ -151,13 +223,156 @@ Mapping between broad policy area and subject matter is performed with [this scr
 ## Results
 I evaluate the summaries and the preambles separately using the following metrics:
 
-- Pearson Correlation: A higher correlation between a calculated score and the ground truth suggests that the averaged calculated scores are closer to the ground truth.
+### Pearson Correlation
+A higher correlation between a calculated score and the ground truth suggests that the averaged calculated scores are closer to the ground truth.
 
-- Correlation Scatter Plots: Each point in these plots represents an averaged score for a broad policy area in a specific time period. The x-axis shows the calculated scores (described in the plot’s title), and the y-axis shows the ground truth. The diagonal gray line represents perfect correlation, while the blue line represents the trend line for the calculated scores. Closer convergence of the blue and gray lines indicates better alignment with the ground truth.
+#### Summaries
+```{r echo=FALSE, fig.height=8, fig.width=8, message=FALSE, warning=FALSE}
+pearson_correlation <- broad_policy_mpolicy_avg_df_summaries %>% 
+  select(-broad_policy_area_mpolicy_moodley, -period)
 
-- Mean Absolute Error (MAE): The average of the absolute differences between calculated scores and the ground truth. Smaller MAE values indicate that the calculated scores are closer to the ground truth.
+pearson_correlation <- cor(pearson_correlation, use = "pairwise.complete.obs")
+pearson_correlation_melt <- melt(pearson_correlation) # Convert the correlation matrix into long format for ggplot2
 
-- Adjusted MAE With Variance Penalties: The ground truth exhibits much higher variance than the calculated scores. To address this, I introduce a variance penalty that penalizes scores for their lack of variance. The MAE is adjusted by multiplying it by the inverse of the variance ratio, which is the ratio of the variance of the ground truth to the variance of the calculated scores. Scores with higher variance are less penalized, while scores with lower variance are more penalized.
+ggplot(pearson_correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile() +
+  geom_text(aes(label = round(value, 2)), size = 3) +
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                       midpoint = 0, limit = c(-1, 1), space = "Lab", 
+                       name="Correlation") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust = 1)) +
+  coord_fixed() +
+  xlab("") + ylab("") +
+  theme(legend.position="none")
+```
 
-### Discussion of Results
+### Correlation Scatter Plots
+Each point in these plots represents an averaged score for a broad policy area in a specific time period. The x-axis shows the calculated scores (described in the plot’s title), and the y-axis shows the ground truth. The diagonal gray line represents perfect correlation, while the blue line represents the trend line for the calculated scores. Closer convergence of the blue and gray lines indicates better alignment with the ground truth.
+
+#### Summaries
+```{r echo=FALSE, fig.height=9, fig.width=9, message=FALSE, warning=FALSE}
+scatter_plot_data <- broad_policy_mpolicy_avg_df_summaries %>%
+  select(-broad_policy_area_mpolicy_moodley, -period) %>% 
+  pivot_longer(cols = -`Ground Truth: Nanou et al.`,
+               names_to = "measurement", 
+               values_to = "value")
+
+ggplot(scatter_plot_data, aes(x = value, y = `Ground Truth: Nanou et al.`)) +
+  geom_point() +
+  geom_smooth(method = 'lm', formula = y ~ x, se = F) +
+  geom_abline(intercept = 0, slope = 1, color = "gray") +
+  theme_minimal() +
+  facet_wrap(~ measurement) +
+  xlim(-2, 2) +
+  xlab("")
+```
+
+### Variance
+
+#### Summaries: Distribution of Z-Scores (Histograms)
+
+```{r echo=FALSE, fig.height=5, fig.width=8, message=FALSE, warning=FALSE}
+variance_hist <- broad_policy_mpolicy_avg_df_summaries %>%
+  select(-broad_policy_area_mpolicy_moodley, -period) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "z_score_measurement", 
+               values_to = "z_score_value")
+
+ggplot(variance_hist, aes(x = z_score_value)) +
+  geom_histogram() +
+  facet_wrap(~ z_score_measurement, ncol = 3) +
+  xlab("Z-Score") + ylab("Count") +
+  theme_minimal()
+```
+
+#### Summaries: Distribution of Z-Scores (Box Plots)
+
+```{r echo=FALSE, fig.height=5, fig.width=8, message=FALSE, warning=FALSE}
+variance_data <- broad_policy_mpolicy_avg_df_summaries %>%
+  select(-broad_policy_area_mpolicy_moodley, -period) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "measurement", 
+               values_to = "value") %>% 
+  group_by(measurement)
+
+ggplot(variance_data) +
+  geom_boxplot(aes(x = measurement, y = value)) +
+  ylab("Z-Score") + xlab("") +
+  coord_flip() +
+  theme_minimal()
+```
+
+### Mean Absolute Error (MAE)
+The average of the absolute differences between calculated scores and the ground truth. Smaller MAE values indicate that the calculated scores are closer to the ground truth.
+
+#### Summaries
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Calculate MAE for each column
+mae_results <- sapply(columns_to_compare_summaries, function(column) {
+  mean(abs(column - ground_truth_summaries), na.rm = TRUE) # Handle NA values if present
+})
+
+mae_results_df <- data.frame(
+  Column = names(mae_results),
+  MAE = round(mae_results, 2)
+)
+
+errors_table <- mae_results_df %>% 
+  arrange(MAE) %>% 
+  rename("Mean Absolute Error" = MAE) %>% 
+  select(-Column)
+  
+errors_table %>%
+  kbl() %>%
+  kable_styling()
+```
+
+### Adjusted MAE With Variance Penalties
+The ground truth exhibits much higher variance than the calculated scores. To address this, I introduce a variance penalty that penalizes scores for their lack of variance. The MAE is adjusted by multiplying it by the inverse of the variance ratio, which is the ratio of the variance of the ground truth to the variance of the calculated scores. Scores with higher variance are less penalized, while scores with lower variance are more penalized.
+
+#### Summaries
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Function to calculate penalized MAE
+calculate_penalized_metrics <- function(column, ground_truth) {
+  # Calculate variance ratio
+  variance_ratio <- var(column, na.rm = TRUE) / var(ground_truth, na.rm = TRUE)
+
+  # Avoid division by zero or very small variance
+  if (is.na(variance_ratio) || variance_ratio == Inf) variance_ratio <- 1
+  
+  # Calculate MAE
+  mae <- mean(abs(column - ground_truth), na.rm = TRUE)
+  
+  # Penalize by multiplying by the inverse of the variance ratio
+  penalized_mae <- round(mae / variance_ratio, 2)
+  
+  return(c(Penalized_MAE = penalized_mae))
+}
+
+# Apply the function to all columns and store the results
+penalized_results <- t(sapply(columns_to_compare_summaries, calculate_penalized_metrics, ground_truth = ground_truth_summaries))
+
+penalized_results_df <- as.data.frame(penalized_results)
+
+# Transform to long format
+penalized_results_long <- penalized_results_df %>%
+  pivot_longer(
+    cols = everything(),               # Select all columns to pivot
+    names_to = "Metric",               # Name of the new column for variable names
+    values_to = "Penalized_MAE"        # Name of the new column for values
+  ) %>% 
+  mutate(Metric = str_remove(Metric, "\\.Penalized_MAE$")) # Remove .Penalized_MAE from the names
+
+penalized_results_long <- penalized_results_long %>% 
+  arrange(Penalized_MAE) %>% 
+  rename("Penalised MAE" = Penalized_MAE) %>% 
+  rename(" " = Metric)
+
+penalized_results_long %>%
+  kbl() %>%
+  kable_styling()
+```
+
+### Discussion
 …
