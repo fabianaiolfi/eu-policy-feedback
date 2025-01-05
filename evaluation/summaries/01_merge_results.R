@@ -23,6 +23,10 @@ chatgpt_ranking_combined <- readRDS(here("data", "llm_ranking", "chatgpt_combine
 llama_summary_0_shot <- readRDS(here("data", "llm_0_shot", "llama_summary_0_shot.rds"))
 llama_ranking_combined <- readRDS(here("data", "llm_ranking", "llama_combined_rating.rds"))
 llama_ranking_combined_3_reps <- readRDS(here("data", "llm_ranking", "llama_combined_rating_3_reps.rds"))
+deepseek_output_econ <- read.csv(here("data", "llm_0_shot", "deepseek_llm_output_0_shot_summaries_econ.csv"))
+deepseek_output_social <- read.csv(here("data", "llm_0_shot", "deepseek_llm_output_0_shot_summaries_social.csv"))
+deepseek_ranking_combined <- readRDS(here("data", "llm_ranking", "deepseek_combined_rating_summaries.rds"))
+
 
 all_dir_reg <- llama_ranking_combined %>%
   select(CELEX) %>%
@@ -82,6 +86,20 @@ llama_ranking_combined <- llama_ranking_combined %>%
 llama_ranking_combined_3_reps <- llama_ranking_combined_3_reps %>%
   rename(llama_ranking_z_score_3_reps = llm_ranking_z_score)
 
+deepseek_output_econ <- deepseek_output_econ %>%
+  rename(deepseek_econ_0_shot_z_score = output) %>% 
+  mutate(deepseek_econ_0_shot_z_score = standardize(deepseek_econ_0_shot_z_score)) %>% 
+  rename(CELEX = id_var)
+
+deepseek_output_social <- deepseek_output_social %>%
+  rename(deepseek_social_0_shot_z_score = output) %>% 
+  mutate(deepseek_social_0_shot_z_score = standardize(deepseek_social_0_shot_z_score)) %>% 
+  rename(CELEX = id_var)
+
+deepseek_ranking_combined <- deepseek_ranking_combined %>%
+  rename(deepseek_ranking_z_score = llm_ranking_z_score) %>% 
+  mutate(deepseek_ranking_z_score = standardize(deepseek_ranking_z_score))
+
 
 ## Connect a Law's Subject Matter with the Broad Policy Area from Nanou 2017 -----------------------
 
@@ -140,7 +158,10 @@ broad_policy_mpolicy_avg_df <- all_dir_reg %>%
   left_join(select(llama_summary_0_shot, CELEX, llama_summary_0_shot_z_score), by = "CELEX") %>% 
   left_join(select(chatgpt_ranking_combined, CELEX, chatgpt_ranking_z_score), by = "CELEX") %>%
   left_join(select(llama_ranking_combined, CELEX, llama_ranking_z_score), by = "CELEX") %>% 
-  left_join(select(llama_ranking_combined_3_reps, CELEX, llama_ranking_z_score_3_reps), by = "CELEX")
+  left_join(select(llama_ranking_combined_3_reps, CELEX, llama_ranking_z_score_3_reps), by = "CELEX") %>% 
+  left_join(select(deepseek_output_econ, CELEX, deepseek_econ_0_shot_z_score), by = "CELEX") %>% 
+  left_join(select(deepseek_output_social, CELEX, deepseek_social_0_shot_z_score), by = "CELEX") %>% 
+  left_join(select(deepseek_ranking_combined, CELEX, deepseek_ranking_z_score), by = "CELEX")
 
 # Save raw results to file for evaluation
 saveRDS(broad_policy_mpolicy_avg_df, file = here("data", "evaluation", "broad_policy_mpolicy_avg_df_summaries_raw_results.rds"))

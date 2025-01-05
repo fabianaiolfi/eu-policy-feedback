@@ -1,14 +1,15 @@
 
 # Load Data ---------------------------------------------------------------
 
-# all_dir_reg <- readRDS(file = here("data", "data_collection", "all_dir_reg_summaries.rds")) # Summaries
-all_dir_reg <- readRDS(file = here("existing_measurements", "hix_hoyland_2024", "all_dir_reg_preamble.rds")) # Preamble
+all_dir_reg <- readRDS(file = here("data", "data_collection", "all_dir_reg_summaries.rds")) # Summaries
+# all_dir_reg <- readRDS(file = here("existing_measurements", "hix_hoyland_2024", "all_dir_reg_preamble.rds")) # Preamble
 all_dir_reg <- all_dir_reg %>% drop_na(CELEX)
+# all_dir_reg <- all_dir_reg %>% slice_sample(n = 1000)
 
 # Create Subsets -----------------------------------------------------------
 
 # Subset: 
-all_dir_reg <- all_dir_reg %>% tail(nrow(all_dir_reg) - 1250) # Remove policies done in chatgpt_output_20241231_170956.csv
+# all_dir_reg <- all_dir_reg %>% tail(nrow(all_dir_reg) - 1250) # Remove policies done in chatgpt_output_20241231_170956.csv
 
 # Subset of directives and regulations that have summaires (n = 1637)
 # all_dir_reg_summaries <- readRDS(file = here("data", "data_collection", "all_dir_reg_summaries.rds"))
@@ -25,23 +26,32 @@ system_prompt <- "You are an expert in European Union policies. Answer questions
 ## Create Prompt ---------------------------------------------------------------
 
 # prompt_summary <- "I’m going to show you a summary of an EU policy. Please score the policy on a scale of 0 to 100. 0 represents economic left-wing policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights. 100 represents economic right-wing policies such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility. Please only return the score. Here’s the summary:\n\n"
-prompt_preamble <- "I’m going to show you the beginning of a preamble of an EU policy. Please score the policy on a scale of 0 to 100. 0 represents economic left-wing policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights. 100 represents economic right-wing policies such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility. Please *only* return the score and absolutely nothing else. Here’s the preamble:\n\n"
+prompt_summary <- "I’m going to show you a summary of an EU policy. Please score the policy on a scale of 0 to 100. 0 represents socially progressive policies, such as support for LGBTQ+ rights, gender equality, racial justice, reproductive rights, inclusive social policies, expansive immigration policies, criminal justice reform, environmental justice, and secularism in governance. 100 represents socially conservative policies, such as emphasis on traditional family values, opposition to same-sex marriage, restrictions on reproductive rights, stricter immigration controls, prioritization of national identity, opposition to multiculturalism, support for tough-on-crime policies, environmental skepticism, and the promotion of religion in public life. Please only return the score. Here’s the summary:\n\n"
+# prompt_preamble <- "I’m going to show you the beginning of a preamble of an EU policy. Please score the policy on a scale of 0 to 100. 0 represents economic left-wing policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights. 100 represents economic right-wing policies such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility. Please *only* return the score and absolutely nothing else. Here’s the preamble:\n\n"
 
 prompt_df <- all_dir_reg %>% 
   mutate(prompt_role_var = "user") %>% # Set role
   # Put together prompt
   mutate(prompt_content_var = paste0(system_prompt, 
                                      # Summary -----
-                                     # prompt_summary, 
-                                     # eurlex_summary_clean 
+                                     prompt_summary,
+                                     eurlex_summary_clean
                                      # Preamble -----
-                                     prompt_preamble,
-                                     preamble 
+                                     # prompt_preamble,
+                                     # preamble 
                                      ))# %>% 
   # Count number of tokens in prompt (1 token ~= 4 chars in English, see https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them)
   # Check API limits: https://platform.openai.com/settings/organization/limits
-  # mutate(prompt_token_len = nchar(prompt_content_var) / 4)
+  # mutate(prompt_token_len = nchar(prompt_content_var) / 3.33)
 
+# Calculate tokens
+# sum(prompt_df$prompt_token_len) # 86'732'080 to 104'182'679 tokens
+
+# Export for Google Colab
+prompt_df_export <- prompt_df %>% 
+  select(CELEX, prompt_content_var)
+
+write.csv(prompt_df_export, here("data", "llm_0_shot", "prompt_df_0_shot_export_summaries_social.csv"), row.names = F)
 
 # Query ChatGPT ---------------------------------------------------------------
 
@@ -139,3 +149,9 @@ unique(chatgpt_output$GPT_Output) # Examine the output
 # Save output
 # chatgpt_preamble_0_shot <- prompt_df %>% select(CELEX, chatgpt_answer)
 saveRDS(chatgpt_output, file = here("data", "llm_0_shot", "chatgpt_preamble_0_shot.rds"))
+
+
+# Process Deepseek output ---------------------------------------------------------------
+
+# deepseek_output <- read.csv(here("data", "llm_0_shot", "deepseek_llm_output_0_shot_summaries.csv"))
+
