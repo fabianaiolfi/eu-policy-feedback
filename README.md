@@ -52,8 +52,8 @@ N = 1637 | .rds | 10KB
 - Did not split on the median word-length if “Adopted this directive/regulation” does not appear (see p. 12)
 
 ### Latent Semantic Scaling (LSS)
-LSS is a method to measure the semantic similarity of terms to a set of seed words ([Manual](https://koheiw.github.io/LSX/articles/pkgdown/basic.html))
-#### [LSS method: Economic Seed Words](https://www.dropbox.com/scl/fi/xivjtmasr72vmat8mqsih/glove_polarity_scores_all_dir_reg_econ.rds?rlkey=32zmjd08rm9669iww691bd8ls&dl=0)
+LSS is a method to measure the semantic similarity of terms to a set of seed words ([manual](https://koheiw.github.io/LSX/articles/pkgdown/basic.html))
+#### [LSS Method: Economic Seed Words](https://www.dropbox.com/scl/fi/xivjtmasr72vmat8mqsih/glove_polarity_scores_all_dir_reg_econ.rds?rlkey=32zmjd08rm9669iww691bd8ls&dl=0)
 N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/seed_words_econ_manual.yml)  
 `>0`: More left  
 `<0`: More right  
@@ -64,7 +64,7 @@ N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-
 | 31989L0100  | 0.349                     |
 | 31989L0117  | 1.01                      |
 
-#### [LSS method: Social Seed Words](https://www.dropbox.com/scl/fi/496oc0pjyk1g4zqyvzrs2/glove_polarity_scores_all_dir_reg_social.rds?rlkey=idcspqo4bun8mznzstlzxljp6&dl=0)
+#### [LSS Method: Social Seed Words](https://www.dropbox.com/scl/fi/496oc0pjyk1g4zqyvzrs2/glove_polarity_scores_all_dir_reg_social.rds?rlkey=idcspqo4bun8mznzstlzxljp6&dl=0)
 N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/seed_words_social_manual.yml)  
 `>0`: More left  
 `<0`: More right  
@@ -94,7 +94,7 @@ Prompt: I’m going to show you [a summary / the beginning of a preamble] of an 
 | 31989L0297  | 65                     |
 
 See also:
-- Llama 0-Shot [Preamble](https://www.dropbox.com/scl/fi/6omdykxlrae6z79338y4g/llama_preamble_0_shot.rds?rlkey=5lzgnbwsxl0zhiuuvd7vwmigc&dl=0) (N = 32719 | .rds | 156KB) and [Summary](https://www.dropbox.com/scl/fi/lsen6mylbu8i1cplcsob8/llama_summary_0_shot.rds?rlkey=oe48i2c3lk1hy1o2kfmaoz2w2&dl=0) (N = 1445 | .rds | 8KB).
+- Llama 0-Shot [Preamble](https://www.dropbox.com/scl/fi/6omdykxlrae6z79338y4g/llama_preamble_0_shot.rds?rlkey=5lzgnbwsxl0zhiuuvd7vwmigc&dl=0) (N = 32,719 | .rds | 156KB) and [Summary](https://www.dropbox.com/scl/fi/lsen6mylbu8i1cplcsob8/llama_summary_0_shot.rds?rlkey=oe48i2c3lk1hy1o2kfmaoz2w2&dl=0) (N = 1445 | .rds | 8KB).
 - Deepseek [Economic 0-Shot Summary](https://www.dropbox.com/scl/fi/6kjy6ovqoatx9k814keg9/deepseek_llm_output_0_shot_summaries_econ.csv?rlkey=iqyn1j13uwwf1uxmi8jnp3zkt&dl=0) (N = 1637 | .csv | 23KB) and Deepseek [Social 0-Shot Summary](https://www.dropbox.com/scl/fi/ylkuz7ubax3e1sq1ez511/deepseek_llm_output_0_shot_summaries_social.csv?rlkey=d7p1m6regz9yitkhb013he09n&dl=0) (N = 1637 | .csv | 23KB)
 
 ### ChatGPT Ranking: [Summary](https://www.dropbox.com/scl/fi/y1edxlie1zp6n43uvquca/chatgpt_combined_rating.rds?rlkey=j7l3lmwybfwau4zjr5s2fykxg&dl=0)
@@ -182,6 +182,7 @@ See also Llama [Economic Ranking Summary](https://www.dropbox.com/scl/fi/akl979v
 
 **LLM Approach**
 - [ ] Potential political bias in LLMs? Try multiple prompts and models.
+- [ ] Fine tune an LLM similar to [ManiBERT](https://huggingface.co/niksmer/ManiBERT)
 - [ ] Compare policy summary, preamble (like Hix Høyland (2024)) and entire text to evaluate output
 - [ ] Approaches
   - [x] 0-shot: Query a single law and ask ChatGPT to place it on a left-right scale. Query must clearly explain economic/social left-right dimension
