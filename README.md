@@ -3,7 +3,7 @@
 ## Reports
 
 - [NLP Report](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/reports/240830_report.html): Overview of the available data, first results using LSS and ChatGPT 0-shot
-- [Evaluation and Comparison with Ground Truth](…): How well do different methods compare to a ground truth dataset?
+- [Evaluation and Comparison with Ground Truth](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/evaluation/250111_evaluation_report.html): How well do different methods compare to a ground truth dataset?
 
 ## Data Sets
 
