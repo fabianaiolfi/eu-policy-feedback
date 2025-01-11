@@ -120,43 +120,44 @@ _Tables: To Do_
 --------
 
 ## Open Points and Possible Improvements
+*General*
 - [ ] How to disregard / ignore laws that are *not* relevant? E.g. a law on abortion has no economic left-right ideology → One possible approach could be using a policy’s tags. Are there tags that indicate that a policy can be ignored?
 - [ ] Scrape EUROVOC descriptors ([example](https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32009L0034&qid=1720174976038))
 - [ ] Which laws have summaries? When does the EU decide to summarise a legislation? Are more recent policies more likely to be summarised?
 - [ ] Replace NA tags/descriptors with generated descriptors
 
-- [ ] Alternative LSS seed words
-  - [ ] Create different set of LSS seed words, find a way to document differences in outcome
-  - [ ] "Yet, at different points in time, the legislative institutions have delivered more “rightwing” policies, such as market deregulation, and at other times more “leftwing” policies, such as higher environmental and labour market standards." (Hix Høyland 2024, 1)
-  - [ ] “rile”-index: https://manifesto-project.wzb.eu/down/tutorials/main-dataset
+*LSS*
+- [ ] Create different set of LSS seed words, find a way to document differences in outcome
+- [ ] "Yet, at different points in time, the legislative institutions have delivered more “rightwing” policies, such as market deregulation, and at other times more “leftwing” policies, such as higher environmental and labour market standards." (Hix Høyland 2024, 1)
+- [ ] “rile”-index: https://manifesto-project.wzb.eu/down/tutorials/main-dataset
 
-- [ ] Improve ranking method
-  - [ ] Examine different ranking algorithms: https://stackoverflow.com/questions/3937218/comparison-based-ranking-algorithm
-  - [x] Implement Elo ranking
-  	- [ ] Prevent algorithm shortcomings by:
-  		- [ ] Randomize the Order: Randomly shuffle the order of comparisons multiple times and average the final ratings.
-  		- [ ] Increase the Number of Comparisons: More comparisons will help stabilize the ratings, reducing the impact of any particular order.
-  		- [ ] Lower the K-Factor: This reduces the volatility of the ratings but can slow down the adjustment process.
+*Ranking Method*
+- [ ] Examine different ranking algorithms: https://stackoverflow.com/questions/3937218/comparison-based-ranking-algorithm
+- [x] Implement Elo ranking
+	- [ ] Prevent algorithm shortcomings by:
+		- [ ] Randomize the Order: Randomly shuffle the order of comparisons multiple times and average the final ratings.
+		- [ ] Increase the Number of Comparisons: More comparisons will help stabilize the ratings, reducing the impact of any particular order.
+		- [ ] Lower the K-Factor: This reduces the volatility of the ratings but can slow down the adjustment process.
 
-- [ ] Improve evaluation
-  - [ ] Include spolicy in the overall evaluation
-  - [ ] Perform evaluation with scraped EUROVOC descriptors
-  - [ ] How reliable are the summaries compared to the preamble or entire text?
-  - [ ] Create tags / topics of each document to see if there's a correlation between topics and calculated ideology
-  - [ ] Compare results with left-right tags defined by Hix Høyland (2024), p. 33
-  - [ ] Dig deeper: Look into broad policy areas and if certain areas align more between ground truth and calculated measurements than others
+*Evaluation*
+- [ ] Include spolicy in the overall evaluation
+- [ ] Perform evaluation with scraped EUROVOC descriptors
+- [ ] How reliable are the summaries compared to the preamble or entire text?
+- [ ] Create tags / topics of each document to see if there's a correlation between topics and calculated ideology
+- [ ] Compare results with left-right tags defined by Hix Høyland (2024), p. 33
+- [ ] Dig deeper: Look into broad policy areas and if certain areas align more between ground truth and calculated measurements than others
 
-- [ ] Embeddings
-  - [ ] Compare policies with existing data
-	  - [ ] EP speeches and party manifestos
-	  - [ ] Policies or laws from another jurisdiction (e.g., UK), where policy author/creater and their political affiliation are known  
-  - [ ] Create an embedding for each EP faction and topic (e.g., left-wing and climate issues). Then label each policy with a topic. Then calculate embeddings for each policy and assign the policy to the closest faction based on the issue.
+*Embeddings*
+- [ ] Compare policies with existing data
+  - [ ] EP speeches and party manifestos
+  - [ ] Policies or laws from another jurisdiction (e.g., UK), where policy author/creater and their political affiliation are known  
+- [ ] Create an embedding for each EP faction and topic (e.g., left-wing and climate issues). Then label each policy with a topic. Then calculate embeddings for each policy and assign the policy to the closest faction based on the issue.
 
-- [ ] LLM Approach
-  - [ ] Potential political bias in LLMs? Try multiple prompts and models.
-  - [ ] Compare policy summary, preamble (like Hix Høyland (2024)) and entire text to evaluate output
-  - [ ] Approaches
-    - [x] 0-shot: Query a single law and ask ChatGPT to place it on a left-right scale. Query must clearly explain economic/social left-right dimension
-    - [x] Compare and rank: Compare two policies and pick the more left one. Then apply Elo ranking.
-    - [ ] In order to overcome problem that distance between laws is unclear: Somehow combine scores from other techniques in order to retrieve ideological “distance” between laws
-    - [ ] See also: BradleyTerry algorithm (applied [here](https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12703))
+*LLM Approach*
+- [ ] Potential political bias in LLMs? Try multiple prompts and models.
+- [ ] Compare policy summary, preamble (like Hix Høyland (2024)) and entire text to evaluate output
+- [ ] Approaches
+  - [x] 0-shot: Query a single law and ask ChatGPT to place it on a left-right scale. Query must clearly explain economic/social left-right dimension
+  - [x] Compare and rank: Compare two policies and pick the more left one. Then apply Elo ranking.
+  - [ ] In order to overcome problem that distance between laws is unclear: Somehow combine scores from other techniques in order to retrieve ideological “distance” between laws
+  - [ ] See also: BradleyTerry algorithm (applied [here](https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12703))
