@@ -1,5 +1,10 @@
 # EU Policy Feedback
 
+## Reports
+
+- [NLP Report](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/reports/240830_report.html): Overview of the available data, first results using LSS and ChatGPT 0-shot
+- [Evaluation and Comparison with Ground Truth](…): How well do different methods compare to a ground truth dataset?
+
 ## Data Sets
 
 ### [All directives and regulations](https://www.dropbox.com/scl/fi/pk1kt8adgv39880o5pq21/all_dir_reg.rds?rlkey=2zp2ugclhux2jv4gj4dtipgzo&dl=0)
