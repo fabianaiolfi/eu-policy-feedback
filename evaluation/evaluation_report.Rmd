@@ -6,6 +6,7 @@ output:
     toc: true
     toc_float: true
     toc_depth: 3
+date: "`r Sys.Date()`"
 ---
 
 ```{r setup, include=FALSE}
