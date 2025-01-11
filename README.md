@@ -46,7 +46,9 @@ N = 1637 | .rds | 10KB
 - Non-english texts were not translated into English (see p. 12)
 - Did not split on the median word-length if “Adopted this directive/regulation” does not appear (see p. 12)
 
-### [LSS method: Economic Seed Words](https://www.dropbox.com/scl/fi/xivjtmasr72vmat8mqsih/glove_polarity_scores_all_dir_reg_econ.rds?rlkey=32zmjd08rm9669iww691bd8ls&dl=0)
+### Latent Semantic Scaling (LSS)
+LSS is a method to measure the semantic similarity of terms to a set of seed words ([Manual](https://koheiw.github.io/LSX/articles/pkgdown/basic.html))
+#### [LSS method: Economic Seed Words](https://www.dropbox.com/scl/fi/xivjtmasr72vmat8mqsih/glove_polarity_scores_all_dir_reg_econ.rds?rlkey=32zmjd08rm9669iww691bd8ls&dl=0)
 N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/seed_words_econ_manual.yml)  
 `>0`: More left  
 `<0`: More right  
@@ -57,7 +59,7 @@ N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-
 | 31989L0100  | 0.349                     |
 | 31989L0117  | 1.01                      |
 
-### [LSS method: Social Seed Words](https://www.dropbox.com/scl/fi/496oc0pjyk1g4zqyvzrs2/glove_polarity_scores_all_dir_reg_social.rds?rlkey=idcspqo4bun8mznzstlzxljp6&dl=0)
+#### [LSS method: Social Seed Words](https://www.dropbox.com/scl/fi/496oc0pjyk1g4zqyvzrs2/glove_polarity_scores_all_dir_reg_social.rds?rlkey=idcspqo4bun8mznzstlzxljp6&dl=0)
 N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/seed_words_social_manual.yml)  
 `>0`: More left  
 `<0`: More right  
@@ -117,91 +119,44 @@ _Tables: To Do_
 
 --------
 
-## To Do
-**General**
+## Open Points and Possible Improvements
 - [ ] How to disregard / ignore laws that are *not* relevant? E.g. a law on abortion has no economic left-right ideology → One possible approach could be using a policy’s tags. Are there tags that indicate that a policy can be ignored?
-
-**241123**
-- [x] Run Llama ranking with ChatGPT API: Rank all policies with summaries (n ca. 1600)
-- [ ] Use ChatGPT to rank / 0-shot all ~70k policies: 
-  - [ ] Costs 0-shot: ~USD 224.00 using GPT-4o; ~USD 14.00 using GPT-4o mini
-  - [ ] Time 0-shot: ~16h (check again with stable internet connection)
-  - [ ] Continuously write responses to external .csv file in case long query crashes
-- [x] Clean up overall evaluation
-- [ ] Include spolicy in the overall evaluation again
-- [x] Ranking algorithm: Combine "most left" and "most right" lists
-- [x] Check subject_matter and Broad Policy Topic matching: Remove not appropriate terms and also repeat ambiguous terms
-- [x] Perform ranking with llama models over all directives/regulations that have a summary
-  - [x] Economically left
-  - [x] Economically right
-- [x] Continue 0-shot querying of policies with summaries with Llama:
-  - [x] Clean responses
-  - [x] Include this analysis in overall evaluation
-- [x] Continue overall evaluation, including llama model
-- [x] Other ways to compare own measurements with expert survey?
-
-
-## Data Collection 1989 – Today
-- [x] CEPS EurLex (1952 – 2019)
-- [x] Moodley (1971 – 2022) (https://zenodo.org/records/8174176)
-- [ ] Scrape summaries
-	- [Example](https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32019L0904&qid=1719922563047)
-	- [More info](https://eur-lex.europa.eu/browse/summaries.html) 
 - [ ] Scrape EUROVOC descriptors ([example](https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32009L0034&qid=1720174976038))
-
-### To Do
 - [ ] Which laws have summaries? When does the EU decide to summarise a legislation? Are more recent policies more likely to be summarised?
-
-## Latent Semantic Scaling (LSS)
-- LSS is a method to measure the semantic similarity of terms to a set of seed words
-- Manual: https://koheiw.github.io/LSX/articles/pkgdown/basic.html
-
-### To Do 
-- [x] Compare outcome between use of sentences and use of paragraphs ([link to script](https://github.com/fabianaiolfi/eu-policy-feedback/blob/25eb77853a3c13fc64313bf19f83ab684a378693/lss/01_run_lss.R#L23)) → No discernible difference in outcome
-- [x] What is the subject matter "marketing"?
-- [x] Perform LSS "background" checks, i.e., synonyms for seed words
-- [ ] Create different set of seed words, find a way to document differences in outcome
-- [ ] Continue here: Complete evaluation with new, bigger dataset that includes Regulations: Examine correlations
-- [ ] Perform evaluation with scraped EUROVOC descriptors
 - [ ] Replace NA tags/descriptors with generated descriptors
-- [ ] Alternative seed words
+
+- [ ] Alternative LSS seed words
+  - [ ] Create different set of LSS seed words, find a way to document differences in outcome
   - [ ] "Yet, at different points in time, the legislative institutions have delivered more “rightwing” policies, such as market deregulation, and at other times more “leftwing” policies, such as higher environmental and labour market standards." (Hix Høyland 2024, 1)
   - [ ] “rile”-index: https://manifesto-project.wzb.eu/down/tutorials/main-dataset
 
-## Embeddings
-- Compare policies with existing data
-	- EP speeches and party manifestos
-	- Policies or laws from another jurisdiction (e.g., UK), where policy author/creater and their political affiliation are known
-- Create an embedding for each EP faction and topic (e.g., left-wing and climate issues). Then label each policy with a topic. Then calculate embeddings for each policy and assign the policy to the closest faction based on the issue.
+- [ ] Improve ranking method
+  - [ ] Examine different ranking algorithms: https://stackoverflow.com/questions/3937218/comparison-based-ranking-algorithm
+  - [x] Implement Elo ranking
+  	- [ ] Prevent algorithm shortcomings by:
+  		- [ ] Randomize the Order: Randomly shuffle the order of comparisons multiple times and average the final ratings.
+  		- [ ] Increase the Number of Comparisons: More comparisons will help stabilize the ratings, reducing the impact of any particular order.
+  		- [ ] Lower the K-Factor: This reduces the volatility of the ratings but can slow down the adjustment process.
 
-## ChatGPT Approach
-- Compare policy summary, preamble (like Hix Høyland (2024)) and entire text to evaluate output
-- Approaches
-  - 0-shot: Query a single law and ask ChatGPT to place it on a left-right scale. Query must clearly explain economic/social left-right dimension
-  - Compare and rank: Compare two policies and pick the more left one. Then apply Elo ranking.
-  - In order to overcome problem that distance between laws is unclear: Somehow combine scores from other techniques in order to retrieve ideological “distance” between laws
-  - See also: BradleyTerry algorithm (applied [here](https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12703))
+- [ ] Improve evaluation
+  - [ ] Include spolicy in the overall evaluation
+  - [ ] Perform evaluation with scraped EUROVOC descriptors
+  - [ ] How reliable are the summaries compared to the preamble or entire text?
+  - [ ] Create tags / topics of each document to see if there's a correlation between topics and calculated ideology
+  - [ ] Compare results with left-right tags defined by Hix Høyland (2024), p. 33
+  - [ ] Dig deeper: Look into broad policy areas and if certain areas align more between ground truth and calculated measurements than others
 
-### To Do
-- [x] Scrape summaries: Are there enough to make this work?
-- [ ] Examine different ranking algorithms: https://stackoverflow.com/questions/3937218/comparison-based-ranking-algorithm
-- [x] Implement Elo ranking
-	- [ ] Prevent algorithm shortcomings by:
-		- [ ] Randomize the Order: Randomly shuffle the order of comparisons multiple times and average the final ratings.
-		- [ ] Increase the Number of Comparisons: More comparisons will help stabilize the ratings, reducing the impact of any particular order.
-		- [ ] Lower the K-Factor: This reduces the volatility of the ratings but can slow down the adjustment process.
-- [x] Try running an LLM locally
-- [x] Use ChatGPT 4o mini
-- [ ] Potential political bias in LLMs? Try multiple prompts and models.
+- [ ] Embeddings
+  - [ ] Compare policies with existing data
+	  - [ ] EP speeches and party manifestos
+	  - [ ] Policies or laws from another jurisdiction (e.g., UK), where policy author/creater and their political affiliation are known  
+  - [ ] Create an embedding for each EP faction and topic (e.g., left-wing and climate issues). Then label each policy with a topic. Then calculate embeddings for each policy and assign the policy to the closest faction based on the issue.
 
-## Systematic Evaluation of all Measurements
-- [x] Compare results amongst themselves and with expert survey (e.g. [this expert survey](https://www.dropbox.com/scl/fi/392u06vxzhz6sqebe5mam/EU_Competencies_Index_codebook_v1.pdf?rlkey=vgbqc57dmxur7rakqpekdswy8&dl=0), data: https://www.eucompetencies.com/data/)
-- [x] Normalise results between different metrics (e.g., Hix Høyland and ELO Ranking) using standardisation or z-index
-- [ ] How reliable are the summaries compared to the preamble or entire text?
-- [ ] Create tags / topics of each document to see if there's a correlation between topics and calculated ideology
-- [ ] Compare results with left-right tags defined by Hix Høyland (2024), p. 33
-- [ ] Dig deeper: Look into broad policy areas and if certain areas align more between ground truth and calculated measurements than others
-
-## Resources
-- https://michalovadek.github.io/eurlex/
-- https://eur-lex.europa.eu/
+- [ ] LLM Approach
+  - [ ] Potential political bias in LLMs? Try multiple prompts and models.
+  - [ ] Compare policy summary, preamble (like Hix Høyland (2024)) and entire text to evaluate output
+  - [ ] Approaches
+    - [x] 0-shot: Query a single law and ask ChatGPT to place it on a left-right scale. Query must clearly explain economic/social left-right dimension
+    - [x] Compare and rank: Compare two policies and pick the more left one. Then apply Elo ranking.
+    - [ ] In order to overcome problem that distance between laws is unclear: Somehow combine scores from other techniques in order to retrieve ideological “distance” between laws
+    - [ ] See also: BradleyTerry algorithm (applied [here](https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12703))
