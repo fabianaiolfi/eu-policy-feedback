@@ -76,22 +76,22 @@ columns_to_compare_preambles <- broad_policy_mpolicy_avg_df_preamble %>%
 
 This report explains how the political ideology of EU directives and regulations was calculated and compared to a ground truth dataset.
 
-Three methods were evaluated: the approach by @simonhixPoliticalIdeologyPolicyLoss2024, a natural language processing (NLP) approach using latent semantic scaling (LSS) and finally an approach applying large language models (LLMs). The ground truth is based on @nanouEvercloserUnionMeasuring2017.
+Three methods were evaluated: the approach by @hixPoliticalIdeologyPolicyLoss2024, a natural language processing (NLP) approach using latent semantic scaling (LSS) and finally an approach applying large language models (LLMs). The ground truth is based on @nanouEvercloserUnionMeasuring2017.
 
-The comparison shows that the @simonhixPoliticalIdeologyPolicyLoss2024 method aligns closest with the ground truth than the other methods.
+The comparison shows that the @hixPoliticalIdeologyPolicyLoss2024 method aligns closest with the ground truth than the other methods.
 
 ## Data: Preambles and Summaries of Directives and Regulations between 1989 and 2024
 
 Two sources of natural language data were used in the analysis:
 
-1. **Preambles**: The preamble text of policies was used, as suggested by @simonhixPoliticalIdeologyPolicyLoss2024 [p. 12]. Text was cut off at "Adopted this directive/regulation". Preambles were collected from the [CEPS EurLex dataset](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/0EGYWY) [@borrettCEPSEurLexDataset2020], covering about 70,000 directives and regulations from 1989 to 2019. Additional policies from 2019 to August 2024 were collected using the [eurlex](https://michalovadek.github.io/eurlex/) R package [@ovadekFacilitatingAccessData2021], resulting in 74,734 policies total.
+1. **Preambles**: The preamble text of policies was used, as suggested by @hixPoliticalIdeologyPolicyLoss2024 [p. 12]. Text was cut off at "Adopted this directive/regulation". Preambles were collected from the [CEPS EurLex dataset](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/0EGYWY) [@borrettCEPSEurLexDataset2020], covering about 70,000 directives and regulations from 1989 to 2019. Additional policies from 2019 to August 2024 were collected using the [eurlex](https://michalovadek.github.io/eurlex/) R package [@ovadekFacilitatingAccessData2021], resulting in 74,734 policies total.
 
 2. **Summaries**: EUR-Lex provides summaries for some policies ([example](https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32019L0904&qid=1719922563047)). Summaries are provided by EUR-Lex on a [case-by-case basis](https://eur-lex.europa.eu/browse/summaries.html). A total of 1,637 summaries were scraped from [eur-lex.europa.eu](https://eur-lex.europa.eu/homepage.html?locale=en) using [this script](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/data_collection/eurlex_summaries.R).
 
 ## Methods
 
 ### Hix & Høyland
-@simonhixPoliticalIdeologyPolicyLoss2024 [p. 12] classify 100-word text segments as left, right, or neutral using these methods:
+@hixPoliticalIdeologyPolicyLoss2024 [p. 12] classify 100-word text segments as left, right, or neutral using these methods:
 
 1. **RoBERT Left Right**  
 A [RoBERT classifier](https://huggingface.co/niksmer/RoBERTa-RILE) trained on a corpus of party manifestos.
@@ -102,7 +102,7 @@ A fine-tuned [ManiBERT classifier](https://huggingface.co/niksmer/ManiBERT) that
 3. **CMP Left Right**  
 A fine-tuned [ManiBERT classifier](https://huggingface.co/niksmer/ManiBERT) that identifies Comparative Manifesto Project (CMP) policy-issue codes. Results are classified as “left” or “right” using @bakkerMeasuringPartyPositions2013 [p. 33, Table 2.2] CMP left-right dimension terms.
 
-Each 100-word segment receives “left,” “right,” or “neutral” tags. To convert these occurrences into a score, the authors use the “logit-scaled left-right position” method from @loweScalingPolicyPreferences2011.
+Each 100-word segment receives a “left,” “right,” or “neutral” tag. The number of tag occurences are summed up and converted into a score using the “logit-scaled left-right position” method from @loweScalingPolicyPreferences2011.
 
 ### Latent Semantic Scaling (LSS)
 LSS is a method for measuring the semantic similarity between documents and a set of seed words. In this analysis, each directive or regulation is a document and the seed words convey “typical” left-right terms. The semantic similarity between documents and seed words is calculated using word embeddings provided by [GloVe](https://nlp.stanford.edu/projects/glove/). To keep computation efficient, I use the smallest pre-trained word vectors model available (6B tokens, 400K vocab, 50 dimensions). The economic seed words can be viewed [here](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/seed_words_econ_manual.yml), the social seed words [here](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/lss/seed_words_social_manual.yml).
@@ -309,7 +309,7 @@ ggplot(scatter_plot_data, aes(x = value, y = `Ground Truth: Nanou et al.`)) +
 
 ### Variance
 
-The scatter plots show that the variance of the calculated scores is low. I examine this in more detail in the following plots. They show that the variance of the computed scores is generally lower than the variance of the ground truth. I address this issue further below.
+The scatter plots above hint that the variance of the calculated scores is low. I examine this in more detail in the following plots. They show that the variance of the computed scores is generally lower than the variance of the ground truth. I address this issue further below.
 
 #### Summaries: Distribution of Z-Scores (Histograms)
 ```{r echo=FALSE, fig.height=5, fig.width=8, message=FALSE, warning=FALSE}
@@ -421,7 +421,7 @@ errors_table %>%
 ```
 
 ### Adjusted MAE With Variance Penalties
-The ground truth has a much higher variance than the computed scores (see histograms and box plots above under "Variance"). To address this, I introduce a variance penalty that penalises the scores for their lack of variance. I do this because I expect a lack of variance to be worse, as it indicates more similar scores for different policies. I penalise at the aggregate level to take into account the overall performance of a method.
+The ground truth has a much higher variance than the computed scores (see histograms and box plots above under "Variance"). To address this, I introduce a variance penalty that penalises the scores for their lack of variance. I do this because I treat a lack of variance as something negative, as it indicates similar scores for different policies. I penalise at the aggregate level to take into account the overall performance of a method.
 
 The MAE is adjusted by multiplying it by the inverse of the variance ratio. The variance ratio is the ratio of the ground truth variance to the calculated score variance. Scores with higher variance are penalised less, while scores with lower variance are penalised more.
 
@@ -511,13 +511,13 @@ penalized_results_long %>%
   kable_styling()
 ```
 
-### Discussion
-Looking at the adjusted MAE with variance penalties, we can see that the Bakker Hobolt Social method used by @simonhixPoliticalIdeologyPolicyLoss2024 is closest to the ground truth, both when using a policy’s summary and its preamble. The Bakker Hobolt Social method uses a fine-tuned model, trained on data from the [Manifesto Project](https://manifesto-project.wzb.eu/). It is therefore well equipped to perform well in the specific task of scoring EU policies.
+## Discussion
+Looking at the adjusted MAE with variance penalties, we can see that the Bakker Hobolt Social method used by @hixPoliticalIdeologyPolicyLoss2024 is closest to the ground truth, both when using a policy’s summary and its preamble. The Bakker Hobolt Social method uses a fine-tuned model, trained on data from the [Manifesto Project](https://manifesto-project.wzb.eu/). It is therefore well equipped to deal with the specific task of scoring EU policies.
 
-In second and third place is the LSS method. This is an interesting finding, as it suggests that these relatively old natural language processing methods are closer to the ground truth than state-of-the-art large language models.
+In second and third place is the LSS method. This is an interesting finding, as it suggests that this relatively simple natural language processing method is closer to the ground truth than the methods that use complex large language models, when variance is taken into account.
 
-Possible reasons why the LLMs perform worse than the Bakker Hobolt Social or LSS methods are that they are not fine-tuned and are not designed to perform particularly well in classifying EU policies. I also assume that non-fine-tuned LLMs produce a lot of noise, leading to worse results than the LSS method, which is "fine-tuned" in its own way with its seed words.
+Possible reasons why the LLMs perform worse than the Bakker Hobolt Social or LSS methods are that they are not fine-tuned and are not designed to perform particularly well in the very niche task of classifying EU policies. I also assume that non-fine-tuned LLMs produce a lot of noise, leading to worse results than the LSS method, which is "fine-tuned" in its own way with its seed words.
 
 A possible next step is to fine-tune an LLM to improve its ability to classify policies.
 
-### References
+## References
