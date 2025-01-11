@@ -70,7 +70,7 @@ N = 74,734 | .rds | 663KB | [See seed words](https://github.com/fabianaiolfi/eu-
 | 31989L0100  | 0.0452                    |
 | 31989L0117  | 0.519                     |
 
-### ChatGPT Zero Shot: [Preamble](https://www.dropbox.com/scl/fi/b0xt9mc5tqhy0sicroh4b/chatgpt_preamble_0_shot.rds?rlkey=1bf3mtaqwlr1mhh4ed52scy1a&dl=0) and [Summary](https://www.dropbox.com/scl/fi/tawgrzdalylkbsuafpaja/chatgpt_summary_0_shot.rds?rlkey=0shddxnty3bv3tp780nq94l6g&dl=0)
+### ChatGPT 0-Shot: [Preamble](https://www.dropbox.com/scl/fi/b0xt9mc5tqhy0sicroh4b/chatgpt_preamble_0_shot.rds?rlkey=1bf3mtaqwlr1mhh4ed52scy1a&dl=0) and [Summary](https://www.dropbox.com/scl/fi/tawgrzdalylkbsuafpaja/chatgpt_summary_0_shot.rds?rlkey=0shddxnty3bv3tp780nq94l6g&dl=0)
 N = 1637 | .rds | 6KB  
 `0`: Economic left-wing policies  
 `100`: Economic right-wing policies  
@@ -88,7 +88,15 @@ Prompt: I’m going to show you [a summary / the beginning of a preamble] of an 
 | 31989L0130  | 70                    |
 | 31989L0297  | 65                     |
 
-### ChatGPT Ranking
+See also:
+- Llama 0-Shot [Preamble](https://www.dropbox.com/scl/fi/6omdykxlrae6z79338y4g/llama_preamble_0_shot.rds?rlkey=5lzgnbwsxl0zhiuuvd7vwmigc&dl=0) (N = 32719 | .rds | 156KB) and [Summary](https://www.dropbox.com/scl/fi/lsen6mylbu8i1cplcsob8/llama_summary_0_shot.rds?rlkey=oe48i2c3lk1hy1o2kfmaoz2w2&dl=0) (N = 1445 | .rds | 8KB).
+- Deepseek [Economic 0-Shot Summary](https://www.dropbox.com/scl/fi/6kjy6ovqoatx9k814keg9/deepseek_llm_output_0_shot_summaries_econ.csv?rlkey=iqyn1j13uwwf1uxmi8jnp3zkt&dl=0) (N = 1637 | .csv | 23KB) and Deepseek [Social 0-Shot Summary](https://www.dropbox.com/scl/fi/ylkuz7ubax3e1sq1ez511/deepseek_llm_output_0_shot_summaries_social.csv?rlkey=d7p1m6regz9yitkhb013he09n&dl=0) (N = 1637 | .csv | 23KB)
+
+### ChatGPT Ranking: [Summary](https://www.dropbox.com/scl/fi/y1edxlie1zp6n43uvquca/chatgpt_combined_rating.rds?rlkey=j7l3lmwybfwau4zjr5s2fykxg&dl=0)
+N = 1637 | .rds | 20KB  
+`<0`: Economic left-wing policies  
+`>0`: Economic right-wing policies  
+Model: `gpt-4o-mini` 
 ```
 System Prompt: You are an expert in European Union policies. Answer questions and provide information based on that expertise.
 ```
@@ -98,7 +106,21 @@ Prompt for economic *left*: I have two summaries of EU policies, and I need to d
 ```
 Prompt for economic *right* I have two summaries of EU policies, and I need to determine which policy is more economically right-leaning. Please analyze the summaries based on principles commonly associated with economically right policies, such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility. [Summary] Which policy is more economically right? Please return only '1' or '2'.
 ```
-_Tables: To Do_
+```
+Prompt for social *left*: I have two summaries of EU policies, and I need to determine which policy is more socially progressive. Please analyze the summaries based on principles commonly associated with socially progressive policies, such as support for LGBTQ+ rights, gender equality, racial justice, reproductive rights, inclusive social policies, expansive immigration policies, criminal justice reform, environmental justice, secularism in governance, and multiculturalism.
+```
+```
+Prompt for social *right*: I have two summaries of EU policies, and I need to determine which policy is more economically right-leaning. Please analyze the summaries based on principles commonly associated with economically right policies, such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility.
+```
+
+| CELEX       | llm_ranking_z_score |
+|-------------|---------------------------|
+| 31991L0383  | -1.479584 |
+| 32013R1381  | -2.331678 |
+| 32013R1304  | -1.463549 |
+
+Ranking datasets combine outputs from both prompts [in this script](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/llm_ranking/03_post_processing.R) and calculate z-score.  
+See also Llama [Economic Ranking Summary](https://www.dropbox.com/scl/fi/akl979vhfmib0iuy0dnmc/llama_combined_rating.rds?rlkey=odcmy7wwaxsym9fn5z9jrb8yo&dl=0) (N = 1637 | .rds | 20KB), Deepseek [Economic Ranking Summary](https://www.dropbox.com/scl/fi/3mtrkitch1cjctvam3t3s/deepseek_combined_rating_summaries.rds?rlkey=0smktp1rn853oxcc8m1dbi8hk&dl=0) (N = 1637 | .rds | 20KB) and Deepseek [Social Ranking Summary](https://www.dropbox.com/scl/fi/tgtg4m1bo3bwvz6bqddnj/deepseek_combined_social_ranking_summaries.rds?rlkey=98oz2hovy80b4j8gv9wmsrwmf&dl=0) (N = 1637 | .rds | 20KB).
 
 ### Column Descriptions
 
