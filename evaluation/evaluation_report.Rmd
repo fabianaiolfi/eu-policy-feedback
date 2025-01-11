@@ -83,7 +83,7 @@ The comparison shows that the @simonhixPoliticalIdeologyPolicyLoss2024 method al
 
 Two sources of natural language data were used in the analysis:
 
-1. **Preambles**: The preamble text of policies was used, as suggested by @simonhixPoliticalIdeologyPolicyLoss2024 [p. 12]. Text was cut off at "Adopted this directive/regulation". Preambles were collected from the [CEPS EurLex dataset](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/0EGYWY) [@borrettCEPSEurLexDataset2020], covering about 70k directives and regulations from 1989 to 2019. Additional policies from 2019 to August 2024 were collected using the [eurlex](https://michalovadek.github.io/eurlex/) R package [@ovadekFacilitatingAccessData2021], resulting in 74,734 policies total.
+1. **Preambles**: The preamble text of policies was used, as suggested by @simonhixPoliticalIdeologyPolicyLoss2024 [p. 12]. Text was cut off at "Adopted this directive/regulation". Preambles were collected from the [CEPS EurLex dataset](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/0EGYWY) [@borrettCEPSEurLexDataset2020], covering about 70,000 directives and regulations from 1989 to 2019. Additional policies from 2019 to August 2024 were collected using the [eurlex](https://michalovadek.github.io/eurlex/) R package [@ovadekFacilitatingAccessData2021], resulting in 74,734 policies total.
 
 2. **Summaries**: EUR-Lex provides summaries for some policies ([example](https://eur-lex.europa.eu/legal-content/EN/LSU/?uri=CELEX:32019L0904&qid=1719922563047)). Summaries are provided by EUR-Lex on a [case-by-case basis](https://eur-lex.europa.eu/browse/summaries.html). A total of 1,637 summaries were scraped from [eur-lex.europa.eu](https://eur-lex.europa.eu/homepage.html?locale=en) using [this script](https://github.com/fabianaiolfi/eu-policy-feedback/blob/main/data_collection/eurlex_summaries.R).
 
@@ -99,7 +99,7 @@ A [RoBERT classifier](https://huggingface.co/niksmer/RoBERTa-RILE) trained on a 
 A fine-tuned [ManiBERT classifier](https://huggingface.co/niksmer/ManiBERT) that identifies Comparative Manifesto Project (CMP) policy-issue codes. Results are classified as “left” or “right” based on the modified CMP measures in @bakkerMeasuringPartyPositions2013 [p. 38, Table 2.4].
 
 3. **CMP Left Right**  
-A fine-tuned [ManiBERT classifier](https://huggingface.co/niksmer/ManiBERT) that identifies Comparative Manifesto Project (CMP) policy-issue codes. Results are classified as “left” or “right” using @bakkerMeasuringPartyPositions2013 [p. 33, Table 2.2.] CMP left-right dimension terms.
+A fine-tuned [ManiBERT classifier](https://huggingface.co/niksmer/ManiBERT) that identifies Comparative Manifesto Project (CMP) policy-issue codes. Results are classified as “left” or “right” using @bakkerMeasuringPartyPositions2013 [p. 33, Table 2.2] CMP left-right dimension terms.
 
 Each 100-word segment receives “left,” “right,” or “neutral” tags. To convert these occurrences into a score, the authors use the “logit-scaled left-right position” method from @loweScalingPolicyPreferences2011.
 
@@ -108,7 +108,7 @@ LSS is a method for measuring the semantic similarity between documents and a se
 
 ### LLM Methods
 The LLMs methods use the following models:  
-- [OpenAI’s GPT-4o mini](https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/), accessed via the [OpenAI API](https://platform.openai.com/docs/overview)  
+- OpenAI’s [GPT-4o mini](https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/), accessed via the [OpenAI API](https://platform.openai.com/docs/overview)  
 - Meta’s [Llama 3.2 1B](https://ollama.com/library/llama3.2:1b), used locally via [Ollama](https://ollama.com/)  
 - [DeepSeek V3](https://www.deepseek.com/), accessed via their API
 
@@ -138,9 +138,9 @@ I’m going to show you a summary of an EU policy. Please score the policy on a 
 ```
 
 #### Ranking
-The ranking method compares two policies. Two random policies are presented to the LLM, which decides which policy is more economically left (or right) based on set criteria. The “winning” policy is flagged. Repeating this process many times and recording “winning” and “losing” policies enables the use of the [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system) to calculate a score for each policy. Economically left “winning” policies receive a higher “left” score than economically left “losing” policies.
+The ranking method calculates scores by comparing policies directly with each other. To do this, the following steps are taken: Two random policies are presented to the LLM, which decides which policy is more economically left (or right) based on set criteria. The “winning” policy is flagged. Repeating this process many times and recording “winning” and “losing” policies enables the use of the [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system) to calculate a score for each policy. Economically left “winning” policies receive a higher “left” score than economically left “losing” policies.
 
-Ranking was only performed on the summaries. Applying this method to the preambles, i.e., over 70k documents, would have taken several dozen hours of inference and over $100 in API costs when using ChatGPT.
+Ranking was only performed on the summaries. Applying this method to the preambles, i.e., over 70,000 documents, would have taken several dozen hours of inference and over $100 in API costs when using ChatGPT.
 
 ##### Prompt for Economic Left (Summaries)
 ```
@@ -198,37 +198,7 @@ Policy Summary 2
 Which policy is more socially right? Please return only '1' or '2'.
 ```
 
-##### Prompt for Economic Left (Preambles)
-```
-You are an expert in European Union policies. Answer questions and provide information based on that expertise.
-
-I’m going to show you two EU policies, and I need to determine which policy is more economically left-leaning. Please analyze the beginning of the policies' preamble based on principles commonly associated with economically left policies, such as government intervention in the economy, redistribution of wealth, social welfare programs, progressive taxation, regulation of markets, and support for labor rights.
-
-Preamble 1
-…
-
-Preamble 2
-…
-
-Which policy is more economically left? Please answer ONLY '1' or '2', NOTHING ELSE UNDER NO CIRCUMSTANCES.
-```
-
-##### Prompt for Economic Right (Preambles)
-```
-You are an expert in European Union policies. Answer questions and provide information based on that expertise.
-
-I’m going to show you two EU policies, and I need to determine which policy is more economically left-leaning. Please analyze the beginning of the policies' preamble based on principles commonly associated with economically right policies, such as free market capitalism, deregulation, lower taxes, privatization, reduced government spending, and individual financial responsibility
-
-Preamble 1
-…
-
-Preamble 2
-…
-
-Which policy is more economically right? Please answer ONLY USING THE NUMBERS '1' or '2', NOTHING ELSE UNDER NO CIRCUMSTANCES.
-```
-
-## Evaluation: Comparison with Nanou 2017 Dataset
+## Evaluation: Comparison with @nanouEvercloserUnionMeasuring2017 Dataset
 I compare the calculated policy scores with a dataset provided by @nanouEvercloserUnionMeasuring2017, which I treat as the ground truth. The authors provide policy scores for 5-year periods across nine broad policy areas:
 
 1. Economic and Financial Affairs
@@ -300,7 +270,7 @@ ggplot(pearson_correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
 Each point in these plots represents an averaged score for a broad policy area in a specific time period. The x-axis shows the calculated scores (described in the plot’s title), and the y-axis shows the ground truth. The diagonal gray line represents perfect correlation, while the blue line represents the trend line for the calculated scores. Closer convergence of the blue and gray lines indicates better alignment with the ground truth.
 
 #### Summaries
-```{r echo=FALSE, fig.height=9, fig.width=9, message=FALSE, warning=FALSE}
+```{r echo=FALSE, fig.height=12, fig.width=9, message=FALSE, warning=FALSE}
 scatter_plot_data <- broad_policy_mpolicy_avg_df_summaries %>%
   select(-broad_policy_area_mpolicy_moodley, -period) %>% 
   pivot_longer(cols = -`Ground Truth: Nanou et al.`,
@@ -337,6 +307,8 @@ ggplot(scatter_plot_data, aes(x = value, y = `Ground Truth: Nanou et al.`)) +
 
 
 ### Variance
+
+The scatter plots show that the variance of the calculated scores is low. I examine this in more detail in the following plots. They show that the variance of the computed scores is generally lower than the variance of the ground truth. I address this issue further below.
 
 #### Summaries: Distribution of Z-Scores (Histograms)
 ```{r echo=FALSE, fig.height=5, fig.width=8, message=FALSE, warning=FALSE}
@@ -401,7 +373,7 @@ ggplot(variance_data) +
 ```
 
 ### Mean Absolute Error (MAE)
-The average of the absolute differences between calculated scores and the ground truth. Smaller MAE values indicate that the calculated scores are closer to the ground truth.
+I calculate the average of the absolute differences between the computed scores and the ground truth. Smaller MAE values indicate that the computed scores are closer to the ground truth.
 
 #### Summaries
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -448,7 +420,9 @@ errors_table %>%
 ```
 
 ### Adjusted MAE With Variance Penalties
-The ground truth exhibits much higher variance than the calculated scores (see histograms and boxplots above under “Variance”). To address this, I introduce a variance penalty that penalizes scores for their lack of variance. The MAE is adjusted by multiplying it by the inverse of the variance ratio. The variance ratio is the ratio of the ground truth variance to the calculated scores variance. Scores with higher variance are less penalized, while scores with lower variance are more penalized.
+The ground truth has a much higher variance than the computed scores (see histograms and box plots above under "Variance"). To address this, I introduce a variance penalty that penalises the scores for their lack of variance. I do this because I expect a lack of variance to be worse, as it indicates more similar scores for different policies. I penalise at the aggregate level to take into account the overall performance of a method.
+
+The MAE is adjusted by multiplying it by the inverse of the variance ratio. The variance ratio is the ratio of the ground truth variance to the calculated score variance. Scores with higher variance are penalised less, while scores with lower variance are penalised more.
 
 #### Summaries
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -537,6 +511,12 @@ penalized_results_long %>%
 ```
 
 ### Discussion
-…
+Looking at the adjusted MAE with variance penalties, we can see that the Bakker Hobolt Social method used by @simonhixPoliticalIdeologyPolicyLoss2024 is closest to the ground truth, both when using a policy’s summary and its preamble. The Bakker Hobolt Social method uses a fine-tuned model, trained on data from the [Manifesto Project](https://manifesto-project.wzb.eu/). It is therefore well equipped to perform well in the specific task of scoring EU policies.
+
+In second and third place is the LSS method. This is an interesting finding, as it suggests that these relatively old natural language processing methods are closer to the ground truth than state-of-the-art large language models.
+
+Possible reasons why the LLMs perform worse than the Bakker Hobolt Social or LSS methods are that they are not fine-tuned and are not designed to perform particularly well in classifying EU policies. I also assume that non-fine-tuned LLMs produce a lot of noise, leading to worse results than the LSS method, which is "fine-tuned" in its own way with its seed words.
+
+A possible next step is to fine-tune an LLM to improve its ability to classify policies.
 
 ### References
