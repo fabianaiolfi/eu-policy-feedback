@@ -8,14 +8,14 @@
 ## Data Sets
 
 ### [All data](https://www.dropbox.com/s/oo24muau2uxg75e/all_data.rds?dl=0)
-N = 74,733 | .rds | 497.6MB
+N = 74,733 | .rds | 480.5MB
 
 Also available as a [CSV](https://www.dropbox.com/scl/fi/e4e6lw6nwcgx280369kjg/all_data.csv?rlkey=gk0b2kdgsu2q4ig9kpjq0a7lr&dl=0)
 
 | **Category**              | **Column Name**                               | **Description**                                       |
-|:--------------------------|--------------------------------------------|-------------------------------------------------------|
-| **Meta Information**      | CELEX                                     | Unique ID                                            |
-|                           | date                                      | Date of document                                     |
+|:--------------------------|:-------------------------------------------|:------------------------------------------------------|
+| **Meta Information**      | CELEX                                     | Unique directive/regulation ID |
+|                           | date                                      | Date of directive/regulation |
 |                           | act_string                                | Full raw text of the act in one string              |
 |                           | act_type                                  | Directive or regulation                              |
 |                           | act_summary                               | Summary if available                                 |
@@ -35,7 +35,7 @@ Also available as a [CSV](https://www.dropbox.com/scl/fi/e4e6lw6nwcgx280369kjg/a
 |                           | lss_social_summary                       |                                                     |
 | **LLM Methods**           | chatgpt_0_shot_econ_preamble             |                                                     |
 |                           | chatgpt_0_shot_econ_summary              |                                                     |
-|                           | llama_0_shot_econ_preamble               | Note: Does not cover all documents                  |
+|                           | llama_0_shot_econ_preamble               | Note: Does not cover all directives/regulations|
 |                           | llama_0_shot_econ_summary                |                                                     |
 |                           | chatgpt_ranking_econ_summary_z_score     |                                                     |
 |                           | llama_ranking_econ_summary_z_score       |                                                     |
