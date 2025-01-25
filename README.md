@@ -7,6 +7,46 @@
 
 ## Data Sets
 
+### [All data](https://www.dropbox.com/s/oo24muau2uxg75e/all_data.rds?dl=0)
+N = 74,733 | .rds | 497.6MB
+
+Also available as a [CSV]()
+
+| **Category**              | **Variable**                               | **Description**                                       |
+|---------------------------|--------------------------------------------|-------------------------------------------------------|
+| **Meta Information**      | CELEX                                     | Unique ID                                            |
+|                           | date                                      | Date of document                                     |
+|                           | act_string                                | Full raw text of the act in one string              |
+|                           | act_type                                  | Directive or regulation                              |
+|                           | act_summary                               | Summary if available                                 |
+|                           | eurlex_policy_area                        | EURLEX subject matter                                |
+|                           | nanou_broad_policy_area                   | Broad policy area based on Nanou, Zapryanova, and Toth (2017) |
+| **Hix and Høyland (2024)**| hix_hoyland_robert_left_right_preamble    |                                                     |
+|                           | hix_hoyland_bakker_hobolt_econ_preamble   |                                                     |
+|                           | hix_hoyland_bakker_hobolt_social_preamble |                                                     |
+|                           | hix_hoyland_cmp_left_right_preamble       |                                                     |
+|                           | hix_hoyland_robert_left_right_summary     |                                                     |
+|                           | hix_hoyland_bakker_hobolt_econ_summary    |                                                     |
+|                           | hix_hoyland_bakker_hobolt_social_summary  |                                                     |
+|                           | hix_hoyland_cmp_left_right_summary        |                                                     |
+| **LSS Methods**           | lss_econ_preamble                        |                                                     |
+|                           | lss_social_preamble                      |                                                     |
+|                           | lss_econ_summary                         |                                                     |
+|                           | lss_social_summary                       |                                                     |
+| **LLM Methods**           | chatgpt_0_shot_econ_preamble             |                                                     |
+|                           | chatgpt_0_shot_econ_summary              |                                                     |
+|                           | llama_0_shot_econ_preamble               | Note: Does not cover all documents                  |
+|                           | llama_0_shot_econ_summary                |                                                     |
+|                           | chatgpt_ranking_econ_summary_z_score     |                                                     |
+|                           | llama_ranking_econ_summary_z_score       |                                                     |
+|                           | deepseek_ranking_econ_summary_z_score    |                                                     |
+|                           | deepseek_ranking_social_summary_z_score  |                                                     |
+|                           | deepseek_0_shot_econ_summary             |                                                     |
+|                           | deepseek_0_shot_social_summary           |                                                     |
+
+
+Please note that ranking scores have already been converted to z-scores. 
+
 ### [All directives and regulations](https://www.dropbox.com/scl/fi/pk1kt8adgv39880o5pq21/all_dir_reg.rds?rlkey=2zp2ugclhux2jv4gj4dtipgzo&dl=0)
 N = 75,570 | .rds | 497.6MB
 
