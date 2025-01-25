@@ -214,3 +214,4 @@ all_data <- all_data %>%
 
 # Save to file
 saveRDS(all_data, file = here("data", "data_collection", "all_data.rds"))
+write.csv(all_data, file = here("data", "data_collection", "all_data.csv"))
