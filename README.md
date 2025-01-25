@@ -12,7 +12,7 @@ N = 74,733 | .rds | 497.6MB
 
 Also available as a [CSV]()
 
-| **Category**              | **Variable**                               | **Description**                                       |
+|: **Category**              | **Variable**                               | **Description**                                       |
 |---------------------------|--------------------------------------------|-------------------------------------------------------|
 | **Meta Information**      | CELEX                                     | Unique ID                                            |
 |                           | date                                      | Date of document                                     |
