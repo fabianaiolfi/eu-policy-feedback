@@ -23,12 +23,12 @@
 # --cmp_left_right summary
 # --LSS econ preamble
 # --LSS social preamble
-# ChatGPT 0-Shot preamble
-# ChatGPT 0-Shot summary
-# ChatGPT Ranking summary
-# Llama Economic Ranking summary
-# Deepseek Economic Ranking summary
-# Deepseek Social Ranking summary
+# --ChatGPT 0-Shot preamble
+# --ChatGPT 0-Shot summary
+# --ChatGPT Ranking summary
+# --Llama Economic Ranking summary
+# --Deepseek Economic Ranking summary
+# --Deepseek Social Ranking summary
 
 
 # Load Meta Datasets ---------------------------------------
@@ -122,23 +122,95 @@ lss_social_summary <- lss_social_summary %>%
   distinct(CELEX, .keep_all = T) %>% 
   rename(lss_social_summary = avg_glove_polarity_scores)
 
-# ChatGPT
+# ChatGPT 0-Shot
+chatgpt_preamble_0_shot <- readRDS(here("data", "llm_0_shot", "chatgpt_preamble_0_shot.rds"))
+chatgpt_preamble_0_shot <- chatgpt_preamble_0_shot %>% 
+  drop_na(CELEX) %>% 
+  distinct(CELEX, .keep_all = T) %>% 
+  rename(chatgpt_0_shot_econ_preamble = GPT_Output)
 
+chatgpt_summary_0_shot <- readRDS(here("data", "llm_0_shot", "chatgpt_summary_0_shot.rds"))
+chatgpt_summary_0_shot <- chatgpt_summary_0_shot %>% 
+  drop_na(CELEX) %>% 
+  distinct(CELEX, .keep_all = T) %>% 
+  rename(chatgpt_0_shot_econ_summary = chatgpt_answer)
 
+# Llama 0-Shot
+llama_preamble_0_shot <- readRDS(here("data", "llm_0_shot", "llama_preamble_0_shot.rds"))
+llama_preamble_0_shot <- llama_preamble_0_shot %>% 
+  drop_na(CELEX) %>% 
+  distinct(CELEX, .keep_all = T) %>% 
+  rename(llama_0_shot_econ_preamble = response)
 
+llama_summary_0_shot <- readRDS(here("data", "llm_0_shot", "llama_summary_0_shot.rds"))
+llama_summary_0_shot <- llama_summary_0_shot %>% 
+  drop_na(CELEX) %>% 
+  distinct(CELEX, .keep_all = T) %>% 
+  rename(llama_0_shot_econ_summary = avg_score)
 
+# Deepseek 0-Shot
+deepseek_summary_0_shot_econ <- read.csv(here("data", "llm_0_shot", "deepseek_llm_output_0_shot_summaries_econ.csv"))
+deepseek_summary_0_shot_econ <- deepseek_summary_0_shot_econ %>% 
+  rename(CELEX = id_var,
+         deepseek_0_shot_econ_summary = output) %>% 
+  drop_na(CELEX) %>% 
+  distinct(CELEX, .keep_all = T)
 
+deepseek_summary_0_shot_social <- read.csv(here("data", "llm_0_shot", "deepseek_llm_output_0_shot_summaries_social.csv"))
+deepseek_summary_0_shot_social <- deepseek_summary_0_shot_social %>% 
+  rename(CELEX = id_var,
+         deepseek_0_shot_social_summary = output) %>% 
+  drop_na(CELEX) %>% 
+  distinct(CELEX, .keep_all = T)
 
+# ChatGPT Ranking
+chatgpt_ranking_combined <- readRDS(here("data", "llm_ranking", "chatgpt_combined_rating.rds"))
+chatgpt_ranking_combined <- chatgpt_ranking_combined %>% 
+  drop_na(CELEX) %>% 
+  distinct(CELEX, .keep_all = T) %>%
+  rename(chatgpt_ranking_econ_summary_z_score = llm_ranking_z_score)
 
+# Llama Ranking 
+llama_econ_ranking_summary <- readRDS("/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/llama_combined_rating.rds")
+llama_econ_ranking_summary <- llama_econ_ranking_summary %>% 
+  drop_na(CELEX) %>% 
+  distinct(CELEX, .keep_all = T) %>%
+  rename(llama_ranking_econ_summary_z_score = llm_ranking_z_score)
 
+# Deepseek Ranking
+deepseek_econ_ranking_summary <- readRDS("/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/deepseek_combined_rating_summaries.rds")
+deepseek_econ_ranking_summary <- deepseek_econ_ranking_summary %>% 
+  drop_na(CELEX) %>% 
+  distinct(CELEX, .keep_all = T) %>%
+  rename(deepseek_ranking_econ_summary_z_score = llm_ranking_z_score)
 
+deepseek_social_ranking_summary <- readRDS("/Users/aiolf1/Library/CloudStorage/Dropbox/Work/240304 Qualtrics Giorgio/03 NLP Research/data_backup/deepseek_combined_social_ranking_summaries.rds")
+deepseek_social_ranking_summary <- deepseek_social_ranking_summary %>% 
+  drop_na(CELEX) %>% 
+  distinct(CELEX, .keep_all = T) %>%
+  rename(deepseek_ranking_social_summary_z_score = llm_ranking_z_score)
 
+# Merge scores
+all_data <- all_data %>% 
+  left_join(hix_hoyland_preamble, by = "CELEX") %>% 
+  left_join(hix_hoyland_summary, by = "CELEX") %>% 
+  left_join(lss_econ_preamble, by = "CELEX") %>% 
+  left_join(lss_social_preamble, by = "CELEX") %>% 
+  left_join(lss_econ_summary, by = "CELEX") %>% 
+  left_join(lss_social_summary, by = "CELEX") %>% 
+  left_join(chatgpt_preamble_0_shot, by = "CELEX") %>% 
+  left_join(chatgpt_summary_0_shot, by = "CELEX") %>% 
+  left_join(llama_preamble_0_shot, by = "CELEX") %>% 
+  left_join(llama_summary_0_shot, by = "CELEX") %>% 
+  left_join(chatgpt_ranking_combined, by = "CELEX") %>% 
+  left_join(llama_econ_ranking_summary, by = "CELEX") %>% 
+  left_join(deepseek_econ_ranking_summary, by = "CELEX") %>% 
+  left_join(deepseek_social_ranking_summary, by = "CELEX") %>% 
+  left_join(deepseek_summary_0_shot_econ, by = "CELEX") %>% 
+  left_join(deepseek_summary_0_shot_social, by = "CELEX")
+  
+# Check for consistent column naming
+# colnames(all_data)
 
-
-
-
-
-
-
-
-
+# Save to file
+saveRDS(all_data, file = here("data", "data_collection", "all_data.rds"))
