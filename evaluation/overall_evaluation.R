@@ -36,9 +36,9 @@ llama_ranking_combined <- llama_ranking_combined %>% rename(llama_ranking_z_scor
 #   left_join(all_dir_reg, by = "CELEX")
 
 # When working with summaries only
-all_dir_reg <- llama_ranking_combined %>%
-  select(CELEX) %>%
-  left_join(all_dir_reg, by = "CELEX")
+# all_dir_reg <- llama_ranking_combined %>%
+#   select(CELEX) %>%
+#   left_join(all_dir_reg, by = "CELEX")
 
 ## Add Subject Matter to all_dir_reg -----------------------
 
@@ -95,7 +95,7 @@ hix_hoyland_data <- hix_hoyland_data %>%
 
 chatgpt_preamble_0_shot <- chatgpt_preamble_0_shot %>%
   # Perform standardization of data (z-scoring)
-  mutate(chatgpt_preamble_0_shot_z_score = standardize(chatgpt_answer))
+  mutate(chatgpt_preamble_0_shot_z_score = standardize(GPT_Output))
 
 chatgpt_summary_0_shot <- chatgpt_summary_0_shot %>%
   # Perform standardization of data (z-scoring)
@@ -161,6 +161,12 @@ match_policy_area <- function(subject_matter, lookup_df) {
 all_dir_reg$broad_policy_area_mpolicy_moodley <- sapply(all_dir_reg$subject_matter_moodley, match_policy_area, lookup_df = policy_area_moodley_subj_matter_mpolicy)
 # all_dir_reg$broad_policy_area_spolicy <- sapply(all_dir_reg$Subject_matter, match_policy_area, lookup_df = policy_area_subj_matter_spolicy)
 
+# Save for merge_all_datasets.R
+nanou_broad_policy_area <- all_dir_reg %>% 
+  select(CELEX, broad_policy_area_mpolicy_moodley) %>% 
+  drop_na(CELEX)
+
+saveRDS(nanou_broad_policy_area, file = here("data", "data_collection", "nanou_broad_policy_area.rds"))
 
 ## Calculate Averages per Time Period and Broad Policy Area ---------------------------------
 
