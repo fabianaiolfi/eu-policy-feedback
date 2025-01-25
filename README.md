@@ -10,10 +10,10 @@
 ### [All data](https://www.dropbox.com/s/oo24muau2uxg75e/all_data.rds?dl=0)
 N = 74,733 | .rds | 497.6MB
 
-Also available as a [CSV]()
+Also available as a [CSV](https://www.dropbox.com/scl/fi/e4e6lw6nwcgx280369kjg/all_data.csv?rlkey=gk0b2kdgsu2q4ig9kpjq0a7lr&dl=0)
 
-|: **Category**              | **Variable**                               | **Description**                                       |
-|---------------------------|--------------------------------------------|-------------------------------------------------------|
+| **Category**              | **Column Name**                               | **Description**                                       |
+|:--------------------------|--------------------------------------------|-------------------------------------------------------|
 | **Meta Information**      | CELEX                                     | Unique ID                                            |
 |                           | date                                      | Date of document                                     |
 |                           | act_string                                | Full raw text of the act in one string              |
