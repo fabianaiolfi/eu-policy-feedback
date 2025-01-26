@@ -7,6 +7,7 @@
 all_data <- readRDS(here("data", "data_collection", "all_data.rds"))
 manual_coding <- read_sheet("https://docs.google.com/spreadsheets/d/1DUyJZvo6g-JR3wc8KB_isnWYb_ni92TNK4deeHOm1eU/edit?gid=0#gid=0")
 
+
 # Create sample ----------------------
 
 manual_sample <- c("31990R0153",
