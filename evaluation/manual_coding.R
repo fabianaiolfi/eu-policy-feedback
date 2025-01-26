@@ -24,12 +24,20 @@ all_data_sample <- all_data %>%
 # Import manual codings ----------------------
 # From Google Sheets (https://docs.google.com/spreadsheets/d/1DUyJZvo6g-JR3wc8KB_isnWYb_ni92TNK4deeHOm1eU/edit?usp=sharing)
 
-manual_coding_edit <- manual_coding %>% 
-  dplyr::select(-...1, -...3, -(19:26))
+manual_coding <- manual_coding %>% dplyr::select(-...1, -...3, -(19:26))
+manual_coding_fa <- manual_coding %>% dplyr::select(...2, 2:6) %>% row_to_names(row_number = 1) %>% dplyr::mutate(Coder = "FA")
+manual_coding_af <- manual_coding %>% dplyr::select(...2, 7:11) %>% row_to_names(row_number = 1) %>% dplyr::mutate(Coder = "AF")
+manual_coding_gm <- manual_coding %>% dplyr::select(...2, 12:16) %>% row_to_names(row_number = 1) %>% dplyr::mutate(Coder = "GM")
 
+manual_coding <- rbind(manual_coding_fa, manual_coding_af, manual_coding_gm)
 
-
-
+manual_coding <- manual_coding %>% 
+  dplyr::mutate(across(where(is.list), ~ unlist(.))) %>% 
+  tidyr::pivot_longer(
+    cols = -c(CELEX, Coder), # All columns except CELEX and Coder
+    names_to = "Measurement", # Name for the new column holding original column names
+    values_to = "Score"       # Name for the new column holding values
+    )
 
 
 
