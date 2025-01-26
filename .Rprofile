@@ -12,6 +12,7 @@ library(reshape2) # Correlation plot heatmap
 library(stringr)
 library(Metrics)
 library(car)
+library(googlesheets4) # Manual coding
 
 # LSS
 library(LSX)
