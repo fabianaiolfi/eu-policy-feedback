@@ -15,6 +15,7 @@ library(car)
 # Manual coding
 library(googlesheets4)
 library(janitor)
+library(irr)
 
 # LSS
 library(LSX)
